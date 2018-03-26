@@ -1,5 +1,6 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -19,7 +20,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * This class will have all the CRUD functionality for each of
      * the three tables we are using: Trip, Place, ToDoItem
      */
-    public DatabaseHandler
+
+    /**
+     * Keep track of the database version
+     */
+    public static final int DATABASE_VERSION = 1;
+
+    /**
+     * Create the name of the database
+     */
+    public static final String DATABASE_NAME = "worldTrotters";
+
+    public DatabaseHandler(Context context){
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
+    }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
