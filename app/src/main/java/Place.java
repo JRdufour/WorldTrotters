@@ -1,5 +1,8 @@
 /**
  * Created by Dufour on 2018-03-26.
+ * Place objects will be contained in Trip objects
+ * Represents a real place in the world the user wants to visit
+ * Places will be pulled from the google API for places, will have to add more fields as needed
  */
 
 public class Place {
@@ -35,7 +38,7 @@ public class Place {
     }
 
     public Place() {
-        
+
     }
 
     public int getId() {
