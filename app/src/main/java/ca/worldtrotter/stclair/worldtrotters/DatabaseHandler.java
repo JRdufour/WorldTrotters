@@ -248,6 +248,45 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return placeList;
     }
     //TODO get toDoItem
+    public ToDoItem getToDoItem(int id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        ToDoItem item = null;
+
+        Cursor c = db.query(TABLE_TO_TO_ITEMS,
+                new String[]{COLUMN_ID, COLUMN_PLACE_ID, COLUMN_NAME, COLUMN_DESCRIPTION},
+                COLUMN_ID + "=?", new String[]{String.valueOf(id)},
+                null, null, null, null);
+
+        if(c != null){
+            c.moveToFirst();
+            item = new ToDoItem(Integer.parseInt(c.getString(0)),
+                    Integer.parseInt(c.getString(1)),
+                    c.getString(2),
+                    c.getString(3));
+        }
+        db.close();
+        return item;
+    }
     //TODO get allToDoItems
 
+    public ArrayList<ToDoItem> getAllToDoItems(int placeId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<ToDoItem> itemsList = new ArrayList<>();
+
+        Cursor c = db.query(TABLE_TO_TO_ITEMS,
+                new String[]{COLUMN_ID, COLUMN_PLACE_ID, COLUMN_NAME, COLUMN_DESCRIPTION},
+                COLUMN_PLACE_ID + "=?", new String[]{String.valueOf(placeId)},
+                null, null, null, null);
+
+        if(c .moveToFirst()){
+            do{
+                itemsList.add(new ToDoItem(Integer.parseInt(c.getString(0)),
+                        Integer.parseInt(c.getString(1)),
+                        c.getString(2),
+                        c.getString(3)));
+            } while(c.moveToNext());
+        }
+        db.close();
+        return itemsList;
+    }
 }
