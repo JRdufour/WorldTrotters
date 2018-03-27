@@ -289,4 +289,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         return itemsList;
     }
+
+
+    //TODO Update operations
+
+
+    //TODO Delete operations
+    public void deleteTrip(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_TRIPS, COLUMN_ID + " = ? ",
+                new String[]{String.valueOf(id)});
+        db.close();
+    }
+
+    public void deletePlace(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_PLACES, COLUMN_ID + " = ? ",
+                new String[]{String.valueOf(id)});
+        db.close();
+    }
+    public void deleteToDoItem(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_TO_TO_ITEMS, COLUMN_ID + " = ? ",
+                new String[]{String.valueOf(id)});
+        db.close();
+    }
 }
