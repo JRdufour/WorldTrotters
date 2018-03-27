@@ -2,8 +2,13 @@ package ca.worldtrotter.stclair.worldtrotters;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
+import java.util.function.LongToIntFunction;
 
 /**
  * Created by Dufour on 2018-03-26.
@@ -145,5 +150,104 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(COLUMN_NAME, item.getName());
         values.put(COLUMN_DESCRIPTION, item.getDescription());
     }
+
+    //READ operations
+
+
+    public Trip getTrip(int id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Trip trip = null;
+
+        Cursor c = db.query(TABLE_TRIPS,
+                new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DATE_CREATED, COLUMN_IMAGE, COLUMN_START_DATE},
+                COLUMN_ID + "=?", new String[]{String.valueOf(id)},
+                null, null, null, null);
+        if(c != null){
+            c.moveToFirst();
+            trip = new Trip(Integer.parseInt(c.getString(0)),
+                    c.getString(1),
+                    c.getString(2),
+                    c.getString(3),
+                    c.getString(4));
+        }
+        db.close();
+
+        return trip;
+    }
+
+    public ArrayList<Trip> getAllTrips(){
+        ArrayList<Trip> tripsList = new ArrayList<>();
+        String query = "SELECT * FROM " + TABLE_TRIPS;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+
+        if(c.moveToFirst()){
+            do{
+                tripsList.add(new Trip(Integer.parseInt(c.getString(0)),
+                        c.getString(1),
+                        c.getString(2),
+                        c.getString(3),
+                        c.getString(4)));
+            } while(c.moveToNext());
+        }
+
+        db.close();
+        return tripsList;
+    }
+
+
+    public Place getPlace(int id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Place place = null;
+
+        Cursor c = db.query(TABLE_PLACES,
+                new String[]{COLUMN_ID, COLUMN_TRIP_ID, COLUMN_PLACE_ID, COLUMN_NAME,
+                COLUMN_IMAGE, COLUMN_LATITUDE, COLUMN_LONGITUDE, COLUMN_GEOTAG},
+                COLUMN_ID + "=?", new String[]{String.valueOf(id)},
+                null, null, null, null);
+
+        if (c != null){
+            c.moveToFirst();
+            place = new Place(Integer.parseInt(c.getString(0)),
+                    Integer.parseInt(c.getString(1)),
+                    c.getString(2),
+                    c.getString(3),
+                    c.getString(4),
+                    c.getString(5),
+                    c.getString(6),
+                    c.getString(7));
+        }
+        db.close();
+       return place;
+    }
+
+    //TODO getAllPlaces
+    //this method returns a list of places for a specified trip
+    public ArrayList<Place> getAllPlacesForTrip(int tripId){
+        ArrayList<Place> placeList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.query(TABLE_PLACES,
+                new String[]{COLUMN_ID, COLUMN_TRIP_ID, COLUMN_PLACE_ID, COLUMN_NAME,
+                        COLUMN_IMAGE, COLUMN_LATITUDE, COLUMN_LONGITUDE, COLUMN_GEOTAG},
+                COLUMN_TRIP_ID + "=?", new String[]{String.valueOf(tripId)},
+                null, null, null, null);
+        if(c.moveToFirst()){
+            do{
+                placeList.add(new Place(Integer.parseInt(c.getString(0)),
+                        Integer.parseInt(c.getString(1)),
+                        c.getString(2),
+                        c.getString(3),
+                        c.getString(4),
+                        c.getString(5),
+                        c.getString(6),
+                        c.getString(7)));
+            } while (c.moveToNext());
+        }
+        db.close();
+        return placeList;
+    }
+    //TODO get toDoItem
+    //TODO get allToDoItems
 
 }
