@@ -10,15 +10,19 @@
     android:background="@color/colorPrimary"
     app:cardElevation="7dp">
 
-    <ImageView
+    <com.joooonho.SelectableRoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/recycler_background_image"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:cropToPadding="false"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/zion"
+        app:sriv_left_bottom_corner_radius="10dp"
+        app:sriv_left_top_corner_radius="10dp"
+        app:sriv_right_bottom_corner_radius="10dp"
+        app:sriv_right_top_corner_radius="10dp"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="2dp"
+        app:sriv_oval="true" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
