@@ -1,6 +1,8 @@
+package ca.worldtrotter.stclair.worldtrotters;
+
 /**
  * Created by Dufour on 2018-03-26.
- * Place objects will be contained in Trip objects
+ * ca.worldtrotter.stclair.worldtrotters.Place objects will be contained in Trip objects
  * Represents a real place in the world the user wants to visit
  * Places will be pulled from the google API for places, will have to add more fields as needed
  */
@@ -8,18 +10,18 @@
 public class Place {
 
     private int id;
-    private int trip_id;
-    private String place_id;
+    private int tripId;
+    private String placeId;
     private String name;
     private String imageURL;
     private String latitude;
     private String longitude;
     private String geoTag;
 
-    public Place(int id, int trip_id, String place_id, String name, String imageURL, String latitude, String longitude, String geoTag) {
+    public Place(int id, int tripId, String placeId, String name, String imageURL, String latitude, String longitude, String geoTag) {
         this.id = id;
-        this.trip_id = trip_id;
-        this.place_id = place_id;
+        this.tripId = tripId;
+        this.placeId = placeId;
         this.name = name;
         this.imageURL = imageURL;
         this.latitude = latitude;
@@ -27,9 +29,9 @@ public class Place {
         this.geoTag = geoTag;
     }
 
-    public Place(int trip_id, String place_id, String name, String imageURL, String latitude, String longitude, String geoTag) {
-        this.trip_id = trip_id;
-        this.place_id = place_id;
+    public Place(int tripId, String placeId, String name, String imageURL, String latitude, String longitude, String geoTag) {
+        this.tripId = tripId;
+        this.placeId = placeId;
         this.name = name;
         this.imageURL = imageURL;
         this.latitude = latitude;
@@ -49,20 +51,20 @@ public class Place {
         this.id = id;
     }
 
-    public int getTrip_id() {
-        return trip_id;
+    public int getTripId() {
+        return tripId;
     }
 
-    public void setTrip_id(int trip_id) {
-        this.trip_id = trip_id;
+    public void setTripId(int trip_id) {
+        this.tripId = trip_id;
     }
 
-    public String getPlace_id() {
-        return place_id;
+    public String getPlaceId() {
+        return placeId;
     }
 
     public void setPlace_id(String place_id) {
-        this.place_id = place_id;
+        this.placeId = placeId;
     }
 
     public String getName() {

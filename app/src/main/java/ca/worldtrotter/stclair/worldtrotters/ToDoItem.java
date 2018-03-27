@@ -1,3 +1,5 @@
+package ca.worldtrotter.stclair.worldtrotters;
+
 /**
  * Created by Dufour on 2018-03-26.
  * This is the toDoItem class
@@ -7,19 +9,19 @@
 
 public class ToDoItem {
     private int id;
-    private int place_id;
+    private int placeId;
     private String name;
     private String description;
 
-    public ToDoItem(int id, int place_id, String name, String description) {
+    public ToDoItem(int id, int placeId, String name, String description) {
         this.id = id;
-        this.place_id = place_id;
+        this.placeId = placeId;
         this.name = name;
         this.description = description;
     }
 
-    public ToDoItem(int place_id, String name, String description) {
-        this.place_id = place_id;
+    public ToDoItem(int placeId, String name, String description) {
+        this.placeId = placeId;
         this.name = name;
         this.description = description;
     }
@@ -36,12 +38,12 @@ public class ToDoItem {
         this.id = id;
     }
 
-    public int getPlace_id() {
-        return place_id;
+    public int getPlaceId() {
+        return placeId;
     }
 
-    public void setPlace_id(int place_id) {
-        this.place_id = place_id;
+    public void setPlaceId(int placeId) {
+        this.placeId = placeId;
     }
 
     public String getName() {

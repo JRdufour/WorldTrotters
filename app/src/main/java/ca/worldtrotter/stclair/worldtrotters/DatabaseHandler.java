@@ -1,5 +1,6 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -18,7 +19,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * WorldTrotters project
      *
      * This class will have all the CRUD functionality for each of
-     * the three tables we are using: Trip, Place, ToDoItem
+     * the three tables we are using: Trip, ca.worldtrotter.stclair.worldtrotters.Place, ca.worldtrotter.stclair.worldtrotters.ToDoItem
      */
 
     /**
@@ -103,5 +104,46 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TO_TO_ITEMS);
     }
 
+    /**
+     * CRUD Operations for the database tables
+     * CREATE, READ, UPDATE, DELETE
+     */
+
+    //CREATE
+    public void addTrip(Trip trip){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, trip.getName());
+        values.put(COLUMN_DATE_CREATED, trip.getDateCreated());
+        values.put(COLUMN_IMAGE, trip.getImageURL());
+        values.put(COLUMN_START_DATE, trip.getStartDate());
+        db.insert(TABLE_TRIPS, null, values);
+        db.close();
+    }
+
+    public void addPlace(Place place){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_TRIP_ID, place.getTripId());
+        values.put(COLUMN_PLACE_ID, place.getPlaceId());
+        values.put(COLUMN_NAME, place.getName());
+        values.put(COLUMN_IMAGE, place.getImageURL());
+        values.put(COLUMN_LATITUDE, place.getLatitude());
+        values.put(COLUMN_LONGITUDE, place.getLongitude());
+        values.put(COLUMN_GEOTAG, place.getGeoTag());
+
+        db.insert(TABLE_PLACES, null, values);
+        db.close();
+    }
+
+    public void addToDoItem(ToDoItem item){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_PLACE_ID, item.getPlaceId());
+        values.put(COLUMN_NAME, item.getName());
+        values.put(COLUMN_DESCRIPTION, item.getDescription());
+    }
 
 }
