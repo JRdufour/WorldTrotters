@@ -99,7 +99,20 @@ public class AboutUsFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            return null;
+            switch (position){
+                case 0:
+                    return NewInstanceFragment.newInstance(R.drawable.ic_add_black_24dp);
+                case 1:
+                    return NewInstanceFragment.newInstance(R.drawable.ic_menu_send);
+                case 2:
+                    return NewInstanceFragment.newInstance(R.drawable.ic_menu_camera);
+                case 3:
+                    return NewInstanceFragment.newInstance(R.drawable.ic_menu_manage);
+                case 4:
+                    return NewInstanceFragment.newInstance(R.drawable.ic_menu_share);
+                default:
+                    return NewInstanceFragment.newInstance(R.drawable.ic_menu_gallery);
+            }
         }
 
         @Override
