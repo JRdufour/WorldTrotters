@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.SearchView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -46,6 +48,7 @@ public class AddTripFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1991;
+    EditText destination;
 
     public AddTripFragment() {
         // Required empty public constructor
@@ -85,17 +88,27 @@ public class AddTripFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_trip, container, false);
         getActivity().setTitle("Create a new Trip");
         //grab the place autocomplete fragment from the xml
-        try {
-            Intent i = new PlaceAutocomplete.
-                    IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
-            startActivityForResult(i, PLACE_AUTOCOMPLETE_REQUEST_CODE);
 
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
 
+        //grab the destination edit text and add the google places autocomplete feature to it
+        destination = view.findViewById(R.id.add_trip_destination_edit_text);
+        //this makes the destination edit text not editable to ensure the google search bar will come up
+        destination.setKeyListener(null);
+        destination.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent i = new PlaceAutocomplete.
+                            IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
+                    startActivityForResult(i, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
 
 
@@ -109,6 +122,8 @@ public class AddTripFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(getActivity(), data);
                 Log.i(TAG, "Place: " + place.getName());
+                destination.setText(place.getName());
+
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(getActivity(), data);
                 // TODO: Handle the error.
