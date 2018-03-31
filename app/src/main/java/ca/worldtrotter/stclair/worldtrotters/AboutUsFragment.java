@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +73,30 @@ public class AboutUsFragment extends Fragment {
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    /**
+     *
+     * @author Said Elshibiny
+     * Creating the CustomPagerAdapter for the ViewPager
+     */
+
+    public class CustomPagerAdapter extends FragmentPagerAdapter{
+
+        public CustomPagerAdapter(FragmentManager fm){
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            //Return 5 Pages
+            return 5;
         }
     }
 
