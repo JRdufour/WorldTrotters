@@ -4,9 +4,33 @@
     android:layout_height="match_parent"
     tools:context="ca.worldtrotter.stclair.worldtrotters.AddTripFragment">
 
-    <fragment
-        android:id="@+id/place_autocomplete_widget"
-        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:text="TextView" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_row="1">
+
+        <SearchView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <fragment
+            android:id="@+id/place_autocomplete_widget"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+    </android.support.v7.widget.CardView>
 </GridLayout>
