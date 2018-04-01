@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.rd.PageIndicatorView;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,6 +81,8 @@ public class AboutUsFragment extends Fragment {
         //Set the adapter to the viewpager
         viewPager.setAdapter(customPagerAdapter);
         //Link the pageIndicatorView
+        PageIndicatorView pageIndicatorView = (PageIndicatorView) view.findViewById(R.id.pageIndicatorView);
+        pageIndicatorView.setViewPager(viewPager);
 
 
 
