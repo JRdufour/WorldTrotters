@@ -1,12 +1,12 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,8 +18,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,  TripListFragment.OnFragmentInteractionListener,
-        AddTripFragment.OnFragmentInteractionListener{
+        implements NavigationView.OnNavigationItemSelectedListener,
+        TripListFragment.OnFragmentInteractionListener,
+        AddTripFragment.OnFragmentInteractionListener,
+        AboutUsFragment.OnFragmentInteractionListener,
+        NewInstanceFragment.OnFragmentInteractionListener{
+
     FragmentManager fm;
     public static FloatingActionButton fab;
 
@@ -30,7 +34,12 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fm = getFragmentManager();
+        fm = getSupportFragmentManager();
+
+        FragmentTransaction t = fm.beginTransaction();
+        t.replace(R.id.main_content, new AboutUsFragment());
+        t.addToBackStack(null);
+        t.commit();
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.hide();
@@ -84,10 +93,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        FragmentTransaction t = fm.beginTransaction();
+
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            t.replace(R.id.main_content, new AboutUsFragment());
+            t.addToBackStack(null);
+            t.commit();
         } else if (id == R.id.nav_gallery) {
-            FragmentTransaction t = fm.beginTransaction();
             t.replace(R.id.main_content, new TripListFragment());
             t.addToBackStack(null);
             t.commit();

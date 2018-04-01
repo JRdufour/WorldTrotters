@@ -1,6 +1,6 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
