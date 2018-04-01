@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +18,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -49,21 +53,18 @@ public class AddTripFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    int INTENT_REQUEST_CODE = 1;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    //this variable will track the current destination we are working with
-    int currentDestinationIndexPosition = 0;
-   
+
     //this will store the first destination as a place object
-    ArrayList<Place> placeArrayList;
-
-    ArrayList<EditText> editTextDestinationArray;
-
-    ArrayList<GridLayout> gridLayoutsArray;
+    ArrayList<Destination> destinationArrayList;
+    RecyclerView destinationRecylcer;
 
     public AddTripFragment() {
         // Required empty public constructor
@@ -105,65 +106,23 @@ public class AddTripFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_trip, container, false);
-        getActivity().setTitle("Create a new Trip");
+        getActivity().setTitle("Create A New Trip");
         //hide the fab button
         MainActivity.fab.hide();
         //Edit text for trip name
-        final EditText tripName = view.findViewById(R.id.trip_name_edit_text);
+        final EditText tripNameEditText = view.findViewById(R.id.trip_name_edit_text);
         //button for adding a new destination
         CardView addNewLocationButton = view.findViewById(R.id.add_another_location_button);
         //grab the button for adding a trip from the xml
         Button addTripButton = view.findViewById(R.id.create_trip_button);
-        placeArrayList = new ArrayList<>();
+        destinationArrayList = new ArrayList<>();
 
-        //make an array list of edit texts that the user can add a destination to
-        editTextDestinationArray = new ArrayList<>();
-        
-        editTextDestinationArray.add((EditText) view.findViewById(R.id.add_trip_destination_edit_text));
-        //grab the next destinations and hide them
-
-        editTextDestinationArray.add((EditText) view.findViewById(R.id.add_trip_destination_edit_text2));
-        editTextDestinationArray.add((EditText) view.findViewById(R.id.add_trip_destination_edit_text3));
-        editTextDestinationArray.add((EditText) view.findViewById(R.id.add_trip_destination_edit_text4));
-        editTextDestinationArray.add((EditText) view.findViewById(R.id.add_trip_destination_edit_text5));
-
-        gridLayoutsArray = new ArrayList<>();
-
-        gridLayoutsArray.add((GridLayout) view.findViewById(R.id.add_trip_grid_layout1));
-        gridLayoutsArray.add((GridLayout) view.findViewById(R.id.add_trip_grid_layout2));
-        gridLayoutsArray.add((GridLayout) view.findViewById(R.id.add_trip_grid_layout3));
-        gridLayoutsArray.add((GridLayout) view.findViewById(R.id.add_trip_grid_layout4));
-        gridLayoutsArray.add((GridLayout) view.findViewById(R.id.add_trip_grid_layout5));
-
-        for (int i = 1; i < editTextDestinationArray.size(); i++){
-            gridLayoutsArray.get(i).setVisibility(View.GONE);
-        }
-
-
-        //Set the on click listners for the intents
-        for(EditText editText: editTextDestinationArray){
-            editText.setKeyListener(null);
-            editText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        Intent i = new PlaceAutocomplete.
-                                IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
-                        startActivityForResult(i, currentDestinationIndexPosition);
-
-                    } catch (GooglePlayServicesRepairableException e) {
-                        e.printStackTrace();
-                    } catch (GooglePlayServicesNotAvailableException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-        }
-
-        //this makes the destination edit text not editable to ensure the google search bar will come up
-
-
+        //grab the recycler view
+        destinationRecylcer = view.findViewById(R.id.destination_recycler_view);
+        //set the adatper for the recycler view
+        DestinationRecyclerViewAdapter adapter = new DestinationRecyclerViewAdapter();
+        destinationRecylcer.setAdapter(adapter);
+        destinationRecylcer.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
 
 
         //the onClick listner for the add trip button - gets called when the user presses the button to add a new trip
@@ -171,15 +130,16 @@ public class AddTripFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //make sure all the fields have been populated, including the trips name and at least the first destination is filled out
-                if(tripName.getText().toString().trim().length() == 0 || editTextDestinationArray.get(0).getText().toString().trim().length() == 0){
+                if(tripNameEditText.getText().toString().trim().length() == 0 ){
 
                     //popup that says to populate fields
                     Snackbar.make(view, "Please make sure all fields are filled.", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 } else {
                     //handle creating a new Trip
+                    String tripName = tripNameEditText.getText().toString().trim();
 
-                    Trip newTrip = new Trip(tripName.getText().toString(), null, null, null);
+                    Trip newTrip = new Trip(tripName, null, null, null);
                     DatabaseHandler db = new DatabaseHandler(getActivity().getBaseContext());
                     db.addTrip(newTrip);
                     db.close();
@@ -192,31 +152,47 @@ public class AddTripFragment extends Fragment {
             }
         });
 
+
+
+
+
         //this button will check if the current destination has been filled in, and if it has, it will show the next destination edit text
         addNewLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //check if the current destination's edit text is filled - this is the only way I know how to do this
-                if (editTextDestinationArray.get(currentDestinationIndexPosition).getText().toString().trim().length() != 0){
-                    //we can show the next destination edit text
-                    currentDestinationIndexPosition ++;
-                    gridLayoutsArray.get(currentDestinationIndexPosition).setVisibility(View.VISIBLE);
+                //handel adding a new location
+                try {
+                    Intent i = new PlaceAutocomplete.
+                            IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
+                    startActivityForResult(i, INTENT_REQUEST_CODE);
+
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
                 }
+
             }
         });
 
         return view;
     }
 
+    /**
+     * This method gets called whenever the place autocomplete intent resolves, returning a place
+     * object. We then add a new destination with that place, allowing the user to specify a start and end time
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == currentDestinationIndexPosition) {
+        if (requestCode == INTENT_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(getActivity(), data);
                 Log.i(TAG, "Place: " + place.getName());
-                editTextDestinationArray.get(currentDestinationIndexPosition).setText(place.getName());
-                placeArrayList.add(place);
+
+                destinationArrayList.add(new Destination(place, null, null));
+                destinationRecylcer.getAdapter().notifyDataSetChanged();
+
 
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(getActivity(), data);
@@ -269,5 +245,45 @@ public class AddTripFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    /**
+     * This class is the custom adapter for the recycler view that holds the destinations the user is adding to the trip
+     */
+    public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.add_destination_item, parent, false);
+            final CustomViewHolder viewHolder = new CustomViewHolder(view);
+
+            return viewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            Destination current = destinationArrayList.get(position);
+            ((CustomViewHolder) holder).destinationName.setText(current.getPlace().getName());
+        }
+
+        @Override
+        public int getItemCount() {
+            return destinationArrayList.size();
+
+        }
+
+        class CustomViewHolder extends RecyclerView.ViewHolder {
+            protected EditText destinationName;
+            protected TextView startDateTime;
+            protected TextView endDateTime;
+
+            public CustomViewHolder(View view) {
+                super(view);
+
+                destinationName = (EditText) view.findViewById(R.id.add_trip_destination_edit_text);
+            }
+        }
+
+    }
 }
+
