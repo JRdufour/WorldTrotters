@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +55,7 @@ public class AddTripFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    int INTENT_REQUEST_CODE = 1;
+    int INTENT_REQUEST_CODE = 1000;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -122,7 +124,14 @@ public class AddTripFragment extends Fragment {
         //set the adatper for the recycler view
         DestinationRecyclerViewAdapter adapter = new DestinationRecyclerViewAdapter();
         destinationRecylcer.setAdapter(adapter);
-        destinationRecylcer.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
+        //make the linear layout manager
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity().getBaseContext()){
+            @Override
+            public boolean supportsPredictiveItemAnimations() {return true;}
+        };
+        destinationRecylcer.setLayoutManager(manager);
+        //set the item animator
+        destinationRecylcer.setItemAnimator(new DefaultItemAnimator());
 
 
         //the onClick listner for the add trip button - gets called when the user presses the button to add a new trip
@@ -187,6 +196,7 @@ public class AddTripFragment extends Fragment {
     /**
      * This method gets called whenever the place autocomplete intent resolves, returning a place
      * object. We then add a new destination with that place, allowing the user to specify a start and end time
+     * or, in the case the user is editing a destination, we want to change the name and place of the destination they are editing
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -196,8 +206,14 @@ public class AddTripFragment extends Fragment {
                 Place place = PlaceAutocomplete.getPlace(getActivity(), data);
                 Log.i(TAG, "Place: " + place.getName());
 
-                destinationArrayList.add(new Destination(place, null, null));
-                destinationRecylcer.getAdapter().notifyDataSetChanged();
+                if(requestCode == INTENT_REQUEST_CODE){
+                    //the intent was sent from the "add trip" button, add the destination as a new element in the array
+                    destinationArrayList.add(new Destination(place, null, null));
+                    destinationRecylcer.getAdapter().notifyItemInserted(destinationArrayList.size() -1);
+                }
+                // TODO: add the edit functionality here
+
+
 
 
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
@@ -276,10 +292,28 @@ public class AddTripFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     destinationArrayList.remove(position);
-                    notifyDataSetChanged();
+                    notifyItemRemoved(position);
                 }
             });
 
+            //add the intent to onClick for destinationName
+            //makes sure the user cant edit the text of the name themselves
+            ((CustomViewHolder)holder).destinationName.setInputType(InputType.TYPE_NULL);
+            ((CustomViewHolder)holder).destinationName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        Intent i = new PlaceAutocomplete.
+                                IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
+                        startActivityForResult(i, position);
+
+                    } catch (GooglePlayServicesRepairableException e) {
+                        e.printStackTrace();
+                    } catch (GooglePlayServicesNotAvailableException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
 
         @Override
