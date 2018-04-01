@@ -88,7 +88,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String CREATE_TABLE_TO_DO_ITEMS = "CREATE TABLE " + TABLE_TO_TO_ITEMS + " ( " +
             COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_PLACE_ID + " INTEGER REFERENCES " + TABLE_PLACES +
-            "( " + COLUMN_ID + "), " + COLUMN_NAME + " TEXT, " + COLUMN_DESCRIPTION + " TEXT";
+            "( " + COLUMN_ID + "), " + COLUMN_NAME + " TEXT, " + COLUMN_DESCRIPTION + " TEXT)";
 
     public DatabaseHandler(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

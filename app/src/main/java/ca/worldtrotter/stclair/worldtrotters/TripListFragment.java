@@ -102,10 +102,9 @@ public class TripListFragment extends Fragment {
 
         //make some sample data to use
         ArrayList<Trip> tripList = new ArrayList<>();
-        tripList.add(new Trip("Trip 1", "", "", ""));
-        tripList.add(new Trip("Trip 1", "", "", ""));
-        tripList.add(new Trip("Trip 1", "", "", ""));
-        tripList.add(new Trip("Trip 1", "", "", ""));
+        DatabaseHandler db = new DatabaseHandler(getActivity().getBaseContext());
+        tripList = db.getAllTrips();
+        db.close();
 
 
         //link the recycler view from XML
