@@ -78,6 +78,7 @@ public class AboutUsFragment extends Fragment {
         CustomPagerAdapter customPagerAdapter = new CustomPagerAdapter(getChildFragmentManager());
         //Set the adapter to the viewpager
         viewPager.setAdapter(customPagerAdapter);
+        //Link the pageIndicatorView
 
 
 

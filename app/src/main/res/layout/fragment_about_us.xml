@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="ca.worldtrotter.stclair.worldtrotters.AboutUsFragment">
 
@@ -11,6 +12,18 @@
         android:id="@+id/aboutViewPager"
         android:layout_width="wrap_content"
         android:layout_height="362dp"></android.support.v4.view.ViewPager>
+
+    <com.rd.PageIndicatorView
+        android:id="@+id/pageIndicatorView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        app:piv_animationType="scale"
+        app:piv_dynamicCount="true"
+        app:piv_interactiveAnimation="true"
+        app:piv_selectedColor="@color/colorAccent"
+        app:piv_unselectedColor="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/aboutDescription"
