@@ -26,6 +26,7 @@ import android.widget.ImageView;
 
 
 public class NewInstanceFragment extends Fragment {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -72,8 +73,10 @@ public class NewInstanceFragment extends Fragment {
          * Separating the view and using mParam1 to change the ImageView in the ViewPager
          */
 
+        //Separate the view
         View view = inflater.inflate(R.layout.fragment_new_instance, container, false);
 
+        //If mParam1 not empty then populate
         if(mParam1 != 0){
             ImageView image = (ImageView) view.findViewById(R.id.viewPagerImage);
             image.setImageResource(mParam1);

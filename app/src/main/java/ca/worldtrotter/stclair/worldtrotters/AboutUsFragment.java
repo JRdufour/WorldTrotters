@@ -36,8 +36,6 @@ public class AboutUsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private CustomPagerAdapter customPagerAdapter;
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -70,8 +68,11 @@ public class AboutUsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_about_us, container, false);
-        customPagerAdapter = new CustomPagerAdapter(getActivity().getSupportFragmentManager());
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.aboutViewPager);
+        //Import the ViewPager into the property viewPager
+        ViewPager viewPager = view.findViewById(R.id.aboutViewPager);
+        //Create a new custom adapter from the CustomPagerAdapter
+        CustomPagerAdapter customPagerAdapter = new CustomPagerAdapter(getChildFragmentManager());
+        //Set the adapter to the viewpager
         viewPager.setAdapter(customPagerAdapter);
 
 
@@ -91,14 +92,14 @@ public class AboutUsFragment extends Fragment {
      * Creating the CustomPagerAdapter for the ViewPager
      */
 
-    public class CustomPagerAdapter extends FragmentPagerAdapter{
+    public class CustomPagerAdapter extends FragmentPagerAdapter {
 
         public CustomPagerAdapter(FragmentManager fm){
             super(fm);
         }
 
         @Override
-        public Fragment getItem(int position) {
+        public android.support.v4.app.Fragment getItem(int position) {
             switch (position){
                 case 0:
                     return NewInstanceFragment.newInstance(R.drawable.ic_add_black_24dp);
