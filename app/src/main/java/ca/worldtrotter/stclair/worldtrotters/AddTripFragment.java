@@ -133,9 +133,14 @@ public class AddTripFragment extends Fragment {
                 if(tripNameEditText.getText().toString().trim().length() == 0 ){
 
                     //popup that says to populate fields
-                    Snackbar.make(view, "Please make sure all fields are filled.", Snackbar.LENGTH_LONG)
+                    Snackbar.make(view, "Please Name Your Trip.", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                } else {
+                } else if(destinationArrayList.size() == 0){
+                    Snackbar.make(view, "Please Add At Least One Destination", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+
+                else {
                     //handle creating a new Trip
                     String tripName = tripNameEditText.getText().toString().trim();
 
@@ -156,10 +161,11 @@ public class AddTripFragment extends Fragment {
 
 
 
-        //this button will check if the current destination has been filled in, and if it has, it will show the next destination edit text
+        //this button will check if the current destination has been filled in, and if it has, it will launch a new Place Autocomplete intent
         addNewLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //check if the current displayed location has been filled out?
                 //handel adding a new location
                 try {
                     Intent i = new PlaceAutocomplete.
@@ -261,26 +267,37 @@ public class AddTripFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
             Destination current = destinationArrayList.get(position);
             ((CustomViewHolder) holder).destinationName.setText(current.getPlace().getName());
+
+            //add the functionality to remove a destination from the trip
+            ((CustomViewHolder) holder).cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    destinationArrayList.remove(position);
+                    notifyDataSetChanged();
+                }
+            });
+
         }
 
         @Override
         public int getItemCount() {
             return destinationArrayList.size();
-
         }
 
         class CustomViewHolder extends RecyclerView.ViewHolder {
             protected EditText destinationName;
             protected TextView startDateTime;
             protected TextView endDateTime;
+            protected TextView cancelButton;
 
             public CustomViewHolder(View view) {
                 super(view);
 
                 destinationName = (EditText) view.findViewById(R.id.add_trip_destination_edit_text);
+                cancelButton = (TextView) view.findViewById(R.id.destination_cancel_button);
             }
         }
 
