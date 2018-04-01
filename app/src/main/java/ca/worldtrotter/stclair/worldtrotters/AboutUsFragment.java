@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 
 /**
@@ -31,6 +33,8 @@ public class AboutUsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    FragmentManager fm;
 
     public AboutUsFragment() {
         // Required empty public constructor
@@ -74,6 +78,22 @@ public class AboutUsFragment extends Fragment {
         CustomPagerAdapter customPagerAdapter = new CustomPagerAdapter(getChildFragmentManager());
         //Set the adapter to the viewpager
         viewPager.setAdapter(customPagerAdapter);
+
+
+
+        //Import the get started button in and set an onclick listener to go to the tripListFragment
+        fm = getActivity().getSupportFragmentManager();
+        Button getStarted = view.findViewById(R.id.getStartedButton);
+        getStarted.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction t = fm.beginTransaction();
+                t.replace(R.id.main_content, new TripListFragment());
+                t.addToBackStack(null);
+                t.commit();
+
+            }
+        });
 
 
         return view;

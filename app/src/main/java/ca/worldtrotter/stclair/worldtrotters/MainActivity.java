@@ -33,14 +33,13 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//
-//        if(savedInstanceState == null){
-//            FragmentTransaction transaction = fm.beginTransaction();
-//            transaction.replace(R.id.main_content, new AboutUsFragment());
-//            transaction.commit();
-//        }
 
         fm = getSupportFragmentManager();
+
+        FragmentTransaction t = fm.beginTransaction();
+        t.replace(R.id.main_content, new AboutUsFragment());
+        t.addToBackStack(null);
+        t.commit();
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.hide();
@@ -94,13 +93,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        FragmentTransaction t = fm.beginTransaction();
+
         if (id == R.id.nav_camera) {
-            FragmentTransaction t = fm.beginTransaction();
             t.replace(R.id.main_content, new AboutUsFragment());
             t.addToBackStack(null);
             t.commit();
         } else if (id == R.id.nav_gallery) {
-            FragmentTransaction t = fm.beginTransaction();
             t.replace(R.id.main_content, new TripListFragment());
             t.addToBackStack(null);
             t.commit();
