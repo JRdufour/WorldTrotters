@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.SearchView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -61,6 +62,8 @@ public class AddTripFragment extends Fragment {
     ArrayList<Place> placeArrayList;
 
     ArrayList<EditText> editTextDestinationArray;
+
+    ArrayList<GridLayout> gridLayoutsArray;
 
     public AddTripFragment() {
         // Required empty public constructor
@@ -124,8 +127,16 @@ public class AddTripFragment extends Fragment {
         editTextDestinationArray.add((EditText) view.findViewById(R.id.add_trip_destination_edit_text4));
         editTextDestinationArray.add((EditText) view.findViewById(R.id.add_trip_destination_edit_text5));
 
+        gridLayoutsArray = new ArrayList<>();
+
+        gridLayoutsArray.add((GridLayout) view.findViewById(R.id.add_trip_grid_layout1));
+        gridLayoutsArray.add((GridLayout) view.findViewById(R.id.add_trip_grid_layout2));
+        gridLayoutsArray.add((GridLayout) view.findViewById(R.id.add_trip_grid_layout3));
+        gridLayoutsArray.add((GridLayout) view.findViewById(R.id.add_trip_grid_layout4));
+        gridLayoutsArray.add((GridLayout) view.findViewById(R.id.add_trip_grid_layout5));
+
         for (int i = 1; i < editTextDestinationArray.size(); i++){
-            editTextDestinationArray.get(i).setVisibility(View.GONE);
+            gridLayoutsArray.get(i).setVisibility(View.GONE);
         }
 
 
@@ -186,7 +197,11 @@ public class AddTripFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //check if the current destination's edit text is filled - this is the only way I know how to do this
-                if (editTextDestinationArray.get(currentDestinationIndexPosition).getText().toString().trim().length() != 0)
+                if (editTextDestinationArray.get(currentDestinationIndexPosition).getText().toString().trim().length() != 0){
+                    //we can show the next destination edit text
+                    currentDestinationIndexPosition ++;
+                    gridLayoutsArray.get(currentDestinationIndexPosition).setVisibility(View.VISIBLE);
+                }
             }
         });
 

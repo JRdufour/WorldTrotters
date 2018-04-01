@@ -45,15 +45,18 @@
                 android:text="Trip Details" />
 
             <GridLayout
+                android:id="@+id/add_trip_grid_layout1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_row="1">
+                android:layout_row="1"
+                android:paddingTop="10dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_column="0"
                     android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
                     android:layout_row="1"
                     android:autofillHints="false"
                     android:padding="4dp"
@@ -62,12 +65,14 @@
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_row="1">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/add_trip_destination_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
                         android:hint="destination"
                         android:padding="5dp" />
                 </android.support.design.widget.TextInputLayout>
@@ -75,15 +80,18 @@
             </GridLayout>
 
             <GridLayout
+                android:id="@+id/add_trip_grid_layout2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_row="0">
+                android:layout_row="0"
+                android:paddingTop="10dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_column="0"
                     android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
                     android:layout_row="1"
                     android:autofillHints="false"
                     android:padding="4dp"
@@ -105,15 +113,18 @@
             </GridLayout>
 
             <GridLayout
+                android:id="@+id/add_trip_grid_layout3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_row="1">
+                android:layout_row="1"
+                android:paddingTop="10dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_column="0"
                     android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
                     android:layout_row="1"
                     android:autofillHints="false"
                     android:padding="4dp"
@@ -135,15 +146,18 @@
             </GridLayout>
 
             <GridLayout
+                android:id="@+id/add_trip_grid_layout4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_row="1">
+                android:layout_row="1"
+                android:paddingTop="10dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_column="0"
                     android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
                     android:layout_row="1"
                     android:autofillHints="false"
                     android:padding="4dp"
@@ -165,15 +179,18 @@
             </GridLayout>
 
             <GridLayout
+                android:id="@+id/add_trip_grid_layout5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_row="1">
+                android:layout_row="1"
+                android:paddingTop="10dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_column="0"
                     android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
                     android:layout_row="1"
                     android:autofillHints="false"
                     android:padding="4dp"
