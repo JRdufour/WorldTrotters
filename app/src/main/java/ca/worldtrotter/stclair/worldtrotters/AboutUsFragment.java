@@ -72,17 +72,26 @@ public class AboutUsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_about_us, container, false);
+
         //Import the ViewPager into the property viewPager
         ViewPager viewPager = view.findViewById(R.id.aboutViewPager);
+
         //Create a new custom adapter from the CustomPagerAdapter
         CustomPagerAdapter customPagerAdapter = new CustomPagerAdapter(getChildFragmentManager());
+
+        //add a pageTransformer
+        viewPager.setPageTransformer(true, new DepthPageTransformer());
+
         //Set the adapter to the viewpager
         viewPager.setAdapter(customPagerAdapter);
+
         //Link the pageIndicatorView
         PageIndicatorView pageIndicatorView = (PageIndicatorView) view.findViewById(R.id.pageIndicatorView);
         pageIndicatorView.setViewPager(viewPager);
+
 
 
 
@@ -145,6 +154,44 @@ public class AboutUsFragment extends Fragment {
         public int getCount() {
             //Return 5 Pages
             return 5;
+        }
+    }
+
+    //Create the DepthPageTransformer
+    public class DepthPageTransformer implements ViewPager.PageTransformer {
+        private static final float MIN_SCALE = 0.75f;
+
+        public void transformPage(View view, float position) {
+            int pageWidth = view.getWidth();
+
+            if (position < -1) { // [-Infinity,-1)
+                // This page is way off-screen to the left.
+                view.setAlpha(0);
+
+            } else if (position <= 0) { // [-1,0]
+                // Use the default slide transition when moving to the left page
+                view.setAlpha(1);
+                view.setTranslationX(0);
+                view.setScaleX(1);
+                view.setScaleY(1);
+
+            } else if (position <= 1) { // (0,1]
+                // Fade the page out.
+                view.setAlpha(1 - position);
+
+                // Counteract the default slide transition
+                view.setTranslationX(pageWidth * -position);
+
+                // Scale the page down (between MIN_SCALE and 1)
+                float scaleFactor = MIN_SCALE
+                        + (1 - MIN_SCALE) * (1 - Math.abs(position));
+                view.setScaleX(scaleFactor);
+                view.setScaleY(scaleFactor);
+
+            } else { // (1,+Infinity]
+                // This page is way off-screen to the right.
+                view.setAlpha(0);
+            }
         }
     }
 
