@@ -36,6 +36,9 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import java.io.Console;
 import java.util.ArrayList;
 
+import jp.wasabeef.recyclerview.animators.ScaleInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
+
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
@@ -131,7 +134,7 @@ public class AddTripFragment extends Fragment {
         };
         destinationRecylcer.setLayoutManager(manager);
         //set the item animator
-        destinationRecylcer.setItemAnimator(new DefaultItemAnimator());
+        destinationRecylcer.setItemAnimator(new SlideInLeftAnimator());
 
 
         //the onClick listner for the add trip button - gets called when the user presses the button to add a new trip
