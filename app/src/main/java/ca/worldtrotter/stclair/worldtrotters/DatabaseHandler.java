@@ -301,6 +301,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[]{String.valueOf(id)});
         db.close();
     }
+    public void deleteAllTrips(){
+        String query = "DELETE FROM " + TABLE_TRIPS;
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.close();
+    }
 
     public void deletePlace(int id){
         SQLiteDatabase db = this.getWritableDatabase();

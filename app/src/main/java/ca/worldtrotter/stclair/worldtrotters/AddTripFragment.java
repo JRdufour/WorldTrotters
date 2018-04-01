@@ -142,13 +142,13 @@ public class AddTripFragment extends Fragment {
                     Trip newTrip = new Trip(tripName, null, null, null);
                     DatabaseHandler db = new DatabaseHandler(getActivity().getBaseContext());
                     db.addTrip(newTrip);
+                    //db.deleteAllTrips();
                     db.close();
+                    //tell the user that the trip was made
+                    Snackbar.make(view, "Trip Added!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     //bring the user back to the trips page
                     getFragmentManager().popBackStack();
                 }
-
-
-
             }
         });
 
