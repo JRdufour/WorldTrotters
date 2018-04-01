@@ -6,10 +6,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+
+import com.rd.PageIndicatorView;
 
 
 /**
@@ -31,6 +36,8 @@ public class AboutUsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    FragmentManager fm;
 
     public AboutUsFragment() {
         // Required empty public constructor
@@ -66,14 +73,42 @@ public class AboutUsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_about_us, container, false);
+
         //Import the ViewPager into the property viewPager
         ViewPager viewPager = view.findViewById(R.id.aboutViewPager);
+
         //Create a new custom adapter from the CustomPagerAdapter
         CustomPagerAdapter customPagerAdapter = new CustomPagerAdapter(getChildFragmentManager());
+
+        //add a pageTransformer
+        viewPager.setPageTransformer(true, new DepthPageTransformer());
+
         //Set the adapter to the viewpager
         viewPager.setAdapter(customPagerAdapter);
+
+        //Link the pageIndicatorView
+        PageIndicatorView pageIndicatorView = (PageIndicatorView) view.findViewById(R.id.pageIndicatorView);
+        pageIndicatorView.setViewPager(viewPager);
+
+
+
+
+        //Import the get started button in and set an onclick listener to go to the tripListFragment
+        fm = getActivity().getSupportFragmentManager();
+        Button getStarted = view.findViewById(R.id.getStartedButton);
+        getStarted.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction t = fm.beginTransaction();
+                t.replace(R.id.main_content, new TripListFragment());
+                t.addToBackStack(null);
+                t.commit();
+
+            }
+        });
 
 
         return view;
@@ -102,17 +137,17 @@ public class AboutUsFragment extends Fragment {
         public android.support.v4.app.Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return NewInstanceFragment.newInstance(R.drawable.ic_add_black_24dp);
+                    return NewInstanceFragment.newInstance(R.drawable.island);
                 case 1:
-                    return NewInstanceFragment.newInstance(R.drawable.ic_menu_send);
+                    return NewInstanceFragment.newInstance(R.drawable.sea);
                 case 2:
-                    return NewInstanceFragment.newInstance(R.drawable.ic_menu_camera);
+                    return NewInstanceFragment.newInstance(R.drawable.lake);
                 case 3:
-                    return NewInstanceFragment.newInstance(R.drawable.ic_menu_manage);
+                    return NewInstanceFragment.newInstance(R.drawable.river);
                 case 4:
-                    return NewInstanceFragment.newInstance(R.drawable.ic_menu_share);
+                    return NewInstanceFragment.newInstance(R.drawable.desert);
                 default:
-                    return NewInstanceFragment.newInstance(R.drawable.ic_menu_gallery);
+                    return NewInstanceFragment.newInstance(R.drawable.zion);
             }
         }
 
@@ -120,6 +155,44 @@ public class AboutUsFragment extends Fragment {
         public int getCount() {
             //Return 5 Pages
             return 5;
+        }
+    }
+
+    //Create the DepthPageTransformer
+    public class DepthPageTransformer implements ViewPager.PageTransformer {
+        private static final float MIN_SCALE = 0.75f;
+
+        public void transformPage(View view, float position) {
+            int pageWidth = view.getWidth();
+
+            if (position < -1) { // [-Infinity,-1)
+                // This page is way off-screen to the left.
+                view.setAlpha(0);
+
+            } else if (position <= 0) { // [-1,0]
+                // Use the default slide transition when moving to the left page
+                view.setAlpha(1);
+                view.setTranslationX(0);
+                view.setScaleX(1);
+                view.setScaleY(1);
+
+            } else if (position <= 1) { // (0,1]
+                // Fade the page out.
+                view.setAlpha(1 - position);
+
+                // Counteract the default slide transition
+                view.setTranslationX(pageWidth * -position);
+
+                // Scale the page down (between MIN_SCALE and 1)
+                float scaleFactor = MIN_SCALE
+                        + (1 - MIN_SCALE) * (1 - Math.abs(position));
+                view.setScaleX(scaleFactor);
+                view.setScaleY(scaleFactor);
+
+            } else { // (1,+Infinity]
+                // This page is way off-screen to the right.
+                view.setAlpha(0);
+            }
         }
     }
 

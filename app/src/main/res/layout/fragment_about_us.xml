@@ -1,16 +1,50 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context="ca.worldtrotter.stclair.worldtrotters.AboutUsFragment">
 
     <!-- Creating the ViewPager and adding the necessary views -->
 
     <android.support.v4.view.ViewPager
         android:id="@+id/aboutViewPager"
+        android:layout_width="wrap_content"
+        android:layout_height="362dp"></android.support.v4.view.ViewPager>
+
+    <!--adding a pageIndicatorView-->
+
+    <com.rd.PageIndicatorView
+        android:id="@+id/pageIndicatorView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        app:piv_animationType="scale"
+        app:piv_dynamicCount="true"
+        app:piv_interactiveAnimation="true"
+        app:piv_selectedColor="@color/colorAccent"
+        app:piv_unselectedColor="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/aboutDescription"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+        android:layout_height="100dp"
+        android:layout_gravity="bottom|center_vertical"
+        android:fontFamily="monospace"
+        android:text="@string/aboutDescription"
+        android:textAlignment="center"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/getStartedButton"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_gravity="bottom|center_vertical"
+        android:fontFamily="monospace"
+        android:text="Get Started" />
 
 
-
-</FrameLayout>
+</LinearLayout>
