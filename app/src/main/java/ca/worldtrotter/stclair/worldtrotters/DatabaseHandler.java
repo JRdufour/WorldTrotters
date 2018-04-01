@@ -30,7 +30,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /**
      * Keep track of the database version
      */
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     /**
      * Create the name of the database
@@ -42,7 +42,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      */
 
     public static final String TABLE_TRIPS = "trips";
-    public static final String TABLE_PLACES = "places";
+    public static final String TABLE_DESTINATIONS = "destinations";
     public static final String TABLE_TO_TO_ITEMS = "to_do_items";
     /**
      * Create the names of all the table fields
@@ -57,9 +57,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //fields for places table
     public static final String COLUMN_TRIP_ID = "trip_id";
     public static final String COLUMN_PLACE_ID = "place_id";
-    public static final String COLUMN_LATITUDE = "latitude";
-    public static final String COLUMN_LONGITUDE = "longitude";
-    public static final String COLUMN_GEOTAG = "geotag";
+    public static final String COLUMN_START_DATE_TIME = "startTime";
+    public static final String COLUMN_END_DATE_TIME = "endTime";
+
 
     //fields for toDoitem table
     public static final String COLUMN_DESCRIPTION = "description";
@@ -78,17 +78,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             COLUMN_START_DATE + " TEXT )";
 
     //create statement for places table
-    public static final String CREATE_TABLE_PLACES = "CREATE TABLE " + TABLE_PLACES + " (" +
-            COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_TRIP_ID + " INTEGER REFERENCES " +
-            TABLE_TRIPS + "(" + COLUMN_ID + "), " + COLUMN_PLACE_ID + " TEXT, " + COLUMN_NAME +
-            " TEXT, " + COLUMN_IMAGE + " TEXT, " + COLUMN_LATITUDE + " TEXT, " + COLUMN_LONGITUDE
-            + " TEXT, " + COLUMN_GEOTAG + " TEXT)";
+    public static final String CREATE_TABLE_PLACES = "CREATE TABLE " + TABLE_DESTINATIONS + " (" +
+            COLUMN_ID + " INTEGER PRIMARY KEY, " +
+            COLUMN_PLACE_ID + " TEXT, " +
+            COLUMN_START_DATE_TIME + " TEXT, " +
+            COLUMN_END_DATE_TIME + " TEXT, " +
+            COLUMN_TRIP_ID + " INTEGER REFERENCES " + TABLE_TRIPS + "(" + COLUMN_ID + ")," +
+            COLUMN_NAME + " TEXT )";
 
     //create statement for toDoItem table
 
     public static final String CREATE_TABLE_TO_DO_ITEMS = "CREATE TABLE " + TABLE_TO_TO_ITEMS + " ( " +
-            COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_PLACE_ID + " INTEGER REFERENCES " + TABLE_PLACES +
-            "( " + COLUMN_ID + "), " + COLUMN_NAME + " TEXT, " + COLUMN_DESCRIPTION + " TEXT";
+            COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_PLACE_ID + " INTEGER REFERENCES " + TABLE_DESTINATIONS +
+            "( " + COLUMN_ID + "), " + COLUMN_NAME + " TEXT, " + COLUMN_DESCRIPTION + " TEXT)";
 
     public DatabaseHandler(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -105,7 +107,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TRIPS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PLACES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DESTINATIONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TO_TO_ITEMS);
     }
 
@@ -115,30 +117,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      */
 
     //CREATE
-    public void addTrip(Trip trip){
+    public int addTrip(Trip trip){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, trip.getName());
         values.put(COLUMN_DATE_CREATED, trip.getDateCreated());
         values.put(COLUMN_IMAGE, trip.getImageURL());
         values.put(COLUMN_START_DATE, trip.getStartDate());
-        db.insert(TABLE_TRIPS, null, values);
+        int id = (int) db.insert(TABLE_TRIPS, null, values);
+
         db.close();
+
+        return id;
     }
 
-    public void addPlace(Place place){
+    public void addDestination(Destination destination){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(COLUMN_TRIP_ID, place.getTripId());
-        values.put(COLUMN_PLACE_ID, place.getPlaceId());
-        values.put(COLUMN_NAME, place.getName());
-        values.put(COLUMN_IMAGE, place.getImageURL());
-        values.put(COLUMN_LATITUDE, place.getLatitude());
-        values.put(COLUMN_LONGITUDE, place.getLongitude());
-        values.put(COLUMN_GEOTAG, place.getGeoTag());
 
-        db.insert(TABLE_PLACES, null, values);
+        values.put(COLUMN_PLACE_ID, destination.getPlaceId());
+        values.put(COLUMN_START_DATE_TIME, destination.getStartDateTime());
+        values.put(COLUMN_END_DATE_TIME, destination.getEndDateTime());
+        values.put(COLUMN_TRIP_ID, destination.getTripId());
+        values.put(COLUMN_NAME, destination.getName());
+
+        db.insert(TABLE_DESTINATIONS, null, values);
         db.close();
     }
 
@@ -196,52 +200,49 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public Place getPlace(int id){
+    public Destination getDestination(int id){
         SQLiteDatabase db = this.getReadableDatabase();
-        Place place = null;
+        Destination place = null;
 
-        Cursor c = db.query(TABLE_PLACES,
-                new String[]{COLUMN_ID, COLUMN_TRIP_ID, COLUMN_PLACE_ID, COLUMN_NAME,
-                COLUMN_IMAGE, COLUMN_LATITUDE, COLUMN_LONGITUDE, COLUMN_GEOTAG},
+        Cursor c = db.query(TABLE_DESTINATIONS,
+                new String[]{COLUMN_ID, COLUMN_PLACE_ID, COLUMN_START_DATE_TIME, COLUMN_END_DATE_TIME,
+                COLUMN_TRIP_ID, COLUMN_NAME},
                 COLUMN_ID + "=?", new String[]{String.valueOf(id)},
                 null, null, null, null);
 
         if (c != null){
             c.moveToFirst();
-            place = new Place(Integer.parseInt(c.getString(0)),
-                    Integer.parseInt(c.getString(1)),
+            place = new Destination(Integer.parseInt(c.getString(0)),
+                    c.getString(1),
                     c.getString(2),
                     c.getString(3),
-                    c.getString(4),
-                    c.getString(5),
-                    c.getString(6),
-                    c.getString(7));
+                    Integer.parseInt(c.getString(4)),
+                    c.getString(5));
         }
         db.close();
        return place;
     }
 
-    //TODO getAllPlaces
-    //this method returns a list of places for a specified trip
-    public ArrayList<Place> getAllPlacesForTrip(int tripId){
-        ArrayList<Place> placeList = new ArrayList<>();
+    //TODO getAllDestinations
+    //this method returns a list of destinations for a specified trip
+    public ArrayList<Destination> getAllPlacesForTrip(int tripId){
+        ArrayList<Destination> placeList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.query(TABLE_PLACES,
-                new String[]{COLUMN_ID, COLUMN_TRIP_ID, COLUMN_PLACE_ID, COLUMN_NAME,
-                        COLUMN_IMAGE, COLUMN_LATITUDE, COLUMN_LONGITUDE, COLUMN_GEOTAG},
-                COLUMN_TRIP_ID + "=?", new String[]{String.valueOf(tripId)},
+        Cursor c = db.query(TABLE_DESTINATIONS,
+                new String[]{COLUMN_ID, COLUMN_PLACE_ID, COLUMN_START_DATE_TIME, COLUMN_END_DATE_TIME,
+                        COLUMN_TRIP_ID, COLUMN_NAME},
+                COLUMN_ID + "=?", new String[]{String.valueOf(tripId)},
                 null, null, null, null);
+
         if(c.moveToFirst()){
             do{
-                placeList.add(new Place(Integer.parseInt(c.getString(0)),
-                        Integer.parseInt(c.getString(1)),
+                placeList.add(new Destination(Integer.parseInt(c.getString(0)),
+                        c.getString(1),
                         c.getString(2),
                         c.getString(3),
-                        c.getString(4),
-                        c.getString(5),
-                        c.getString(6),
-                        c.getString(7)));
+                        Integer.parseInt(c.getString(4)),
+                        c.getString(5)));
             } while (c.moveToNext());
         }
         db.close();
@@ -301,10 +302,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[]{String.valueOf(id)});
         db.close();
     }
-
-    public void deletePlace(int id){
+    public void deleteAllTrips(){
+        String query = "DELETE FROM " + TABLE_TRIPS;
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_PLACES, COLUMN_ID + " = ? ",
+
+        db.close();
+    }
+
+    public void deleteDestination(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_DESTINATIONS, COLUMN_ID + " = ? ",
                 new String[]{String.valueOf(id)});
         db.close();
     }

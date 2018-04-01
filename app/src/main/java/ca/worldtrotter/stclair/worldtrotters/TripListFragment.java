@@ -4,17 +4,27 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.google.android.gms.location.places.Place;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+
 import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -82,19 +92,19 @@ public class TripListFragment extends Fragment {
         MainActivity.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.main_content, new AddTripFragment());
-                ft.addToBackStack(null);
-                ft.commit();
+                //fragment transaction new AddTripFragment
+                FragmentTransaction transaction = fm.beginTransaction();
+                transaction.replace(R.id.main_content, new AddTripFragment());
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 
         //make some sample data to use
         ArrayList<Trip> tripList = new ArrayList<>();
-        tripList.add(new Trip("Trip 1", "", "", ""));
-        tripList.add(new Trip("Trip 1", "", "", ""));
-        tripList.add(new Trip("Trip 1", "", "", ""));
-        tripList.add(new Trip("Trip 1", "", "", ""));
+        DatabaseHandler db = new DatabaseHandler(getActivity().getBaseContext());
+        tripList = db.getAllTrips();
+        db.close();
 
 
         //link the recycler view from XML
@@ -115,6 +125,7 @@ public class TripListFragment extends Fragment {
 
         return view;
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -154,4 +165,8 @@ public class TripListFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }
+
+
+
