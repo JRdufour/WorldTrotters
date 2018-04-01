@@ -8,22 +8,30 @@ import com.google.android.gms.location.places.Place;
 
 public class Destination {
     int id;
-    Place place;
-    String startDateTime;
-    String endDateTime;
+    private String placeId;
+    private String startDateTime;
+    private String endDateTime;
+    private int tripId;
 
-    public Destination(Place place, String startDateTime, String endDateTime) {
-        this.place = place;
+    private String name;
+
+    public Destination(String placeId, String startDateTime, String endDateTime, int tripId, String name) {
+        this.placeId = placeId;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
+        this.tripId = tripId;
+        this.name = name;
     }
 
-    public Destination(int id, Place place, String startDateTime, String endDateTime) {
+    public Destination(int id, String placeId, String startDateTime, String endDateTime, int tripId, String name) {
         this.id = id;
-        this.place = place;
+        this.placeId = placeId;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
+        this.tripId = tripId;
+        this.name = name;
     }
+
     public Destination(){
 
     }
@@ -36,13 +44,6 @@ public class Destination {
         this.id = id;
     }
 
-    public Place getPlace() {
-        return place;
-    }
-
-    public void setPlace(Place place) {
-        this.place = place;
-    }
 
     public String getStartDateTime() {
         return startDateTime;
@@ -59,4 +60,30 @@ public class Destination {
     public void setEndDateTime(String endDateTime) {
         this.endDateTime = endDateTime;
     }
+
+    public int getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(int tripId) {
+        this.tripId = tripId;
+    }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
 }

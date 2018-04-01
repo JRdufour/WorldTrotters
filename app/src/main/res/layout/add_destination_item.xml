@@ -103,6 +103,7 @@
                 android:layout_row="2">
 
                 <android.support.design.widget.TextInputEditText
+                    android:id="@+id/add_trip_start_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Start Date" />
@@ -116,6 +117,7 @@
                 android:layout_row="3">
 
                 <android.support.design.widget.TextInputEditText
+                    android:id="@+id/add_trip_end_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="End Date" />

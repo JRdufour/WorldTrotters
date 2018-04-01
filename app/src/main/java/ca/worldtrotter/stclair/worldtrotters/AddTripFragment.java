@@ -156,10 +156,14 @@ public class AddTripFragment extends Fragment {
                     //handle creating a new Trip
                     String tripName = tripNameEditText.getText().toString().trim();
 
-                    Trip newTrip = new Trip(tripName, null, null, null);
+                    Trip newTrip = new Trip(tripName, null, null, destinationArrayList.get(0).getStartDateTime());
                     DatabaseHandler db = new DatabaseHandler(getActivity().getBaseContext());
-                    db.addTrip(newTrip);
+                    int id = db.addTrip(newTrip);
                     //db.deleteAllTrips();
+                    for (Destination dest: destinationArrayList) {
+                        dest.setTripId(id);
+                        db.addDestination(dest);
+                    }
                     db.close();
                     //tell the user that the trip was made
                     Snackbar.make(view, "Trip Added!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
@@ -211,7 +215,7 @@ public class AddTripFragment extends Fragment {
 
                 if(requestCode == INTENT_REQUEST_CODE){
                     //the intent was sent from the "add trip" button, add the destination as a new element in the array
-                    destinationArrayList.add(new Destination(place, null, null));
+                    destinationArrayList.add(new Destination(place.getId(), null, null, 0, place.getName().toString()));
                     destinationRecylcer.getAdapter().notifyItemInserted(destinationArrayList.size() -1);
                 }
                 // TODO: add the edit functionality here
@@ -286,9 +290,9 @@ public class AddTripFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-            Destination current = destinationArrayList.get(position);
-            ((CustomViewHolder) holder).destinationName.setText(current.getPlace().getName());
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+            final Destination current = destinationArrayList.get(position);
+            ((CustomViewHolder) holder).destinationName.setText(current.getName());
 
             //add the functionality to remove a destination from the trip
             ((CustomViewHolder) holder).cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -317,6 +321,36 @@ public class AddTripFragment extends Fragment {
                     }
                 }
             });
+
+            //handel the user adding start times and end times for their trip
+            ((CustomViewHolder) holder).startDateTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasFocus) {
+                    if(!hasFocus){
+                        //the user has left focus of this text field
+                        String startDate = ((CustomViewHolder)holder).startDateTime.getText().toString().trim();
+                        if( startDate != null){
+                            //there is an input
+                            current.setStartDateTime(startDate);
+                        }
+                    }
+                }
+            });
+
+
+            ((CustomViewHolder) holder).endDateTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasFocus) {
+                    if(!hasFocus){
+                        //the user has left focus of this text field
+                        String startDate = ((CustomViewHolder)holder).endDateTime.getText().toString().trim();
+                        if( startDate != null){
+                            //there is an input
+                            current.setEndDateTime(startDate);
+                        }
+                    }
+                }
+            });
         }
 
         @Override
@@ -335,6 +369,8 @@ public class AddTripFragment extends Fragment {
 
                 destinationName = (EditText) view.findViewById(R.id.add_trip_destination_edit_text);
                 cancelButton = (TextView) view.findViewById(R.id.destination_cancel_button);
+                startDateTime = (EditText) view.findViewById(R.id.add_trip_start_date);
+                endDateTime = (EditText) view.findViewById(R.id.add_trip_end_date);
             }
         }
 
