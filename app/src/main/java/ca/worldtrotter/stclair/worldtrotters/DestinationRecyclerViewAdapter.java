@@ -110,23 +110,25 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
         });
 
         //set up the list view that is going to hold the toDoItems
-        ArrayList<String> toDoItemValues = new ArrayList<>();
+        final ArrayList<String> toDoItemValues = new ArrayList<>();
         toDoItemValues.add("Eat Burger");
         toDoItemValues.add("See Sights");
         toDoItemValues.add("Get a tattoo");
 
         //create a new array adapter for the list items
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_list_item_1, android.R.id.text1, toDoItemValues);
 
         //set the adapter to the listview
-        
+        ((CustomViewHolder)holder).toDoItemListView.setAdapter(adapter);
 
 
         ((CustomViewHolder)holder).addAgendaItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //handel the action for the add agenda item button
+                toDoItemValues.add("Test");
+                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -143,7 +145,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
         protected TextView endDateTime;
         protected TextView cancelButton;
         protected ImageView addAgendaItemButton;
-        protected ListView toDoItemListView;
+        protected MyListView toDoItemListView;
 
         public CustomViewHolder(View view) {
             super(view);
