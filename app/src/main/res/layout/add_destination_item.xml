@@ -196,6 +196,7 @@
                 app:srcCompat="@drawable/ic_add_circle_black_24dp" />
 
             <ListView
+                android:id="@+id/to_do_item_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_column="0"

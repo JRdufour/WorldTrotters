@@ -7,30 +7,27 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.support.annotation.NonNull;
+
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridLayout;
-import android.widget.ImageView;
-import android.widget.SearchView;
-import android.widget.TextView;
+
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.Places;
+
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 
@@ -141,7 +138,7 @@ public class AddTripFragment extends Fragment {
         };
         destinationRecylcer.setLayoutManager(manager);
         //set the item animator
-        destinationRecylcer.setItemAnimator(new DefaultItemAnimator());
+        destinationRecylcer.setItemAnimator(new SlideInLeftAnimator());
         destinationRecylcer.getItemAnimator().setAddDuration(1000);
 
 
@@ -228,7 +225,7 @@ public class AddTripFragment extends Fragment {
                 if(requestCode == INTENT_REQUEST_CODE){
                     //the intent was sent from the "add trip" button, add the destination as a new element in the array
                     destinationArrayList.add(new Destination(place.getId(), null, null, 0, place.getName().toString()));
-                    destinationRecylcer.getAdapter().notifyItemInserted(destinationArrayList.size());
+                    adapter.notifyItemInserted(destinationArrayList.size());
                 }
                 // TODO: add the edit functionality here
 

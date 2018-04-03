@@ -2,6 +2,8 @@ package ca.worldtrotter.stclair.worldtrotters;
 
 import com.google.android.gms.location.places.Place;
 
+import java.util.ArrayList;
+
 /**
  * Created by Dufour on 2018-04-01.
  */
@@ -12,8 +14,11 @@ public class Destination {
     private String startDateTime;
     private String endDateTime;
     private int tripId;
-
     private String name;
+
+
+
+    private ArrayList<ToDoItem> toDoItems;
 
     public Destination(String placeId, String startDateTime, String endDateTime, int tripId, String name) {
         this.placeId = placeId;
@@ -21,6 +26,8 @@ public class Destination {
         this.endDateTime = endDateTime;
         this.tripId = tripId;
         this.name = name;
+
+        this.toDoItems = new ArrayList<>();
     }
 
     public Destination(int id, String placeId, String startDateTime, String endDateTime, int tripId, String name) {
@@ -30,10 +37,20 @@ public class Destination {
         this.endDateTime = endDateTime;
         this.tripId = tripId;
         this.name = name;
+
+        this.toDoItems = new ArrayList<>();
     }
 
     public Destination(){
 
+    }
+
+    public ArrayList<ToDoItem> getToDoItems() {
+        return toDoItems;
+    }
+
+    public void setToDoItems(ArrayList<ToDoItem> toDoItems) {
+        this.toDoItems = toDoItems;
     }
 
     public int getId() {

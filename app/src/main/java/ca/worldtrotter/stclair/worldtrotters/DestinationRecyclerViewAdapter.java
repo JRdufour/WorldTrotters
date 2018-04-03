@@ -1,18 +1,18 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 import java.util.ArrayList;
 
@@ -23,6 +23,8 @@ import java.util.ArrayList;
 public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
     ArrayList<Destination> destinationArrayList;
+
+    Context context;
 
     public ArrayList<Destination> getDestinationArrayList() {
         return destinationArrayList;
@@ -43,6 +45,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
                 .inflate(R.layout.add_destination_item, parent, false);
         final CustomViewHolder viewHolder = new CustomViewHolder(view);
 
+        context = parent.getContext();
         return viewHolder;
     }
 
@@ -106,6 +109,20 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
             }
         });
 
+        //set up the list view that is going to hold the toDoItems
+        ArrayList<String> toDoItemValues = new ArrayList<>();
+        toDoItemValues.add("Eat Burger");
+        toDoItemValues.add("See Sights");
+        toDoItemValues.add("Get a tattoo");
+
+        //create a new array adapter for the list items
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
+                android.R.layout.simple_list_item_1, android.R.id.text1, toDoItemValues);
+
+        //set the adapter to the listview
+        
+
+
         ((CustomViewHolder)holder).addAgendaItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,6 +143,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
         protected TextView endDateTime;
         protected TextView cancelButton;
         protected ImageView addAgendaItemButton;
+        protected ListView toDoItemListView;
 
         public CustomViewHolder(View view) {
             super(view);
@@ -135,6 +153,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
             startDateTime = (EditText) view.findViewById(R.id.add_trip_start_date);
             endDateTime = (EditText) view.findViewById(R.id.add_trip_end_date);
             addAgendaItemButton = (ImageView) view.findViewById(R.id.add_agenda_item_button);
+            toDoItemListView = view.findViewById(R.id.to_do_item_list_view);
         }
     }
 
