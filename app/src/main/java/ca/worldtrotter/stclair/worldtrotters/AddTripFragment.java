@@ -1,5 +1,6 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -59,6 +60,8 @@ public class AddTripFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     int INTENT_REQUEST_CODE = 1000;
+    private static Activity activity;
+    private DestinationRecyclerViewAdapter adapter;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -111,11 +114,14 @@ public class AddTripFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_trip, container, false);
-        getActivity().setTitle("Create A New Trip");
+        activity = getActivity();
+        activity.setTitle("Create A New Trip");
         //hide the fab button
         MainActivity.fab.hide();
         //Edit text for trip name
         final EditText tripNameEditText = view.findViewById(R.id.trip_name_edit_text);
+        //give the trip name edit text focus
+        tripNameEditText.requestFocus();
         //button for adding a new destination
         CardView addNewLocationButton = view.findViewById(R.id.add_another_location_button);
         //grab the button for adding a trip from the xml
@@ -124,8 +130,9 @@ public class AddTripFragment extends Fragment {
 
         //grab the recycler view
         destinationRecylcer = view.findViewById(R.id.destination_recycler_view);
+        //destinationRecylcer.setHasFixedSize(true);
         //set the adatper for the recycler view
-        DestinationRecyclerViewAdapter adapter = new DestinationRecyclerViewAdapter();
+        adapter = new DestinationRecyclerViewAdapter(destinationArrayList);
         destinationRecylcer.setAdapter(adapter);
         //make the linear layout manager
         LinearLayoutManager manager = new LinearLayoutManager(getActivity().getBaseContext()){
@@ -134,7 +141,8 @@ public class AddTripFragment extends Fragment {
         };
         destinationRecylcer.setLayoutManager(manager);
         //set the item animator
-        destinationRecylcer.setItemAnimator(new SlideInLeftAnimator());
+        destinationRecylcer.setItemAnimator(new DefaultItemAnimator());
+        destinationRecylcer.getItemAnimator().setAddDuration(1000);
 
 
         //the onClick listner for the add trip button - gets called when the user presses the button to add a new trip
@@ -154,6 +162,8 @@ public class AddTripFragment extends Fragment {
 
                 else {
                     //handle creating a new Trip
+
+                    destinationArrayList = adapter.getDestinationArrayList();
                     String tripName = tripNameEditText.getText().toString().trim();
 
                     Trip newTrip = new Trip(tripName, null, null, destinationArrayList.get(0).getStartDateTime());
@@ -185,7 +195,7 @@ public class AddTripFragment extends Fragment {
                 //handel adding a new location
                 try {
                     Intent i = new PlaceAutocomplete.
-                            IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
+                            IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(activity);
                     startActivityForResult(i, INTENT_REQUEST_CODE);
 
                 } catch (GooglePlayServicesRepairableException e) {
@@ -199,6 +209,8 @@ public class AddTripFragment extends Fragment {
 
         return view;
     }
+
+    //this method will be called when the user taps a destination's name to edit it
 
     /**
      * This method gets called whenever the place autocomplete intent resolves, returning a place
@@ -216,7 +228,7 @@ public class AddTripFragment extends Fragment {
                 if(requestCode == INTENT_REQUEST_CODE){
                     //the intent was sent from the "add trip" button, add the destination as a new element in the array
                     destinationArrayList.add(new Destination(place.getId(), null, null, 0, place.getName().toString()));
-                    destinationRecylcer.getAdapter().notifyItemInserted(destinationArrayList.size() -1);
+                    destinationRecylcer.getAdapter().notifyItemInserted(destinationArrayList.size());
                 }
                 // TODO: add the edit functionality here
 
@@ -277,103 +289,6 @@ public class AddTripFragment extends Fragment {
     /**
      * This class is the custom adapter for the recycler view that holds the destinations the user is adding to the trip
      */
-    public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.add_destination_item, parent, false);
-            final CustomViewHolder viewHolder = new CustomViewHolder(view);
-
-            return viewHolder;
-        }
-
-        @Override
-        public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-            final Destination current = destinationArrayList.get(position);
-            ((CustomViewHolder) holder).destinationName.setText(current.getName());
-
-            //add the functionality to remove a destination from the trip
-            ((CustomViewHolder) holder).cancelButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    destinationArrayList.remove(position);
-                    notifyItemRemoved(position);
-                }
-            });
-
-            //add the intent to onClick for destinationName
-            //makes sure the user cant edit the text of the name themselves
-            ((CustomViewHolder)holder).destinationName.setInputType(InputType.TYPE_NULL);
-            ((CustomViewHolder)holder).destinationName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        Intent i = new PlaceAutocomplete.
-                                IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
-                        startActivityForResult(i, position);
-
-                    } catch (GooglePlayServicesRepairableException e) {
-                        e.printStackTrace();
-                    } catch (GooglePlayServicesNotAvailableException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            //handel the user adding start times and end times for their trip
-            ((CustomViewHolder) holder).startDateTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean hasFocus) {
-                    if(!hasFocus){
-                        //the user has left focus of this text field
-                        String startDate = ((CustomViewHolder)holder).startDateTime.getText().toString().trim();
-                        if( startDate != null){
-                            //there is an input
-                            current.setStartDateTime(startDate);
-                        }
-                    }
-                }
-            });
-
-
-            ((CustomViewHolder) holder).endDateTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean hasFocus) {
-                    if(!hasFocus){
-                        //the user has left focus of this text field
-                        String startDate = ((CustomViewHolder)holder).endDateTime.getText().toString().trim();
-                        if( startDate != null){
-                            //there is an input
-                            current.setEndDateTime(startDate);
-                        }
-                    }
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return destinationArrayList.size();
-        }
-
-        class CustomViewHolder extends RecyclerView.ViewHolder {
-            protected EditText destinationName;
-            protected TextView startDateTime;
-            protected TextView endDateTime;
-            protected TextView cancelButton;
-
-            public CustomViewHolder(View view) {
-                super(view);
-
-                destinationName = (EditText) view.findViewById(R.id.add_trip_destination_edit_text);
-                cancelButton = (TextView) view.findViewById(R.id.destination_cancel_button);
-                startDateTime = (EditText) view.findViewById(R.id.add_trip_start_date);
-                endDateTime = (EditText) view.findViewById(R.id.add_trip_end_date);
-            }
-        }
-
-    }
 }
 
