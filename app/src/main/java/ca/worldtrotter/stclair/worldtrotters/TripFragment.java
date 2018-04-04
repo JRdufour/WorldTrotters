@@ -10,7 +10,6 @@ import android.os.Bundle;
 
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -31,10 +30,8 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 
-import java.io.Console;
 import java.util.ArrayList;
 
-import jp.wasabeef.recyclerview.animators.ScaleInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -45,24 +42,22 @@ import static android.content.ContentValues.TAG;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AddTripFragment.OnFragmentInteractionListener} interface
+ * {@link TripFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link AddTripFragment#newInstance} factory method to
+ * Use the {@link TripFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddTripFragment extends Fragment {
+public class TripFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     int INTENT_REQUEST_CODE = 1000;
     private static Activity activity;
     private DestinationRecyclerViewAdapter adapter;
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Integer mParam1;
 
     private OnFragmentInteractionListener mListener;
 
@@ -70,8 +65,9 @@ public class AddTripFragment extends Fragment {
     //this will store the first destination as a place object
     ArrayList<Destination> destinationArrayList;
     RecyclerView destinationRecylcer;
+    private Trip currentTrip;
 
-    public AddTripFragment() {
+    public TripFragment() {
         // Required empty public constructor
     }
 
@@ -80,15 +76,15 @@ public class AddTripFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddTripFragment.
+
+     * @return A new instance of fragment TripFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddTripFragment newInstance(String param1, String param2) {
-        AddTripFragment fragment = new AddTripFragment();
+    public static TripFragment newInstance(int param1) {
+        TripFragment fragment = new TripFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_PARAM1, param1);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -97,8 +93,7 @@ public class AddTripFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam1 = getArguments().getInt(ARG_PARAM1);
         }
     }
     //Using this method to hide the edit texts I am using for destination inputs. When the user fills out a destination, the next one in the array will appear
@@ -109,21 +104,36 @@ public class AddTripFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        DatabaseHandler db = new DatabaseHandler(getContext());
+        if(mParam1 != null) {
+            currentTrip = db.getTrip(mParam1);
+        }
+
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_trip, container, false);
         activity = getActivity();
-        activity.setTitle("Create A New Trip");
+        activity.setTitle("Your Trip");
         //hide the fab button
         MainActivity.fab.hide();
         //Edit text for trip name
         final EditText tripNameEditText = view.findViewById(R.id.trip_name_edit_text);
+        //set the Edit Text to uneditable
+
         //give the trip name edit text focus
-        tripNameEditText.requestFocus();
+        //tripNameEditText.requestFocus();
+        if(currentTrip != null) {
+            tripNameEditText.setText(currentTrip.getName());
+        }
+
+        /** This is all going to have to be take out and refactored **/
         //button for adding a new destination
-        CardView addNewLocationButton = view.findViewById(R.id.add_another_location_button);
+        //CardView addNewLocationButton = view.findViewById(R.id.add_another_location_button);
         //grab the button for adding a trip from the xml
-        Button addTripButton = view.findViewById(R.id.create_trip_button);
-        destinationArrayList = new ArrayList<>();
+        //Button addTripButton = view.findViewById(R.id.create_trip_button);
+
+
+        destinationArrayList = db.getAllPlacesForTrip(currentTrip.getTripID());
 
         //grab the recycler view
         destinationRecylcer = view.findViewById(R.id.destination_recycler_view);
@@ -142,6 +152,7 @@ public class AddTripFragment extends Fragment {
         destinationRecylcer.getItemAnimator().setAddDuration(1000);
 
 
+        /**
         //the onClick listner for the add trip button - gets called when the user presses the button to add a new trip
         addTripButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,6 +215,9 @@ public class AddTripFragment extends Fragment {
             }
         });
 
+         **/
+
+        db.close();
         return view;
     }
 

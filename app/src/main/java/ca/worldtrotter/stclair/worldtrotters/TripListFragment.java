@@ -4,27 +4,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.google.android.gms.location.places.Place;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-
 import java.util.ArrayList;
-
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
-import static android.content.ContentValues.TAG;
 
 
 /**
@@ -92,9 +82,9 @@ public class TripListFragment extends Fragment {
         MainActivity.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //fragment transaction new AddTripFragment
+                //fragment transaction new TripFragment
                 FragmentTransaction transaction = fm.beginTransaction();
-                transaction.replace(R.id.main_content, new AddTripFragment());
+                transaction.replace(R.id.main_content, new TripFragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -110,7 +100,7 @@ public class TripListFragment extends Fragment {
         //link the recycler view from XML
         RecyclerView recycler = view.findViewById(R.id.trips_recycler_view);
         //make a new custom adapter
-        TripRecyclerViewCustomAdapter adapter = new TripRecyclerViewCustomAdapter(tripList);
+        TripRecyclerViewCustomAdapter adapter = new TripRecyclerViewCustomAdapter(tripList, fm);
         //set the adapter
         recycler.setAdapter(adapter);
         //make a new linear layout manager
@@ -122,6 +112,7 @@ public class TripListFragment extends Fragment {
         recycler.setLayoutManager(manager);
         //set a new item animator
         recycler.setItemAnimator(new DefaultItemAnimator());
+
 
         return view;
     }

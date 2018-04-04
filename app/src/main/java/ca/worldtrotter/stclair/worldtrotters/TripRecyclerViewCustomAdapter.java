@@ -1,6 +1,9 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
+
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +21,12 @@ import ca.worldtrotter.stclair.worldtrotters.Trip;
 
 public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
     private ArrayList<Trip> tripList;
+    private FragmentManager fm;
     Context context;
 
-    public TripRecyclerViewCustomAdapter(ArrayList<Trip> tripList){
+    public TripRecyclerViewCustomAdapter(ArrayList<Trip> tripList, FragmentManager fm){
         this.tripList = tripList;
+        this.fm = fm;
     }
 
     @Override
@@ -30,9 +35,9 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycler_trip_item, parent, false);
 
+
         final CustomViewHolder viewHolder = new CustomViewHolder(view);
         //We can add any onClickListners we want to trigger on the view here
-
 
         context = parent.getContext();
         return viewHolder;
@@ -41,8 +46,18 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         //Set all the items in the customviewHolder
-        Trip currentTrip = tripList.get(position);
+        final Trip currentTrip = tripList.get(position);
         ((CustomViewHolder) holder).tripName.setText(currentTrip.getName());
+        ((CustomViewHolder)holder).image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
+                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID()));
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
     }
 
     @Override
