@@ -124,17 +124,18 @@ public class TripFragment extends Fragment {
         //tripNameEditText.requestFocus();
         if(currentTrip != null) {
             tripNameEditText.setText(currentTrip.getName());
+
+
+            /** This is all going to have to be take out and refactored **/
+            //button for adding a new destination
+            //CardView addNewLocationButton = view.findViewById(R.id.add_another_location_button);
+            //grab the button for adding a trip from the xml
+            //Button addTripButton = view.findViewById(R.id.create_trip_button);
+
+
+            destinationArrayList = db.getAllPlacesForTrip(currentTrip.getTripID());
+
         }
-
-        /** This is all going to have to be take out and refactored **/
-        //button for adding a new destination
-        //CardView addNewLocationButton = view.findViewById(R.id.add_another_location_button);
-        //grab the button for adding a trip from the xml
-        //Button addTripButton = view.findViewById(R.id.create_trip_button);
-
-
-        destinationArrayList = db.getAllPlacesForTrip(currentTrip.getTripID());
-
         //grab the recycler view
         destinationRecylcer = view.findViewById(R.id.destination_recycler_view);
         //destinationRecylcer.setHasFixedSize(true);
