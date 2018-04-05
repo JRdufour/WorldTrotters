@@ -20,7 +20,9 @@ public class MainActivity extends AppCompatActivity
         TripListFragment.OnFragmentInteractionListener,
         TripFragment.OnFragmentInteractionListener,
         AboutUsFragment.OnFragmentInteractionListener,
-        NewInstanceFragment.OnFragmentInteractionListener{
+        NewInstanceFragment.OnFragmentInteractionListener,
+        NameTripFragment.OnFragmentInteractionListener,
+        AddTripDateFragment.OnFragmentInteractionListener{
 
     FragmentManager fm;
     public static FloatingActionButton fab;

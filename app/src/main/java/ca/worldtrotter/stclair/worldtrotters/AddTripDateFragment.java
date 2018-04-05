@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 #2
  This is the second fragment that will ask the user to input when they would
  */
-public class AddTripDate extends Fragment {
+public class AddTripDateFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -25,7 +25,7 @@ public class AddTripDate extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public AddTripDate() {
+    public AddTripDateFragment() {
         // Required empty public constructor
     }
 
@@ -35,11 +35,11 @@ public class AddTripDate extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment AddTripDate.
+     * @return A new instance of fragment AddTripDateFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddTripDate newInstance(String param1, String param2) {
-        AddTripDate fragment = new AddTripDate();
+    public static AddTripDateFragment newInstance(String param1, String param2) {
+        AddTripDateFragment fragment = new AddTripDateFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
