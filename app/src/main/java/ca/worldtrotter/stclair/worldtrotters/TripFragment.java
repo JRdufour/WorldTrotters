@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 
 
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -17,12 +15,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 
 import com.google.android.gms.location.places.Place;
@@ -111,7 +106,7 @@ public class TripFragment extends Fragment {
 
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_add_trip, container, false);
+        View view = inflater.inflate(R.layout.fragment_trip, container, false);
         activity = getActivity();
         activity.setTitle("Your Trip");
         //hide the fab button
@@ -120,7 +115,7 @@ public class TripFragment extends Fragment {
         final EditText tripNameEditText = view.findViewById(R.id.trip_name_edit_text);
         //set the Edit Text to uneditable
 
-        //give the trip name edit text focus
+        destinationArrayList = new ArrayList<>();
         //tripNameEditText.requestFocus();
         if(currentTrip != null) {
             tripNameEditText.setText(currentTrip.getName());
@@ -224,39 +219,7 @@ public class TripFragment extends Fragment {
 
     //this method will be called when the user taps a destination's name to edit it
 
-    /**
-     * This method gets called whenever the place autocomplete intent resolves, returning a place
-     * object. We then add a new destination with that place, allowing the user to specify a start and end time
-     * or, in the case the user is editing a destination, we want to change the name and place of the destination they are editing
-     */
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == INTENT_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlaceAutocomplete.getPlace(getActivity(), data);
-                Log.i(TAG, "Place: " + place.getName());
-
-                if(requestCode == INTENT_REQUEST_CODE){
-                    //the intent was sent from the "add trip" button, add the destination as a new element in the array
-                    destinationArrayList.add(new Destination(place.getId(), null, null, 0, place.getName().toString()));
-                    adapter.notifyItemInserted(destinationArrayList.size());
-                }
-                // TODO: add the edit functionality here
-
-
-
-
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                Status status = PlaceAutocomplete.getStatus(getActivity(), data);
-                // TODO: Handle the error.
-                Log.i(TAG, status.getStatusMessage());
-
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
-            }
-        }
-    }
 
 
     // TODO: Rename method, update argument and hook method into UI event
