@@ -125,14 +125,12 @@ public class NameTripFragment extends Fragment {
 
 
                     //this adds all the destinations the user wants to go to on their trip to the database
-                for (Destination dest :
-                        destinations) {
+                for (Destination dest : destinations) {
                     dest.setTripId(currentTrip.getTripID());
                     db.addDestination(dest);
 
-
                 }
-
+                db.close();
 
 
 
@@ -182,7 +180,7 @@ public class NameTripFragment extends Fragment {
                     int id = db.addTrip(currentTrip);
                     currentTrip = db.getTrip(id);
                 }
-                destinationEditText.setText(place.getName().toString());
+                //destinationEditText.setText(place.getName().toString());
                 destinations.add(new Destination(place.getId(), null, null, currentTrip.getTripID(), place.getName().toString()));
                 adapter.notifyDataSetChanged();
 
