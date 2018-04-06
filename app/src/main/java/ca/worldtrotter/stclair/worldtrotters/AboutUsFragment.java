@@ -137,17 +137,17 @@ public class AboutUsFragment extends Fragment {
         public android.support.v4.app.Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return NewInstanceFragment.newInstance(R.drawable.island);
+                    return NewInstanceFragment.newInstance(R.drawable.island,"Philippines");
                 case 1:
-                    return NewInstanceFragment.newInstance(R.drawable.sea);
+                    return NewInstanceFragment.newInstance(R.drawable.sea, "Egypt");
                 case 2:
-                    return NewInstanceFragment.newInstance(R.drawable.lake);
+                    return NewInstanceFragment.newInstance(R.drawable.lake, "Ontario");
                 case 3:
-                    return NewInstanceFragment.newInstance(R.drawable.river);
+                    return NewInstanceFragment.newInstance(R.drawable.river, "Amazon");
                 case 4:
-                    return NewInstanceFragment.newInstance(R.drawable.desert);
+                    return NewInstanceFragment.newInstance(R.drawable.desert, "Nevada");
                 default:
-                    return NewInstanceFragment.newInstance(R.drawable.zion);
+                    return NewInstanceFragment.newInstance(R.drawable.zion, "Utah");
             }
         }
 
