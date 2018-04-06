@@ -1,32 +1,19 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link TripListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link TripListFragment#newInstance} factory method to
- * create an instance of this fragment.
+#2
+ This is the second fragment that will ask the user to input when they would
  */
-public class TripListFragment extends Fragment {
-    FragmentManager fm;
+public class AddTripDateFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -38,7 +25,7 @@ public class TripListFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public TripListFragment() {
+    public AddTripDateFragment() {
         // Required empty public constructor
     }
 
@@ -48,11 +35,11 @@ public class TripListFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment TripListFragment.
+     * @return A new instance of fragment AddTripDateFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TripListFragment newInstance(String param1, String param2) {
-        TripListFragment fragment = new TripListFragment();
+    public static AddTripDateFragment newInstance(String param1, String param2) {
+        AddTripDateFragment fragment = new AddTripDateFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -73,50 +60,8 @@ public class TripListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_trip_list, container, false);
-
-        fm = getFragmentManager();
-
-        //show the main fab button
-        MainActivity.fab.show();
-        MainActivity.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //fragment transaction new TripFragment
-                FragmentTransaction transaction = fm.beginTransaction();
-                transaction.replace(R.id.main_content, new NameTripFragment());
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        });
-
-        //make some sample data to use
-        ArrayList<Trip> tripList = new ArrayList<>();
-        DatabaseHandler db = new DatabaseHandler(getActivity().getBaseContext());
-        tripList = db.getAllTrips();
-        db.close();
-
-
-        //link the recycler view from XML
-        RecyclerView recycler = view.findViewById(R.id.trips_recycler_view);
-        //make a new custom adapter
-        TripRecyclerViewCustomAdapter adapter = new TripRecyclerViewCustomAdapter(tripList, fm);
-        //set the adapter
-        recycler.setAdapter(adapter);
-        //make a new linear layout manager
-        LinearLayoutManager manager = new LinearLayoutManager(getContext()){
-            @Override
-            public boolean supportsPredictiveItemAnimations(){return true;}
-        };
-        //set the new layout manager
-        recycler.setLayoutManager(manager);
-        //set a new item animator
-        recycler.setItemAnimator(new DefaultItemAnimator());
-
-
-        return view;
+        return inflater.inflate(R.layout.fragment_add_trip_date, container, false);
     }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -156,8 +101,4 @@ public class TripListFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
 }
-
-
-

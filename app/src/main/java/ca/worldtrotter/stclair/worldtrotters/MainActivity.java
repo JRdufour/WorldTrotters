@@ -3,11 +3,10 @@ package ca.worldtrotter.stclair.worldtrotters;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,15 +16,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         TripListFragment.OnFragmentInteractionListener,
-        AddTripFragment.OnFragmentInteractionListener,
+        TripFragment.OnFragmentInteractionListener,
         AboutUsFragment.OnFragmentInteractionListener,
-        NewInstanceFragment.OnFragmentInteractionListener{
+        NewInstanceFragment.OnFragmentInteractionListener,
+        NameTripFragment.OnFragmentInteractionListener,
+        AddTripDateFragment.OnFragmentInteractionListener{
 
     FragmentManager fm;
     public static FloatingActionButton fab;
+    public static GoogleApiClient googleClient = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +60,35 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        googleClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                    }
+                })
+                .build();
+
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        if(googleClient != null){
+            googleClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        if(googleClient!=null && googleClient.isConnected()){
+            googleClient.disconnect();
+        }
+        super.onStop();
     }
 
     @Override
