@@ -1,9 +1,12 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
+
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,8 +16,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        TripListFragment.OnFragmentInteractionListener,
+        TripFragment.OnFragmentInteractionListener,
+        AboutUsFragment.OnFragmentInteractionListener,
+        NewInstanceFragment.OnFragmentInteractionListener,
+        NameTripFragment.OnFragmentInteractionListener,
+        AddTripDateFragment.OnFragmentInteractionListener{
+
+    FragmentManager fm;
+    public static FloatingActionButton fab;
+    public static GoogleApiClient googleClient = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,14 +41,16 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fm = getSupportFragmentManager();
+
+        FragmentTransaction t = fm.beginTransaction();
+        t.replace(R.id.main_content, new AboutUsFragment());
+        t.addToBackStack(null);
+        t.commit();
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.hide();
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -40,6 +60,35 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        googleClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                    }
+                })
+                .build();
+
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        if(googleClient != null){
+            googleClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        if(googleClient!=null && googleClient.isConnected()){
+            googleClient.disconnect();
+        }
+        super.onStop();
     }
 
     @Override
@@ -80,9 +129,16 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        FragmentTransaction t = fm.beginTransaction();
+
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            t.replace(R.id.main_content, new AboutUsFragment());
+            t.addToBackStack(null);
+            t.commit();
         } else if (id == R.id.nav_gallery) {
+            t.replace(R.id.main_content, new TripListFragment());
+            t.addToBackStack(null);
+            t.commit();
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -97,5 +153,10 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
