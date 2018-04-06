@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +11,12 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/aboutViewPager"
         android:layout_width="wrap_content"
-        android:layout_height="362dp"></android.support.v4.view.ViewPager>
+        android:layout_height="362dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        ></android.support.v4.view.ViewPager>
 
     <!--adding a pageIndicatorView-->
 
@@ -47,4 +52,4 @@
         android:text="Get Started" />
 
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
