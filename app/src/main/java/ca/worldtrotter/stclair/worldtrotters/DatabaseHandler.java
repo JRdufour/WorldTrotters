@@ -51,7 +51,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_DATE_CREATED = "date_created";
-    public static final String COLUMN_IMAGE = "image";
+    public static final String COLUMN_IMAGE_PATH = "image";
     public static final String COLUMN_START_DATE = "start_date";
 
     //fields for places table
@@ -74,7 +74,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String CREATE_TABLE_TRIPS = "CREATE TABLE " + TABLE_TRIPS + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_NAME + " TEXT, " +
-            COLUMN_DATE_CREATED + " TEXT, " + COLUMN_IMAGE + " TEXT, " +
+            COLUMN_DATE_CREATED + " TEXT, " + COLUMN_IMAGE_PATH + " TEXT, " +
             COLUMN_START_DATE + " TEXT )";
 
     //create statement for places table
@@ -122,7 +122,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, trip.getName());
         values.put(COLUMN_DATE_CREATED, trip.getDateCreated());
-        values.put(COLUMN_IMAGE, trip.getImageURL());
+        values.put(COLUMN_IMAGE_PATH, trip.getImageURL());
         values.put(COLUMN_START_DATE, trip.getStartDate());
         int id = (int) db.insert(TABLE_TRIPS, null, values);
 
@@ -163,7 +163,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Trip trip = null;
 
         Cursor c = db.query(TABLE_TRIPS,
-                new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DATE_CREATED, COLUMN_IMAGE, COLUMN_START_DATE},
+                new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DATE_CREATED, COLUMN_IMAGE_PATH, COLUMN_START_DATE},
                 COLUMN_ID + "=?", new String[]{String.valueOf(id)},
                 null, null, null, null);
         if(c != null){

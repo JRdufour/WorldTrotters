@@ -1,4 +1,5 @@
 import android.graphics.Bitmap;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -12,6 +13,10 @@ import com.google.android.gms.location.places.PlacePhotoMetadataResult;
 import com.google.android.gms.location.places.PlacePhotoResult;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.GeoDataClient;
+
+import java.io.File;
+import java.io.IOException;
+
 import ca.worldtrotter.stclair.worldtrotters.MainActivity;
 
 /**
@@ -48,9 +53,14 @@ public class Helper {
 //        return null;
 //    }
 
-    public static void getPlacePhoto(String id){
+    /**
+     * This method takes a placeId and tripId and adds the image to the database for the trip
+     * @param placeId
+     * @param tripId
+     */
+    public static void getPlacePhoto(String placeId, int tripId){
         final GoogleApiClient client = MainActivity.googleClient;
-        Places.GeoDataApi.getPlacePhotos(client, id).setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
+        Places.GeoDataApi.getPlacePhotos(client, placeId).setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
             @Override
             public void onResult(@NonNull PlacePhotoMetadataResult placePhotoMetadataResult) {
                 if(placePhotoMetadataResult.getStatus().isSuccess()){
@@ -63,7 +73,6 @@ public class Helper {
                             Bitmap photo = placePhotoResult.getBitmap();
 
 
-
                         }
                     });
                 }
@@ -72,5 +81,34 @@ public class Helper {
 
     }
 
+    /**
+     * This method will create a temporary file wih a unique name to store the photo on the user's device
+     * @return
+     * @throws IOException
+     */
+    File createTempImageFile() throws IOException {
+        //make the file name
+        String fileName = "worldtrotters_app_v1_" + System.currentTimeMillis() + ".jpg";
+        //grab the directory to save the image in
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File photo = File.createTempFile(fileName, ".jpg", dir);
+        return photo;
+    }
+
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
