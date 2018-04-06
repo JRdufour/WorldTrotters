@@ -10,8 +10,6 @@ tools:context="ca.worldtrotter.stclair.worldtrotters.NewInstanceFragment"
     android:background="@color/colorPrimary"
     app:cardElevation="7dp">
 
-
-
     <ImageView
         android:id="@+id/viewPagerImage"
         android:layout_width="match_parent"
