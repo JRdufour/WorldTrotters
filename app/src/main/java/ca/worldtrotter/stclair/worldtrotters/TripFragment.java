@@ -119,7 +119,8 @@ public class TripFragment extends Fragment {
         //tripNameEditText.requestFocus();
         if(currentTrip != null) {
             tripNameEditText.setText(currentTrip.getName());
-
+            destinationArrayList = db.getAllPlacesForTrip(currentTrip.getTripID());
+            Log.d("ARRAY_LIST_SIZE", destinationArrayList.size() + "");
 
             /** This is all going to have to be take out and refactored **/
             //button for adding a new destination
@@ -127,8 +128,6 @@ public class TripFragment extends Fragment {
             //grab the button for adding a trip from the xml
             //Button addTripButton = view.findViewById(R.id.create_trip_button);
 
-
-            destinationArrayList = db.getAllPlacesForTrip(currentTrip.getTripID());
 
         }
         //grab the recycler view

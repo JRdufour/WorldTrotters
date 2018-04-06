@@ -1,5 +1,6 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.GeoDataClient;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import ca.worldtrotter.stclair.worldtrotters.MainActivity;
@@ -60,7 +62,7 @@ public class Helper {
      * @param placeId
      * @param tripId
      */
-    public static void getPlacePhoto(String placeId, int tripId){
+    public static void addPlacePhoto(String placeId, final int tripId, final Context context){
         final GoogleApiClient client = MainActivity.googleClient;
         Places.GeoDataApi.getPlacePhotos(client, placeId).setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
             @Override
@@ -72,8 +74,40 @@ public class Helper {
                     photoMetadata.getPhoto(client).setResultCallback(new ResultCallback<PlacePhotoResult>() {
                         @Override
                         public void onResult(@NonNull PlacePhotoResult placePhotoResult) {
+                            //Add the photo to the phone
+
+                            //grab the photo from Google
                             Bitmap photo = placePhotoResult.getBitmap();
 
+                            //create a new image file
+                            File photoFile = null;
+                            try {
+                                photoFile = createTempImageFile();
+                            } catch (IOException e){
+                                e.printStackTrace();
+                            }
+                            if(photoFile.exists())
+                                photoFile.delete();
+
+                            try{
+                                FileOutputStream out = new FileOutputStream(photoFile);
+                                photo.compress(Bitmap.CompressFormat.JPEG, 600, out);
+                                out.flush();
+                                out.close();
+                            } catch (Exception e){
+                                e.printStackTrace();
+                            }
+
+                            //get the resulting image path
+                            String imagePath = photoFile.getAbsolutePath();
+
+                            //add the image path to the database by grabbing the current trip and updating the trip
+                            DatabaseHandler db = new DatabaseHandler(context);
+                            Trip trip = db.getTrip(tripId);
+                            trip.setImageURL(imagePath);
+                            //update the database, cant do that rn because functionality isnt there
+                            db.addTrip(trip);
+                            db.close();
 
                         }
                     });
@@ -88,7 +122,7 @@ public class Helper {
      * @return
      * @throws IOException
      */
-    File createTempImageFile() throws IOException {
+    public static File createTempImageFile() throws IOException {
         //make the file name
         String fileName = "worldtrotters_app_v1_" + System.currentTimeMillis() + ".jpg";
         //grab the directory to save the image in

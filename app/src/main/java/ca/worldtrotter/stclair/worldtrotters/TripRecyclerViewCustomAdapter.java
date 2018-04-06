@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import ca.worldtrotter.stclair.worldtrotters.Trip;
@@ -47,8 +49,9 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         //Set all the items in the customviewHolder
         final Trip currentTrip = tripList.get(position);
-        ((CustomViewHolder) holder).tripName.setText(currentTrip.getName());
-        ((CustomViewHolder)holder).image.setOnClickListener(new View.OnClickListener() {
+        CustomViewHolder holder1 = (CustomViewHolder) holder;
+        holder1.tripName.setText(currentTrip.getName());
+        holder1.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
@@ -57,6 +60,11 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                 transaction.commit();
             }
         });
+
+        //grab the image location from the database and add the image to the imagaview
+        DatabaseHandler db = new DatabaseHandler(context);
+        String imagePath = currentTrip.getImageURL();
+        Picasso.get().load(imagePath).into(holder1.image);
 
     }
 

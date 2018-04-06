@@ -78,7 +78,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             COLUMN_START_DATE + " TEXT )";
 
     //create statement for places table
-    public static final String CREATE_TABLE_PLACES = "CREATE TABLE " + TABLE_DESTINATIONS + " (" +
+    public static final String CREATE_TABLE_DESTINATIONS = "CREATE TABLE " + TABLE_DESTINATIONS + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY, " +
             COLUMN_PLACE_ID + " TEXT, " +
             COLUMN_START_DATE_TIME + " TEXT, " +
@@ -100,7 +100,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_TRIPS);
-        db.execSQL(CREATE_TABLE_PLACES);
+        db.execSQL(CREATE_TABLE_DESTINATIONS);
         db.execSQL(CREATE_TABLE_TO_DO_ITEMS);
     }
 
@@ -229,11 +229,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ArrayList<Destination> placeList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.query(TABLE_DESTINATIONS,
-                new String[]{COLUMN_ID, COLUMN_PLACE_ID, COLUMN_START_DATE_TIME, COLUMN_END_DATE_TIME,
-                        COLUMN_TRIP_ID, COLUMN_NAME},
-                COLUMN_ID + "=?", new String[]{String.valueOf(tripId)},
-                null, null, null, null);
+        String query = "SELECT * FROM " + TABLE_DESTINATIONS + " WHERE " + COLUMN_TRIP_ID + " = " + tripId;
+        Cursor c = db.rawQuery(query, null);
 
         if(c.moveToFirst()){
             do{

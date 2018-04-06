@@ -1,7 +1,6 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 
@@ -42,7 +40,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.add_destination_item, parent, false);
+                .inflate(R.layout.recycler_destination_item, parent, false);
         final CustomViewHolder viewHolder = new CustomViewHolder(view);
 
         context = parent.getContext();

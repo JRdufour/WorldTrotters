@@ -39,7 +39,7 @@
             android:id="@+id/name_trip_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Destination" />
+            android:hint="Add A Destination" />
 
     </android.support.design.widget.TextInputLayout>
 
