@@ -64,15 +64,6 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
             }
         });
 
-        //add the intent to onClick for destinationName
-        //makes sure the user cant edit the text of the name themselves
-        ((CustomViewHolder)holder).destinationName.setInputType(InputType.TYPE_NULL);
-        ((CustomViewHolder)holder).destinationName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //this is where we edit the destination text field when the user click it - don't know how to do atm
-            }
-        });
 
         //give the start date focus
         ((CustomViewHolder) holder).startDateTime.requestFocus();
@@ -138,7 +129,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
-        protected EditText destinationName;
+        protected TextView destinationName;
         protected TextView startDateTime;
         protected TextView endDateTime;
         protected TextView cancelButton;
@@ -148,11 +139,11 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
         public CustomViewHolder(View view) {
             super(view);
 
-            destinationName = (EditText) view.findViewById(R.id.add_trip_destination_edit_text);
-            cancelButton = (TextView) view.findViewById(R.id.destination_cancel_button);
+            destinationName = view.findViewById(R.id.destination_name_text);
+            cancelButton = view.findViewById(R.id.destination_cancel_button);
             startDateTime = (EditText) view.findViewById(R.id.add_trip_start_date);
             endDateTime = (EditText) view.findViewById(R.id.add_trip_end_date);
-            addAgendaItemButton = (ImageView) view.findViewById(R.id.add_agenda_item_button);
+            addAgendaItemButton = view.findViewById(R.id.add_agenda_item_button);
             toDoItemListView = view.findViewById(R.id.to_do_item_list_view);
         }
     }
