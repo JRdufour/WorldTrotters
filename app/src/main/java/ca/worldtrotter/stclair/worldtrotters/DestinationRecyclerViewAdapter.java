@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 /**
@@ -57,16 +59,17 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
         ((CustomViewHolder) holder).cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO add popup to confirm
                 int pos = holder.getAdapterPosition();
                 destinationArrayList.remove(pos);
                 notifyItemRemoved(pos);
 
+                DatabaseHandler db = new DatabaseHandler(context);
+                db.deleteDestination(current.getId());
+                db.close();
+
             }
         });
-
-
-        //give the start date focus
-        ((CustomViewHolder) holder).startDateTime.requestFocus();
 
         //handel the user adding start times and end times for their trip
         ((CustomViewHolder) holder).startDateTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -120,6 +123,8 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
                 adapter.notifyDataSetChanged();
             }
         });
+
+        Picasso.get().load("file://" + current.getImagePath()).into(((CustomViewHolder) holder).backgroundImage);
     }
 
 
@@ -135,6 +140,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
         protected TextView cancelButton;
         protected ImageView addAgendaItemButton;
         protected MyListView toDoItemListView;
+        protected ImageView backgroundImage;
 
         public CustomViewHolder(View view) {
             super(view);
@@ -145,6 +151,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
             endDateTime = (EditText) view.findViewById(R.id.add_trip_end_date);
             addAgendaItemButton = view.findViewById(R.id.add_agenda_item_button);
             toDoItemListView = view.findViewById(R.id.to_do_item_list_view);
+            backgroundImage = view.findViewById(R.id.destination_background_image);
         }
     }
 

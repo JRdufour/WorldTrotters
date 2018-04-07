@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 
 import com.google.android.gms.common.api.Status;
@@ -112,13 +113,13 @@ public class TripFragment extends Fragment {
         //hide the fab button
         MainActivity.fab.hide();
         //Edit text for trip name
-        final EditText tripNameEditText = view.findViewById(R.id.trip_name_edit_text);
+        final TextView tripNameTextView = view.findViewById(R.id.trip_name_text_view);
         //set the Edit Text to uneditable
 
         destinationArrayList = new ArrayList<>();
         //tripNameEditText.requestFocus();
         if(currentTrip != null) {
-            tripNameEditText.setText(currentTrip.getName());
+            tripNameTextView.setText(currentTrip.getName());
             destinationArrayList = db.getAllPlacesForTrip(currentTrip.getTripID());
             Log.d("ARRAY_LIST_SIZE", destinationArrayList.size() + "");
 

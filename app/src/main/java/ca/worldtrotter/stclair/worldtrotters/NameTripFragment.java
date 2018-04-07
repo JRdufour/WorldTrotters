@@ -126,21 +126,12 @@ public class NameTripFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                DatabaseHandler db = new DatabaseHandler(getContext());
+
 
                 if (destinations.size() == 0) {
                     getFragmentManager().popBackStack();
                     Toast.makeText(getContext(), "Sorry, something went wrong", Toast.LENGTH_LONG);
                 } else {
-
-                    //this adds all the destinations the user wants to go to on their trip to the database
-                    for (Destination dest : destinations) {
-                        dest.setTripId(currentTrip.getTripID());
-                        db.addDestination(dest);
-
-                    }
-                    db.close();
-
 
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_content, new AddTripDateFragment());
@@ -185,11 +176,22 @@ public class NameTripFragment extends Fragment {
                 if(currentTrip.getTripID() == -1) {
                     DatabaseHandler db = new DatabaseHandler(getContext());
                     int id = db.addTrip(currentTrip);
-                    Helper.addPlacePhoto(place.getId(), id, getContext());
                     currentTrip = db.getTrip(id);
+                    Helper.addPlacePhoto(getContext(), place.getId(), currentTrip.getTripID(), -1);
+
                 }
-                //destinationEditText.setText(place.getName().toString());
-                destinations.add(new Destination(place.getId(), null, null, currentTrip.getTripID(), place.getName().toString()));
+
+
+                Destination newDest = new Destination(place.getId(), null, null, currentTrip.getTripID(), place.getName().toString(), null);
+                newDest.setTripId(currentTrip.getTripID());
+
+                destinations.add(newDest);
+
+                DatabaseHandler db = new DatabaseHandler(getContext());
+                int id = db.addDestination(newDest);
+                newDest = db.getDestination(id);
+                Helper.addPlacePhoto(getContext(), place.getId(), -1, newDest.getId());
+
                 adapter.notifyDataSetChanged();
 
                 if(requestCode == INTENT_REQUEST_CODE){

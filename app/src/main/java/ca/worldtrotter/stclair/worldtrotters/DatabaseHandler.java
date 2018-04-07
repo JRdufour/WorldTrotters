@@ -54,11 +54,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String COLUMN_IMAGE_PATH = "image";
     public static final String COLUMN_START_DATE = "start_date";
 
-    //fields for places table
+    //fields for destinations table
     public static final String COLUMN_TRIP_ID = "trip_id";
     public static final String COLUMN_PLACE_ID = "place_id";
     public static final String COLUMN_START_DATE_TIME = "startTime";
     public static final String COLUMN_END_DATE_TIME = "endTime";
+
 
 
     //fields for toDoitem table
@@ -84,7 +85,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             COLUMN_START_DATE_TIME + " TEXT, " +
             COLUMN_END_DATE_TIME + " TEXT, " +
             COLUMN_TRIP_ID + " INTEGER REFERENCES " + TABLE_TRIPS + "(" + COLUMN_ID + ")," +
-            COLUMN_NAME + " TEXT )";
+            COLUMN_NAME + " TEXT , " +
+            COLUMN_IMAGE_PATH + " TEXT)";
 
     //create statement for toDoItem table
 
@@ -131,7 +133,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return id;
     }
 
-    public void addDestination(Destination destination){
+    public int addDestination(Destination destination){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -141,9 +143,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(COLUMN_END_DATE_TIME, destination.getEndDateTime());
         values.put(COLUMN_TRIP_ID, destination.getTripId());
         values.put(COLUMN_NAME, destination.getName());
+        values.put(COLUMN_IMAGE_PATH, destination.getImagePath());
 
-        db.insert(TABLE_DESTINATIONS, null, values);
+        int id = (int) db.insert(TABLE_DESTINATIONS, null, values);
         db.close();
+        return id;
     }
 
     public void addToDoItem(ToDoItem item){
@@ -206,7 +210,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         Cursor c = db.query(TABLE_DESTINATIONS,
                 new String[]{COLUMN_ID, COLUMN_PLACE_ID, COLUMN_START_DATE_TIME, COLUMN_END_DATE_TIME,
-                COLUMN_TRIP_ID, COLUMN_NAME},
+                COLUMN_TRIP_ID, COLUMN_NAME, COLUMN_IMAGE_PATH},
                 COLUMN_ID + "=?", new String[]{String.valueOf(id)},
                 null, null, null, null);
 
@@ -217,7 +221,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     c.getString(2),
                     c.getString(3),
                     Integer.parseInt(c.getString(4)),
-                    c.getString(5));
+                    c.getString(5),
+                    c.getString(6));
         }
         db.close();
        return place;
@@ -239,7 +244,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         c.getString(2),
                         c.getString(3),
                         Integer.parseInt(c.getString(4)),
-                        c.getString(5)));
+                        c.getString(5),
+                        c.getString(6)));
             } while (c.moveToNext());
         }
         db.close();
@@ -302,6 +308,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.update(TABLE_TRIPS, vals, COLUMN_ID + "= ?",
                 new String[]{String.valueOf(trip.getTripID())});
 
+    }
+
+    public void upDateDestination(Destination destination){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues vals = new ContentValues();
+
+        vals.put(COLUMN_PLACE_ID, destination.getPlaceId());
+        vals.put(COLUMN_START_DATE_TIME, destination.getStartDateTime());
+        vals.put(COLUMN_END_DATE_TIME, destination.getEndDateTime());
+        vals.put(COLUMN_TRIP_ID, destination.getTripId());
+        vals.put(COLUMN_NAME, destination.getName());
+        vals.put(COLUMN_IMAGE_PATH, destination.getImagePath());
+
+        db.update(TABLE_DESTINATIONS, vals, COLUMN_ID + "= ?", new String[]{String.valueOf(destination.getId())});
     }
 
     //TODO Delete operations

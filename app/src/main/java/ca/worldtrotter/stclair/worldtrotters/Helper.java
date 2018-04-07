@@ -63,7 +63,7 @@ public class Helper {
      * @param placeId
      * @param tripId
      */
-    public static void addPlacePhoto(String placeId, final int tripId, final Context context){
+    public static void addPlacePhoto(final Context context, String placeId, final int tripId, final int destinationId){
         final GoogleApiClient client = MainActivity.googleClient;
         Places.GeoDataApi.getPlacePhotos(client, placeId).setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
             @Override
@@ -104,15 +104,23 @@ public class Helper {
 
                             //add the image path to the database by grabbing the current trip and updating the trip
                             DatabaseHandler db = new DatabaseHandler(context);
-                            Trip trip = db.getTrip(tripId);
-                            trip.setImageURL(imagePath);
-                            //update the database, cant do that rn because functionality isnt there
-                            db.updateTrip(trip);
+                            if(tripId != -1){
+                                Trip trip = db.getTrip(tripId);
+                                trip.setImageURL(imagePath);
+                                //update the database, cant do that rn because functionality isnt there
+                                db.updateTrip(trip);
+                            }
+                            else if(destinationId != -1){
+                                Destination destination = db.getDestination(destinationId);
+                                destination.setImagePath(imagePath);
+                                db.upDateDestination(destination);
+                            }
+
                             db.close();
                         }
                     });
                     photoBuffer.release();
-                    photoBuffer.close();
+                    //photoBuffer.close();
                 }
             }
 

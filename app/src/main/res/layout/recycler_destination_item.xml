@@ -17,7 +17,7 @@
         android:isScrollContainer="false">
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/destination_background_image"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:alpha=".3"
