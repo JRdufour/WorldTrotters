@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -83,18 +84,18 @@ public class Helper {
                             File photoFile = null;
                             try {
                                 photoFile = createTempImageFile();
-                            } catch (IOException e){
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            if(photoFile.exists())
+                            if (photoFile.exists())
                                 photoFile.delete();
 
-                            try{
+                            try {
                                 FileOutputStream out = new FileOutputStream(photoFile);
-                                photo.compress(Bitmap.CompressFormat.JPEG, 600, out);
+                                photo.compress(Bitmap.CompressFormat.JPEG, 70, out);
                                 out.flush();
                                 out.close();
-                            } catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
@@ -106,14 +107,17 @@ public class Helper {
                             Trip trip = db.getTrip(tripId);
                             trip.setImageURL(imagePath);
                             //update the database, cant do that rn because functionality isnt there
-                            db.addTrip(trip);
+                            db.updateTrip(trip);
                             db.close();
-
                         }
                     });
+                    photoBuffer.release();
+                    photoBuffer.close();
                 }
             }
+
         });
+
 
     }
 
@@ -124,10 +128,11 @@ public class Helper {
      */
     public static File createTempImageFile() throws IOException {
         //make the file name
-        String fileName = "worldtrotters_app_v1_" + System.currentTimeMillis() + ".jpg";
+        String fileName = "worldtrotters_app_v1_" + System.currentTimeMillis() ;
         //grab the directory to save the image in
         File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File photo = File.createTempFile(fileName, ".jpg", dir);
+        Log.d("FILE_NAME", photo.getAbsolutePath());
         return photo;
     }
 

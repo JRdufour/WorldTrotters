@@ -291,6 +291,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //TODO Update operations
 
+    public void updateTrip(Trip trip){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues vals = new ContentValues();
+        vals.put(COLUMN_NAME, trip.getName());
+        vals.put(COLUMN_DATE_CREATED, trip.getDateCreated());
+        vals.put(COLUMN_IMAGE_PATH, trip.getImageURL());
+
+        vals.put(COLUMN_START_DATE, trip.getStartDate());
+        db.update(TABLE_TRIPS, vals, COLUMN_ID + "= ?",
+                new String[]{String.valueOf(trip.getTripID())});
+
+    }
 
     //TODO Delete operations
     public void deleteTrip(int id){

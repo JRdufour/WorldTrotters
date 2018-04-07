@@ -90,6 +90,7 @@ public class TripListFragment extends Fragment {
             }
         });
 
+        getActivity().setTitle("Your Trips");
         //make some sample data to use
         ArrayList<Trip> tripList = new ArrayList<>();
         DatabaseHandler db = new DatabaseHandler(getActivity().getBaseContext());

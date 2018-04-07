@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,9 +50,9 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         //Set all the items in the customviewHolder
         final Trip currentTrip = tripList.get(position);
-        CustomViewHolder holder1 = (CustomViewHolder) holder;
-        holder1.tripName.setText(currentTrip.getName());
-        holder1.image.setOnClickListener(new View.OnClickListener() {
+        CustomViewHolder holder1 = ((CustomViewHolder) holder);
+        ((CustomViewHolder) holder).tripName.setText(currentTrip.getName());
+        ((CustomViewHolder) holder).image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
@@ -64,7 +65,8 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
         //grab the image location from the database and add the image to the imagaview
         DatabaseHandler db = new DatabaseHandler(context);
         String imagePath = currentTrip.getImageURL();
-        Picasso.get().load(imagePath).into(holder1.image);
+        Log.d("IMAGE_PATH_FROM_DB", imagePath + " ");
+        Picasso.get().load("file://" + imagePath).into(holder1.image);
 
     }
 

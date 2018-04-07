@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -25,6 +26,8 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+
+import javax.xml.datatype.Duration;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -43,7 +46,7 @@ public class NameTripFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private Trip currentTrip;
-    private EditText destinationEditText;
+    private Button destinationButton;
     ArrayAdapter<Destination> adapter;
     //this will hold an array of places the user wants to go to on their trip
     private ArrayList<Destination> destinations;
@@ -93,13 +96,15 @@ public class NameTripFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_name_trip, container, false);
         MainActivity.fab.hide();
+        getActivity().setTitle("Create A Trip");
         //grab the edit text
         currentTrip = new Trip();
+        currentTrip.setTripID(-1);
         destinations = new ArrayList<>();
-        destinationEditText = view.findViewById(R.id.name_trip_edit_text);
+        destinationButton = view.findViewById(R.id.destination_button);
 
-        destinationEditText.setKeyListener(null);
-        destinationEditText.setOnClickListener(new View.OnClickListener() {
+
+        destinationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
@@ -123,18 +128,20 @@ public class NameTripFragment extends Fragment {
 
                 DatabaseHandler db = new DatabaseHandler(getContext());
 
+                if (destinations.size() == 0) {
+                    getFragmentManager().popBackStack();
+                    Toast.makeText(getContext(), "Sorry, something went wrong", Toast.LENGTH_LONG);
+                } else {
 
                     //this adds all the destinations the user wants to go to on their trip to the database
-                for (Destination dest : destinations) {
-                    dest.setTripId(currentTrip.getTripID());
-                    db.addDestination(dest);
+                    for (Destination dest : destinations) {
+                        dest.setTripId(currentTrip.getTripID());
+                        db.addDestination(dest);
 
-                }
-                db.close();
+                    }
+                    db.close();
 
 
-
-                if(destinationEditText.getText().toString() != null){
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_content, new AddTripDateFragment());
                     transaction.addToBackStack(null);
@@ -175,9 +182,10 @@ public class NameTripFragment extends Fragment {
 
                 currentTrip.setName(place.getName().toString() + " Trip");
                 //see if the trip has already been added to the database
-                if(currentTrip.getTripID() == 0) {
+                if(currentTrip.getTripID() == -1) {
                     DatabaseHandler db = new DatabaseHandler(getContext());
                     int id = db.addTrip(currentTrip);
+                    Helper.addPlacePhoto(place.getId(), id, getContext());
                     currentTrip = db.getTrip(id);
                 }
                 //destinationEditText.setText(place.getName().toString());
@@ -202,6 +210,9 @@ public class NameTripFragment extends Fragment {
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
             }
+        }
+        if(destinations.size() != 0){
+            destinationButton.setText("Add Another Destination");
         }
     }
     // TODO: Rename method, update argument and hook method into UI event
