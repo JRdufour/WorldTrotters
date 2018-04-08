@@ -114,14 +114,24 @@ public class TripFragment extends Fragment {
         MainActivity.fab.hide();
         //Edit text for trip name
         final TextView tripNameTextView = view.findViewById(R.id.trip_name_text_view);
-        //set the Edit Text to uneditable
+        TextView startDate = view.findViewById(R.id.trip_start_date_text_view);
+        TextView endDate = view.findViewById(R.id.trip_end_date_text_view);
 
         destinationArrayList = new ArrayList<>();
         //tripNameEditText.requestFocus();
         if(currentTrip != null) {
             tripNameTextView.setText(currentTrip.getName());
             destinationArrayList = db.getAllPlacesForTrip(currentTrip.getTripID());
-            Log.d("ARRAY_LIST_SIZE", destinationArrayList.size() + "");
+            if(currentTrip.getStartDate() != null){
+                startDate.setText(currentTrip.getStartDate());
+            }else{
+                startDate.setText("");
+            }
+            if(currentTrip.getDateCreated() != null){
+                endDate.setText(currentTrip.getDateCreated());
+            }else {
+                endDate.setText("");
+            }
 
             /** This is all going to have to be take out and refactored **/
             //button for adding a new destination
