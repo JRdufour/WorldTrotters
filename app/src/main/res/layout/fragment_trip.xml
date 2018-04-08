@@ -115,15 +115,20 @@
         </LinearLayout>
 
         <io.github.yavski.fabspeeddial.FabSpeedDial
+            android:id="@+id/trip_fragment_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
+            app:fabDrawableTint="@color/cardview_light_background"
             app:fabGravity="bottom_end"
+
             app:fabMenu="@menu/menu_fab"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:miniFabBackgroundTint="@android:color/white"
-            app:miniFabDrawableTint="?attr/colorPrimaryDark"
-            app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
+            app:miniFabBackgroundTint="@color/colorAccent"
+            app:miniFabDrawableTint="@android:color/white"
+            app:miniFabTitleBackgroundTint="@color/colorAccent"
+            app:miniFabTitleTextColor="@android:color/white" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -1,6 +1,8 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
 import android.app.Activity;
+
+import android.support.design.internal.NavigationMenu;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -8,17 +10,22 @@ import android.net.Uri;
 import android.os.Bundle;
 
 
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 
 import com.google.android.gms.location.places.Place;
@@ -28,6 +35,8 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 import java.util.ArrayList;
 
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -61,6 +70,7 @@ public class TripFragment extends Fragment {
     //this will store the first destination as a place object
     ArrayList<Destination> destinationArrayList;
     RecyclerView destinationRecylcer;
+    FragmentManager fm;
     private Trip currentTrip;
 
     public TripFragment() {
@@ -101,6 +111,7 @@ public class TripFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         DatabaseHandler db = new DatabaseHandler(getContext());
+        fm = getFragmentManager();
         if(mParam1 != null) {
             currentTrip = db.getTrip(mParam1);
         }
@@ -158,76 +169,65 @@ public class TripFragment extends Fragment {
         destinationRecylcer.getItemAnimator().setAddDuration(1000);
 
 
-        /**
-        //the onClick listner for the add trip button - gets called when the user presses the button to add a new trip
-        addTripButton.setOnClickListener(new View.OnClickListener() {
+        FabSpeedDial fabSpeedDial = view.findViewById(R.id.trip_fragment_fab);
+
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter(){
             @Override
-            public void onClick(View view) {
-                //make sure all the fields have been populated, including the trips name and at least the first destination is filled out
-                if(tripNameEditText.getText().toString().trim().length() == 0 ){
+            public boolean onPrepareMenu(NavigationMenu navigationMenu) {
+                // TODO: Do something with yout menu items, or return false if you don't want to show them
+                return true;
+            }
 
-                    //popup that says to populate fields
-                    Snackbar.make(view, "Please Name Your Trip.", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                } else if(destinationArrayList.size() == 0){
-                    Snackbar.make(view, "Please Add At Least One Destination", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                //TODO: Start some activity
+                int id = menuItem.getItemId();
+                if(id == R.id.action_add_destination){
+                    //handle adding another destination to the trip
+                    try {
+                        Intent i = new PlaceAutocomplete.
+                                IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
+                        startActivityForResult(i, INTENT_REQUEST_CODE);
 
-                else {
-                    //handle creating a new Trip
-
-                    destinationArrayList = adapter.getDestinationArrayList();
-                    String tripName = tripNameEditText.getText().toString().trim();
-
-                    Trip newTrip = new Trip(tripName, null, null, destinationArrayList.get(0).getStartDateTime());
-                    DatabaseHandler db = new DatabaseHandler(getActivity().getBaseContext());
-                    int id = db.addTrip(newTrip);
-                    //db.deleteAllTrips();
-                    for (Destination dest: destinationArrayList) {
-                        dest.setTripId(id);
-                        db.addDestination(dest);
+                    } catch (GooglePlayServicesRepairableException e) {
+                        e.printStackTrace();
+                    } catch (GooglePlayServicesNotAvailableException e) {
+                        e.printStackTrace();
                     }
+
+                } else if (id == R.id.action_edit_name){
+                    //handle letting the user edit the trip's name
+                } else if (id == R.id.action_edit_times){
+                    //handle letting the user edit the trip's start and end dates
+                } else if (id == R.id.action_delete){
+                    //handle deleting the current trip
+                    DatabaseHandler db = new DatabaseHandler(getContext());
+                    db.deleteTrip(currentTrip.getTripID());
                     db.close();
-                    //tell the user that the trip was made
-                    Snackbar.make(view, "Trip Added!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                    //bring the user back to the trips page
-                    getFragmentManager().popBackStack();
+                    fm.popBackStack();
+
                 }
+
+
+                return false;
             }
         });
 
-
-
-
-
-        //this button will check if the current destination has been filled in, and if it has, it will launch a new Place Autocomplete intent
-        addNewLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //check if the current displayed location has been filled out?
-                //handel adding a new location
-                try {
-                    Intent i = new PlaceAutocomplete.
-                            IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(activity);
-                    startActivityForResult(i, INTENT_REQUEST_CODE);
-
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
-         **/
 
         db.close();
         return view;
     }
 
-    //this method will be called when the user taps a destination's name to edit it
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//
+//        if (requestCode == INTENT_REQUEST_CODE) {
+//            if (resultCode == RESULT_OK) {
+//                Place place = PlaceAutocomplete.getPlace(getActivity(), data);
+//                Log.i(TAG, "Place: " + place.getName());
+//            }
+//        }
+//    }
 
 
 
