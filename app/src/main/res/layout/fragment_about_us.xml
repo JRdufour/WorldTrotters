@@ -40,7 +40,7 @@
         app:piv_dynamicCount="true"
         app:piv_interactiveAnimation="true"
         app:piv_selectedColor="@color/colorPrimary"
-        app:piv_unselectedColor="@color/colorPrimaryDark" />
+        app:piv_unselectedColor="@color/textMain" />
 
     <TextView
         android:id="@+id/aboutDescription"

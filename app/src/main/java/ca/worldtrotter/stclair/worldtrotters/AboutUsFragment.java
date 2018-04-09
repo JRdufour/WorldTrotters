@@ -137,17 +137,22 @@ public class AboutUsFragment extends Fragment {
         public android.support.v4.app.Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return NewInstanceFragment.newInstance(R.drawable.island,"Philippines");
+                    return NewInstanceFragment.newInstance(R.drawable.colosseum,"Rome, Italy", "The Roman Colosseum is located in the center of Rome, " +
+                            "it was used for gladiatorial contests and it can hold up to 80,000 spectators.");
                 case 1:
-                    return NewInstanceFragment.newInstance(R.drawable.sea, "Egypt");
+                    return NewInstanceFragment.newInstance(R.drawable.eiffel, "Paris, France", "The Eiffel Tower is located on the Champ de Mars in Paris and " +
+                            "named after the engineer Gustave Eiffel. The iron tower is 324 metres tall.");
                 case 2:
-                    return NewInstanceFragment.newInstance(R.drawable.lake, "Ontario");
+                    return NewInstanceFragment.newInstance(R.drawable.pyramids, "Giza, Egypt", "The Giza pyramids are located in the heart of Giza and " +
+                            "they were built around 2500 years B.C. as tombs for the pharaohs (country's ruler).");
                 case 3:
-                    return NewInstanceFragment.newInstance(R.drawable.river, "Amazon");
+                    return NewInstanceFragment.newInstance(R.drawable.taj, "Agra, India", "Taj Mahal, is an ivory-white marble tomb" +
+                            "located on south bank of the Yamuna river. It was built in 1653, in memory of Shah Jahan wife");
                 case 4:
-                    return NewInstanceFragment.newInstance(R.drawable.desert, "Nevada");
+                    return NewInstanceFragment.newInstance(R.drawable.wall, "Huairou, China", "The Great Wall of China is series of fortifications" +
+                            "made of stone. It's 21,196 km long and was built in 220 B.C to protect against invasions");
                 default:
-                    return NewInstanceFragment.newInstance(R.drawable.zion, "Utah");
+                    return NewInstanceFragment.newInstance(R.drawable.zion, "Utah", "Zion Park, located in Utah");
             }
         }
 
