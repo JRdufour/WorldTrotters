@@ -15,29 +15,28 @@ public class Destination {
     private long endDateTime;
     private int tripId;
     private String name;
-    private String imagePath;
+
 
 
     private ArrayList<ToDoItem> toDoItems;
 
-    public Destination(String placeId, long startDateTime, long endDateTime, int tripId, String name, String imagePath) {
+    public Destination(String placeId, long startDateTime, long endDateTime, int tripId, String name) {
         this.placeId = placeId;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.tripId = tripId;
         this.name = name;
-        this.imagePath = imagePath;
+
         this.toDoItems = new ArrayList<>();
     }
 
-    public Destination(int id, String placeId, long startDateTime, long endDateTime, int tripId, String name, String imagePath) {
+    public Destination(int id, String placeId, long startDateTime, long endDateTime, int tripId, String name) {
         this.id = id;
         this.placeId = placeId;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.tripId = tripId;
         this.name = name;
-        this.imagePath = imagePath;
         this.toDoItems = new ArrayList<>();
     }
 
@@ -102,13 +101,6 @@ public class Destination {
         this.name = name;
     }
 
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
 
     public String toString(){
         return this.name;

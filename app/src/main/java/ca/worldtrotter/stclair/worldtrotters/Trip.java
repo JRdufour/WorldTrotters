@@ -9,21 +9,21 @@ public class Trip {
     private int tripID;
     private String name;
     private long endDate;
-    private String imageURL;
+
     private long startDate;
 
-    public Trip(int tripID, String name, long endDate, String imageURL, long startDate) {
+    public Trip(int tripID, String name, long endDate, long startDate) {
         this.tripID = tripID;
         this.name = name;
         this.endDate = endDate;
-        this.imageURL = imageURL;
+
         this.startDate = startDate;
     }
 
-    public Trip(String name, long endDate, String imageURL, long startDate) {
+    public Trip(String name, long endDate, long startDate) {
         this.name = name;
         this.endDate = endDate;
-        this.imageURL = imageURL;
+
         this.startDate = startDate;
     }
     public Trip(){
@@ -54,13 +54,7 @@ public class Trip {
         this.endDate = dateCreated;
     }
 
-    public String getImageURL() {
-        return imageURL;
-    }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
 
     public long getStartDate() {
         return startDate;
