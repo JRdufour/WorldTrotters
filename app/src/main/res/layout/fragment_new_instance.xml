@@ -18,7 +18,7 @@ tools:context="ca.worldtrotter.stclair.worldtrotters.NewInstanceFragment"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/zion" />
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -27,22 +27,27 @@ tools:context="ca.worldtrotter.stclair.worldtrotters.NewInstanceFragment"
         <TextView
             android:id="@+id/viewPagerTitle"
             android:layout_width="308dp"
-            android:layout_height="46dp"
-            android:layout_marginStart="5dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="3dp"
+            android:layout_weight="1"
             android:text="TextView"
             android:textColor="@android:color/white"
-            android:textSize="36sp" />
+            android:textSize="32sp"
+            app:layout_constraintBottom_toTopOf="@+id/viewPagerDescription"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/viewPagerDescription"
             android:layout_width="308dp"
-            android:layout_height="46dp"
-            android:layout_marginStart="5dp"
-            android:text="TextView"
+            android:layout_height="85dp"
+            android:layout_marginStart="3dp"
             android:layout_weight="1"
+            android:text="TextView"
             android:textColor="@android:color/white"
-            android:textSize="18sp" />
-    </LinearLayout>
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>
 
