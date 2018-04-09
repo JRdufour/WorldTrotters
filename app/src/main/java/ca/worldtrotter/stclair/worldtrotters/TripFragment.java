@@ -12,6 +12,7 @@ import android.os.Bundle;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -71,6 +72,7 @@ public class TripFragment extends Fragment {
     ArrayList<Destination> destinationArrayList;
     RecyclerView destinationRecylcer;
     FragmentManager fm;
+    SwipeRefreshLayout refresher;
     private Trip currentTrip;
 
     public TripFragment() {
@@ -168,6 +170,16 @@ public class TripFragment extends Fragment {
         destinationRecylcer.setItemAnimator(new SlideInLeftAnimator());
         destinationRecylcer.getItemAnimator().setAddDuration(1000);
 
+        refresher = view.findViewById(R.id.destination_recycler_swipe_layout);
+
+        refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresher.setRefreshing(true);
+                refreshRecycler();
+                refresher.setRefreshing(false);
+            }
+        });
 
         FabSpeedDial fabSpeedDial = view.findViewById(R.id.trip_fragment_fab);
 
@@ -205,10 +217,7 @@ public class TripFragment extends Fragment {
                     db.deleteTrip(currentTrip.getTripID());
                     db.close();
                     fm.popBackStack();
-
                 }
-
-
                 return false;
             }
         });
@@ -218,17 +227,33 @@ public class TripFragment extends Fragment {
         return view;
     }
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//        if (requestCode == INTENT_REQUEST_CODE) {
-//            if (resultCode == RESULT_OK) {
-//                Place place = PlaceAutocomplete.getPlace(getActivity(), data);
-//                Log.i(TAG, "Place: " + place.getName());
-//            }
-//        }
-//    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        if (requestCode == INTENT_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(getActivity(), data);
+                Log.i(TAG, "Place: " + place.getName());
+                //add the place to the database
+                DatabaseHandler db = new DatabaseHandler(getContext());
+                Destination dest = new Destination(place.getId(),
+                        null, null,
+                        currentTrip.getTripID(),
+                        place.getName().toString(),
+                        null);
+                int id = db.addDestination(dest);
+                db.close();
+                Helper.addPlacePhoto(getContext(), place.getId(), -1, id);
+                dest = db.getDestination(id);
+                destinationArrayList.add(dest);
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    public void refreshRecycler(){
+
+    }
 
 
 

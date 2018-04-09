@@ -214,8 +214,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 COLUMN_ID + "=?", new String[]{String.valueOf(id)},
                 null, null, null, null);
 
-        if (c != null){
-            c.moveToFirst();
+        if (c.moveToFirst()){
             place = new Destination(Integer.parseInt(c.getString(0)),
                     c.getString(1),
                     c.getString(2),
