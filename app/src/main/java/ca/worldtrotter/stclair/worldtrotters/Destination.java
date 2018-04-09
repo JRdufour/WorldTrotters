@@ -11,8 +11,8 @@ import java.util.ArrayList;
 public class Destination {
     int id;
     private String placeId;
-    private String startDateTime;
-    private String endDateTime;
+    private long startDateTime;
+    private long endDateTime;
     private int tripId;
     private String name;
     private String imagePath;
@@ -20,7 +20,7 @@ public class Destination {
 
     private ArrayList<ToDoItem> toDoItems;
 
-    public Destination(String placeId, String startDateTime, String endDateTime, int tripId, String name, String imagePath) {
+    public Destination(String placeId, long startDateTime, long endDateTime, int tripId, String name, String imagePath) {
         this.placeId = placeId;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
@@ -30,7 +30,7 @@ public class Destination {
         this.toDoItems = new ArrayList<>();
     }
 
-    public Destination(int id, String placeId, String startDateTime, String endDateTime, int tripId, String name, String imagePath) {
+    public Destination(int id, String placeId, long startDateTime, long endDateTime, int tripId, String name, String imagePath) {
         this.id = id;
         this.placeId = placeId;
         this.startDateTime = startDateTime;
@@ -62,19 +62,19 @@ public class Destination {
     }
 
 
-    public String getStartDateTime() {
+    public long getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(String startDateTime) {
+    public void setStartDateTime(long startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public String getEndDateTime() {
+    public long getEndDateTime() {
         return endDateTime;
     }
 
-    public void setEndDateTime(String endDateTime) {
+    public void setEndDateTime(long endDateTime) {
         this.endDateTime = endDateTime;
     }
 

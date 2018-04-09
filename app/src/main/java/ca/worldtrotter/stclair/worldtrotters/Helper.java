@@ -21,6 +21,11 @@ import com.google.android.gms.location.places.GeoDataClient;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 
 import ca.worldtrotter.stclair.worldtrotters.MainActivity;
 
@@ -59,9 +64,13 @@ public class Helper {
 //    }
 
     /**
-     * This method takes a placeId and tripId and adds the image to the database for the trip
+     * This method takes a place id and grabs the corresponding images for that place from google
+     * it then adds that photo to the user's phone and adds the image path to the database
+     * Depending on the parameters passed, it adds the image to the corresponding trip or destination
+     * @param context
      * @param placeId
      * @param tripId
+     * @param destinationId
      */
     public static void addPlacePhoto(final Context context, String placeId, final int tripId, final int destinationId){
         final GoogleApiClient client = MainActivity.googleClient;
@@ -71,7 +80,10 @@ public class Helper {
                 if(placePhotoMetadataResult.getStatus().isSuccess()){
                     PlacePhotoMetadataBuffer photoBuffer = placePhotoMetadataResult.getPhotoMetadata();
 
+                    //Random r = new Random();
+                    //PlacePhotoMetadata photoMetadata = photoBuffer.get(r.nextInt(photoBuffer.getCount()));
                     PlacePhotoMetadata photoMetadata = photoBuffer.get(0);
+                    Log.d("NUMBER OF PHTOTOS AVAILABLE IN ARRAY", photoBuffer.getCount() + "");
                     photoMetadata.getPhoto(client).setResultCallback(new ResultCallback<PlacePhotoResult>() {
                         @Override
                         public void onResult(@NonNull PlacePhotoResult placePhotoResult) {
@@ -144,6 +156,24 @@ public class Helper {
         return photo;
     }
 
+
+    public static String formatDate(long l, String pattern){
+        Date date = new Date(l);
+        DateFormat df = new SimpleDateFormat(pattern);
+        return df.format(date);
+    }
+
+    public static String formatDate(long l) {
+        return formatDate(l, "MMMM d, yyyy");
+    }
+
+    public static long formatDate(int year, int month, int day){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        return calendar.getTimeInMillis();
+    }
 
 }
 

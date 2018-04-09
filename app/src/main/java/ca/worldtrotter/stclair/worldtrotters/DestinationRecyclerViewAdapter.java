@@ -82,7 +82,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
                     String startDate = ((CustomViewHolder)holder).startDateTime.getText().toString().trim();
                     if( startDate != null){
                         //there is an input
-                        current.setStartDateTime(startDate);
+                        //current.setStartDateTime(startDate);
                     }
                 }
             }
@@ -97,7 +97,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
                     String startDate = ((CustomViewHolder)holder).endDateTime.getText().toString().trim();
                     if( startDate != null){
                         //there is an input
-                        current.setEndDateTime(startDate);
+                        //current.setEndDateTime(startDate);
                     }
                 }
             }

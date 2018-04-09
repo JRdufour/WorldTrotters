@@ -13,12 +13,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 
 public class MainActivity extends AppCompatActivity
@@ -27,10 +27,10 @@ public class MainActivity extends AppCompatActivity
         TripFragment.OnFragmentInteractionListener,
         AboutUsFragment.OnFragmentInteractionListener,
         NewInstanceFragment.OnFragmentInteractionListener,
-        NameTripFragment.OnFragmentInteractionListener,
+        CreateTripFragment.OnFragmentInteractionListener,
         AddTripDateFragment.OnFragmentInteractionListener{
 
-    FragmentManager fm;
+    private static FragmentManager fm;
     public static FloatingActionButton fab;
     public static GoogleApiClient googleClient = null;
 
@@ -97,9 +97,18 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+
+            if(fm.findFragmentByTag("recycler") != null){
+                Log.d("FRAGEMENT TEST", "TRUE");
+                fm.popBackStack("recycler", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            } else {
+                Log.d("FRAGEMENT TEST", "FALSE");
+                super.onBackPressed();
+            }
         }
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -2,6 +2,8 @@ package ca.worldtrotter.stclair.worldtrotters;
 
 import android.app.Activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.design.internal.NavigationMenu;
 import android.support.v4.app.Fragment;
 import android.content.Context;
@@ -22,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -71,6 +74,7 @@ public class TripFragment extends Fragment {
     //this will store the first destination as a place object
     ArrayList<Destination> destinationArrayList;
     RecyclerView destinationRecylcer;
+    TextView tripNameTextView = null;
     FragmentManager fm;
     SwipeRefreshLayout refresher;
     private Trip currentTrip;
@@ -126,22 +130,27 @@ public class TripFragment extends Fragment {
         //hide the fab button
         MainActivity.fab.hide();
         //Edit text for trip name
-        final TextView tripNameTextView = view.findViewById(R.id.trip_name_text_view);
+        tripNameTextView = view.findViewById(R.id.trip_name_text_view);
         TextView startDate = view.findViewById(R.id.trip_start_date_text_view);
         TextView endDate = view.findViewById(R.id.trip_end_date_text_view);
+        LinearLayout datesLayout = view.findViewById(R.id.dates_layout);
 
         destinationArrayList = new ArrayList<>();
         //tripNameEditText.requestFocus();
         if(currentTrip != null) {
             tripNameTextView.setText(currentTrip.getName());
             destinationArrayList = db.getAllPlacesForTrip(currentTrip.getTripID());
-            if(currentTrip.getStartDate() != null){
-                startDate.setText(currentTrip.getStartDate());
+            if(currentTrip.getStartDate() != 0){
+                //startDate.setText(currentTrip.getStartDate());
+                //TODO format the dates
+                datesLayout.setVisibility(View.VISIBLE);
+                startDate.setText(Helper.formatDate(currentTrip.getStartDate(), "MMMM d") + " - ");
             }else{
-                startDate.setText("");
+                datesLayout.setVisibility(View.GONE);
             }
-            if(currentTrip.getDateCreated() != null){
-                endDate.setText(currentTrip.getDateCreated());
+            if(currentTrip.getStartDate() != 0){
+                //endDate.setText(currentTrip.getStartDate());
+                endDate.setText(Helper.formatDate(currentTrip.getEndDate()));
             }else {
                 endDate.setText("");
             }
@@ -183,6 +192,13 @@ public class TripFragment extends Fragment {
 
         FabSpeedDial fabSpeedDial = view.findViewById(R.id.trip_fragment_fab);
 
+        /**
+         * The menu listner for the fab menu, currently has 4 options
+         * Add a destination to the trip
+         * Edit the trip's name
+         * Edit the trip's dates
+         * Delete the trip
+         */
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter(){
             @Override
             public boolean onPrepareMenu(NavigationMenu navigationMenu) {
@@ -209,14 +225,48 @@ public class TripFragment extends Fragment {
 
                 } else if (id == R.id.action_edit_name){
                     //handle letting the user edit the trip's name
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    //builder.setMessage("Name your trip");
+                    builder.setTitle("Edit Trip Name");
+                    final EditText inputName = new EditText(getContext());
+                    inputName.setHint("Trip Name");
+                    inputName.setText(currentTrip.getName());
+                    builder.setView(inputName);
+                    builder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String name = inputName.getText().toString();
+                            if(name != null){
+                                currentTrip.setName(name);
+                            }
+                            DatabaseHandler db = new DatabaseHandler(getContext());
+                            db.updateTrip(currentTrip);
+                            db.close();
+                            tripNameTextView.setText(name);
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", null);
+                    builder.show();
+
                 } else if (id == R.id.action_edit_times){
                     //handle letting the user edit the trip's start and end dates
                 } else if (id == R.id.action_delete){
-                    //handle deleting the current trip
-                    DatabaseHandler db = new DatabaseHandler(getContext());
-                    db.deleteTrip(currentTrip.getTripID());
-                    db.close();
-                    fm.popBackStack();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Delete Trip");
+                    builder.setMessage("Are you sure you want to delete " + currentTrip.getName() + "?");
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //handle deleting the current trip
+                            DatabaseHandler db = new DatabaseHandler(getContext());
+                            db.deleteTrip(currentTrip.getTripID());
+                            db.close();
+                            fm.popBackStack();
+                        }
+                    });
+                    builder.setNegativeButton("No", null);
+                    builder.show();
+
                 }
                 return false;
             }
@@ -237,7 +287,7 @@ public class TripFragment extends Fragment {
                 //add the place to the database
                 DatabaseHandler db = new DatabaseHandler(getContext());
                 Destination dest = new Destination(place.getId(),
-                        null, null,
+                        0, 0,
                         currentTrip.getTripID(),
                         place.getName().toString(),
                         null);

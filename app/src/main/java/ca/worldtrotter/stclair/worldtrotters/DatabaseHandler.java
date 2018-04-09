@@ -50,7 +50,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //fields for trip table
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_NAME = "name";
-    public static final String COLUMN_DATE_CREATED = "date_created";
+    public static final String COLUMN_END_DATE = "end_date";
     public static final String COLUMN_IMAGE_PATH = "image";
     public static final String COLUMN_START_DATE = "start_date";
 
@@ -74,16 +74,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //create statement for trip table
 
     public static final String CREATE_TABLE_TRIPS = "CREATE TABLE " + TABLE_TRIPS + " (" +
-            COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_NAME + " TEXT, " +
-            COLUMN_DATE_CREATED + " TEXT, " + COLUMN_IMAGE_PATH + " TEXT, " +
-            COLUMN_START_DATE + " TEXT )";
+            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NAME + " TEXT, " +
+            COLUMN_END_DATE + " LONG, " + COLUMN_IMAGE_PATH + " TEXT, " +
+            COLUMN_START_DATE + " LONG )";
 
     //create statement for places table
     public static final String CREATE_TABLE_DESTINATIONS = "CREATE TABLE " + TABLE_DESTINATIONS + " (" +
-            COLUMN_ID + " INTEGER PRIMARY KEY, " +
+            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_PLACE_ID + " TEXT, " +
-            COLUMN_START_DATE_TIME + " TEXT, " +
-            COLUMN_END_DATE_TIME + " TEXT, " +
+            COLUMN_START_DATE_TIME + " LONG, " +
+            COLUMN_END_DATE_TIME + " LONG, " +
             COLUMN_TRIP_ID + " INTEGER REFERENCES " + TABLE_TRIPS + "(" + COLUMN_ID + ")," +
             COLUMN_NAME + " TEXT , " +
             COLUMN_IMAGE_PATH + " TEXT)";
@@ -123,7 +123,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, trip.getName());
-        values.put(COLUMN_DATE_CREATED, trip.getDateCreated());
+        values.put(COLUMN_END_DATE, trip.getEndDate());
         values.put(COLUMN_IMAGE_PATH, trip.getImageURL());
         values.put(COLUMN_START_DATE, trip.getStartDate());
         int id = (int) db.insert(TABLE_TRIPS, null, values);
@@ -167,16 +167,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Trip trip = null;
 
         Cursor c = db.query(TABLE_TRIPS,
-                new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DATE_CREATED, COLUMN_IMAGE_PATH, COLUMN_START_DATE},
+                new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_END_DATE, COLUMN_IMAGE_PATH, COLUMN_START_DATE},
                 COLUMN_ID + "=?", new String[]{String.valueOf(id)},
                 null, null, null, null);
         if(c != null){
             c.moveToFirst();
             trip = new Trip(Integer.parseInt(c.getString(0)),
                     c.getString(1),
-                    c.getString(2),
+                    Long.parseLong(c.getString(2)),
                     c.getString(3),
-                    c.getString(4));
+                    Long.parseLong(c.getString(4)));
         }
         db.close();
 
@@ -193,9 +193,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             do{
                 tripsList.add(new Trip(Integer.parseInt(c.getString(0)),
                         c.getString(1),
-                        c.getString(2),
+                        Long.parseLong(c.getString(2)),
                         c.getString(3),
-                        c.getString(4)));
+                        Long.parseLong(c.getString(4))));
             } while(c.moveToNext());
         }
 
@@ -217,8 +217,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (c.moveToFirst()){
             place = new Destination(Integer.parseInt(c.getString(0)),
                     c.getString(1),
-                    c.getString(2),
-                    c.getString(3),
+                    Long.parseLong(c.getString(2)),
+                    Long.parseLong(c.getString(3)),
                     Integer.parseInt(c.getString(4)),
                     c.getString(5),
                     c.getString(6));
@@ -240,8 +240,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             do{
                 placeList.add(new Destination(Integer.parseInt(c.getString(0)),
                         c.getString(1),
-                        c.getString(2),
-                        c.getString(3),
+                        Long.parseLong(c.getString(2)),
+                        Long.parseLong(c.getString(3)),
                         Integer.parseInt(c.getString(4)),
                         c.getString(5),
                         c.getString(6)));
@@ -300,7 +300,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues vals = new ContentValues();
         vals.put(COLUMN_NAME, trip.getName());
-        vals.put(COLUMN_DATE_CREATED, trip.getDateCreated());
+        vals.put(COLUMN_END_DATE, trip.getEndDate());
         vals.put(COLUMN_IMAGE_PATH, trip.getImageURL());
 
         vals.put(COLUMN_START_DATE, trip.getStartDate());
@@ -349,4 +349,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[]{String.valueOf(id)});
         db.close();
     }
+
 }

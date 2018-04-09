@@ -8,21 +8,21 @@ package ca.worldtrotter.stclair.worldtrotters;
 public class Trip {
     private int tripID;
     private String name;
-    private String dateCreated;
+    private long endDate;
     private String imageURL;
-    private String startDate;
+    private long startDate;
 
-    public Trip(int tripID, String name, String dateCreated, String imageURL, String startDate) {
+    public Trip(int tripID, String name, long endDate, String imageURL, long startDate) {
         this.tripID = tripID;
         this.name = name;
-        this.dateCreated = dateCreated;
+        this.endDate = endDate;
         this.imageURL = imageURL;
         this.startDate = startDate;
     }
 
-    public Trip(String name, String dateCreated, String imageURL, String startDate) {
+    public Trip(String name, long endDate, String imageURL, long startDate) {
         this.name = name;
-        this.dateCreated = dateCreated;
+        this.endDate = endDate;
         this.imageURL = imageURL;
         this.startDate = startDate;
     }
@@ -46,12 +46,12 @@ public class Trip {
         this.name = name;
     }
 
-    public String getDateCreated() {
-        return dateCreated;
+    public long getEndDate() {
+        return endDate;
     }
 
-    public void setDateCreated(String dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setEndDate(long dateCreated) {
+        this.endDate = dateCreated;
     }
 
     public String getImageURL() {
@@ -62,11 +62,11 @@ public class Trip {
         this.imageURL = imageURL;
     }
 
-    public String getStartDate() {
+    public long getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(long startDate) {
         this.startDate = startDate;
     }
 }
