@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -124,9 +125,13 @@ public class CreateTripFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (destinations.size() == 0) {
-                    getFragmentManager().popBackStack();
-                    Toast.makeText(getContext(), "Sorry, something went wrong", Toast.LENGTH_LONG);
+
+                    Toast.makeText(getContext(), "Please add at least one destination", Toast.LENGTH_LONG);
                 } else {
+                    DatabaseHandler db = new DatabaseHandler(getContext());
+                    for (Destination dest: destinations) {
+                        db.addDestination(dest);
+                    }
 
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_content, AddTripDateFragment.newInstance(currentTrip.getTripID()));
@@ -174,20 +179,11 @@ public class CreateTripFragment extends Fragment {
                     DatabaseHandler db = new DatabaseHandler(getContext());
                     int id = db.addTrip(currentTrip);
                     currentTrip = db.getTrip(id);
-                    Helper.addPlacePhoto(getContext(), place.getId(), currentTrip.getTripID(), -1);
-
                 }
-
-
-                Destination newDest = new Destination(place.getId(), 0, 0, currentTrip.getTripID(), place.getName().toString(), null);
+                Destination newDest = new Destination(place.getId(), 0, 0, currentTrip.getTripID(), place.getName().toString());
                 newDest.setTripId(currentTrip.getTripID());
-
                 destinations.add(newDest);
-
-                DatabaseHandler db = new DatabaseHandler(getContext());
-                int id = db.addDestination(newDest);
-                newDest = db.getDestination(id);
-                Helper.addPlacePhoto(getContext(), place.getId(), -1, newDest.getId());
+                Helper.addPlacePhoto(getContext(), place.getId());
 
                 adapter.notifyDataSetChanged();
 
@@ -238,6 +234,11 @@ public class CreateTripFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        if(destinations.size() == 0){
+            DatabaseHandler db = new DatabaseHandler(getContext());
+            db.deleteTrip(currentTrip.getTripID());
+            db.close();
+        }
     }
 
     /**

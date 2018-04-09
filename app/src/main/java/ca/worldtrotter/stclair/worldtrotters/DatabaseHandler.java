@@ -187,7 +187,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[]{COLUMN_PLACE_ID, COLUMN_IMAGE_PATH, COLUMN_ATTRIBUTION},
                 COLUMN_PLACE_ID + " =? ", new String[]{placeID},
                 null, null, null, null);
-        if(c != null){
+        if(c.moveToFirst()){
             img = new Image(c.getString(0), c.getString(1), c.getString(2));
         }
 
@@ -207,7 +207,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             trip = new Trip(Integer.parseInt(c.getString(0)),
                     c.getString(1),
                     Long.parseLong(c.getString(2)),
-                    Long.parseLong(c.getString(4)));
+                    Long.parseLong(c.getString(3)));
         }
         db.close();
 
@@ -225,7 +225,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 tripsList.add(new Trip(Integer.parseInt(c.getString(0)),
                         c.getString(1),
                         Long.parseLong(c.getString(2)),
-                        Long.parseLong(c.getString(4))));
+                        Long.parseLong(c.getString(3))));
             } while(c.moveToNext());
         }
 

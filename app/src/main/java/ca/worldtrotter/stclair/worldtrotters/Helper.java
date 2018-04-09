@@ -76,6 +76,7 @@ public class Helper {
                     //Random r = new Random();
                     //PlacePhotoMetadata photoMetadata = photoBuffer.get(r.nextInt(photoBuffer.getCount()));
                     final PlacePhotoMetadata photoMetadata = photoBuffer.get(0);
+                    final String attribution = photoMetadata.getAttributions().toString();
                     Log.d("NUMBER OF PHTOTOS AVAILABLE IN ARRAY", photoBuffer.getCount() + "");
                     photoMetadata.getPhoto(client).setResultCallback(new ResultCallback<PlacePhotoResult>() {
                         @Override
@@ -98,15 +99,13 @@ public class Helper {
                             try {
                                 FileOutputStream out = new FileOutputStream(photoFile);
                                 photo.compress(Bitmap.CompressFormat.JPEG, 70, out);
-                                out.flush();
-                                out.close();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
                             //get the resulting image path
                             String imagePath = photoFile.getAbsolutePath();
-                            Image img = new Image(placeId, imagePath, photoMetadata.getAttributions().toString());
+                            Image img = new Image(placeId, imagePath, attribution);
                             //add the image path to the database
                             DatabaseHandler db = new DatabaseHandler(context);
                             db.addImage(img);

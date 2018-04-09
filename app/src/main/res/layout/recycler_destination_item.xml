@@ -27,7 +27,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/linearLayout"
-            app:srcCompat="@drawable/sea" />
+            app:srcCompat="@color/cardview_light_background" />
 
         <ImageView
             android:layout_width="0dp"

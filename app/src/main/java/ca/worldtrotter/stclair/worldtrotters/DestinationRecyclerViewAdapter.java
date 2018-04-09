@@ -129,7 +129,13 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
             }
         });
 
-        Picasso.get().load("file://" + current.getImagePath()).into(((CustomViewHolder) holder).backgroundImage);
+        DatabaseHandler db = new DatabaseHandler(context);
+        Image image = db.getImage(current.getPlaceId());
+
+        if(image != null) {
+            String path = image.getImagePath();
+            Picasso.get().load("file://" + path).into(((CustomViewHolder) holder).backgroundImage);
+        }
     }
 
 

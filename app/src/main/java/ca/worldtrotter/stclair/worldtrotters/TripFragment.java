@@ -289,11 +289,10 @@ public class TripFragment extends Fragment {
                 Destination dest = new Destination(place.getId(),
                         0, 0,
                         currentTrip.getTripID(),
-                        place.getName().toString(),
-                        null);
+                        place.getName().toString());
                 int id = db.addDestination(dest);
+                Helper.addPlacePhoto(getContext(), place.getId());
                 db.close();
-                Helper.addPlacePhoto(getContext(), place.getId(), -1, id);
                 dest = db.getDestination(id);
                 destinationArrayList.add(dest);
                 adapter.notifyDataSetChanged();
