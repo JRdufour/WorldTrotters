@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.function.LongToIntFunction;
@@ -168,14 +169,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public void addImage(Image img){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
 
-        values.put(COLUMN_PLACE_ID, img.getPlaceID());
-        values.put(COLUMN_IMAGE_PATH, img.getImagePath());
-        values.put(COLUMN_ATTRIBUTION, img.getAttribution());
 
-        db.insert(TABLE_IMAGES, null, values);
+
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+
+            values.put(COLUMN_PLACE_ID, img.getPlaceID());
+            values.put(COLUMN_IMAGE_PATH, img.getImagePath());
+            values.put(COLUMN_ATTRIBUTION, img.getAttribution());
+
+            db.insert(TABLE_IMAGES, null, values);
+            db.close();
+
     }
 
     //READ operations
@@ -187,11 +193,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[]{COLUMN_PLACE_ID, COLUMN_IMAGE_PATH, COLUMN_ATTRIBUTION},
                 COLUMN_PLACE_ID + " =? ", new String[]{placeID},
                 null, null, null, null);
+
+
         if(c.moveToFirst()){
             img = new Image(c.getString(0), c.getString(1), c.getString(2));
+            db.close();
+            return img;
         }
-
-        return img;
+        db.close();
+        return null;
     }
 
     public Trip getTrip(int id){

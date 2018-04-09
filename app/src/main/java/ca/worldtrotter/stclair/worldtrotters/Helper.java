@@ -70,50 +70,57 @@ public class Helper {
         Places.GeoDataApi.getPlacePhotos(client, placeId).setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
             @Override
             public void onResult(@NonNull PlacePhotoMetadataResult placePhotoMetadataResult) {
-                if(placePhotoMetadataResult.getStatus().isSuccess()){
+                if(placePhotoMetadataResult.getStatus().isSuccess()) {
                     PlacePhotoMetadataBuffer photoBuffer = placePhotoMetadataResult.getPhotoMetadata();
-
                     //Random r = new Random();
                     //PlacePhotoMetadata photoMetadata = photoBuffer.get(r.nextInt(photoBuffer.getCount()));
-                    final PlacePhotoMetadata photoMetadata = photoBuffer.get(0);
-                    final String attribution = photoMetadata.getAttributions().toString();
-                    Log.d("NUMBER OF PHTOTOS AVAILABLE IN ARRAY", photoBuffer.getCount() + "");
-                    photoMetadata.getPhoto(client).setResultCallback(new ResultCallback<PlacePhotoResult>() {
-                        @Override
-                        public void onResult(@NonNull PlacePhotoResult placePhotoResult) {
-                            //Add the photo to the phone
+                    if (photoBuffer.getCount() != 0) {
 
-                            //grab the photo from Google
-                            Bitmap photo = placePhotoResult.getBitmap();
+                        final PlacePhotoMetadata photoMetadata = photoBuffer.get(0);
+                        final String attribution = photoMetadata.getAttributions().toString();
+                        Log.d("NUMBER OF PHTOTOS AVAILABLE IN ARRAY", photoBuffer.getCount() + "");
+                        photoMetadata.getPhoto(client).setResultCallback(new ResultCallback<PlacePhotoResult>() {
+                            @Override
+                            public void onResult(@NonNull PlacePhotoResult placePhotoResult) {
+                                DatabaseHandler db = new DatabaseHandler(context);
 
-                            //create a new image file
-                            File photoFile = null;
-                            try {
-                                photoFile = createTempImageFile();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+
+                                //grab the photo from Google
+                                Bitmap photo = placePhotoResult.getBitmap();
+
+                                //create a new image file
+                                File photoFile = null;
+                                try {
+                                    photoFile = createTempImageFile(placeId);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                if (photoFile.exists())
+                                    photoFile.delete();
+
+                                try {
+                                    FileOutputStream out = new FileOutputStream(photoFile);
+                                    photo.compress(Bitmap.CompressFormat.JPEG, 80, out);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (db.getImage(placeId) == null) {
+                                    //get the resulting image path
+                                    String imagePath = photoFile.getAbsolutePath();
+                                    Image img = new Image(placeId, imagePath, attribution);
+                                    //add the image path to the database
+
+                                    db.addImage(img);
+                                } else {
+                                    //TODO update the image
+                                }
+                                db.close();
                             }
-                            if (photoFile.exists())
-                                photoFile.delete();
-
-                            try {
-                                FileOutputStream out = new FileOutputStream(photoFile);
-                                photo.compress(Bitmap.CompressFormat.JPEG, 70, out);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-                            //get the resulting image path
-                            String imagePath = photoFile.getAbsolutePath();
-                            Image img = new Image(placeId, imagePath, attribution);
-                            //add the image path to the database
-                            DatabaseHandler db = new DatabaseHandler(context);
-                            db.addImage(img);
-                            db.close();
-                        }
-                    });
-                    photoBuffer.release();
-                    //photoBuffer.close();
+                        });
+                        photoBuffer.release();
+                        //photoBuffer.close();
+                    }
                 }
             }
 
@@ -127,9 +134,9 @@ public class Helper {
      * @return
      * @throws IOException
      */
-    public static File createTempImageFile() throws IOException {
+    public static File createTempImageFile(String placeId) throws IOException {
         //make the file name
-        String fileName = "worldtrotters_app_v1_" + System.currentTimeMillis() ;
+        String fileName = "worldtrotters_app_v1_" + placeId ;
         //grab the directory to save the image in
         File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File photo = File.createTempFile(fileName, ".jpg", dir);
