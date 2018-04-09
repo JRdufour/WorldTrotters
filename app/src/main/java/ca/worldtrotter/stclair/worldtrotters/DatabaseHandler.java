@@ -67,6 +67,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //fields for images table
     public static final String COLUMN_IMAGE_PATH = "img_path";
+    public static final String COLUMN_ATTRIBUTION = "attr";
 
     /**
      *
@@ -96,7 +97,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             "( " + COLUMN_ID + "), " + COLUMN_NAME + " TEXT, " + COLUMN_DESCRIPTION + " TEXT)";
 
     public static final String CREATE_TABLE_IMAGES = "CREATE TABLE " + TABLE_IMAGES + " ( " +
-            COLUMN_PLACE_ID + " TEXT PRIMARY KEY, " + COLUMN_IMAGE_PATH + " TEXT)";
+            COLUMN_PLACE_ID + " TEXT PRIMARY KEY, " + COLUMN_IMAGE_PATH + " TEXT, " + COLUMN_ATTRIBUTION + " TEXT)";
 
     public DatabaseHandler(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -116,6 +117,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TRIPS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DESTINATIONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TO_TO_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_IMAGES);
     }
 
     /**
@@ -160,9 +162,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(COLUMN_PLACE_ID, item.getPlaceId());
         values.put(COLUMN_NAME, item.getName());
         values.put(COLUMN_DESCRIPTION, item.getDescription());
+
+        db.insert(TABLE_TO_TO_ITEMS, null, values);
+        db.close();
     }
 
-    public void addImage()
+    public void addImage(Image img){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_PLACE_ID, img.getPlaceID());
+        values.put(COLUMN_IMAGE_PATH, img.getImagePath());
+        values.put(COLUMN_ATTRIBUTION, img.getAttribution());
+
+        db.insert(TABLE_IMAGES, null, values);
+    }
 
     //READ operations
 
@@ -223,7 +237,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     Long.parseLong(c.getString(2)),
                     Long.parseLong(c.getString(3)),
                     Integer.parseInt(c.getString(4)),
-                    c.getString(5);
+                    c.getString(5));
         }
         db.close();
        return place;

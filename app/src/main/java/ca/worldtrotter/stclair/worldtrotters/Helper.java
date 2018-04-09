@@ -63,17 +63,10 @@ public class Helper {
 //        return null;
 //    }
 
-    /**
-     * This method takes a place id and grabs the corresponding images for that place from google
-     * it then adds that photo to the user's phone and adds the image path to the database
-     * Depending on the parameters passed, it adds the image to the corresponding trip or destination
-     * @param context
-     * @param placeId
-     * @param tripId
-     * @param destinationId
-     */
-    public static void addPlacePhoto(final Context context, String placeId, final int tripId, final int destinationId){
+
+    public static void addPlacePhoto(final Context context, final String placeId){
         final GoogleApiClient client = MainActivity.googleClient;
+
         Places.GeoDataApi.getPlacePhotos(client, placeId).setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
             @Override
             public void onResult(@NonNull PlacePhotoMetadataResult placePhotoMetadataResult) {
@@ -82,7 +75,7 @@ public class Helper {
 
                     //Random r = new Random();
                     //PlacePhotoMetadata photoMetadata = photoBuffer.get(r.nextInt(photoBuffer.getCount()));
-                    PlacePhotoMetadata photoMetadata = photoBuffer.get(0);
+                    final PlacePhotoMetadata photoMetadata = photoBuffer.get(0);
                     Log.d("NUMBER OF PHTOTOS AVAILABLE IN ARRAY", photoBuffer.getCount() + "");
                     photoMetadata.getPhoto(client).setResultCallback(new ResultCallback<PlacePhotoResult>() {
                         @Override
@@ -113,21 +106,10 @@ public class Helper {
 
                             //get the resulting image path
                             String imagePath = photoFile.getAbsolutePath();
-
-                            //add the image path to the database by grabbing the current trip and updating the trip
+                            Image img = new Image(placeId, imagePath, photoMetadata.getAttributions().toString());
+                            //add the image path to the database
                             DatabaseHandler db = new DatabaseHandler(context);
-                            if(tripId != -1){
-                                Trip trip = db.getTrip(tripId);
-                                trip.setImageURL(imagePath);
-                                //update the database, cant do that rn because functionality isnt there
-                                db.updateTrip(trip);
-                            }
-                            else if(destinationId != -1){
-                                Destination destination = db.getDestination(destinationId);
-                                destination.setImagePath(imagePath);
-                                db.upDateDestination(destination);
-                            }
-
+                            db.addImage(img);
                             db.close();
                         }
                     });
