@@ -64,9 +64,13 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
 
         //grab the image location from the database and add the image to the imagaview
         DatabaseHandler db = new DatabaseHandler(context);
-        //String imagePath = db.getImage(currentTrip.get)
+        Image image =  db.getImageForTrip(currentTrip.getTripID());
+        String imagePath = "";
+        if(image != null){
+            imagePath = image.getImagePath();
+        }
         //Log.d("IMAGE_PATH_FROM_DB", imagePath + " ");
-        //Picasso.get().load("file://" + imagePath).into(holder1.image);
+        Picasso.get().load("file://" + imagePath).into(holder1.image);
 
     }
 

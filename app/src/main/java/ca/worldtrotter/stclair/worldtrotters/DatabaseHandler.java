@@ -7,6 +7,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.function.LongToIntFunction;
@@ -202,6 +203,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         db.close();
         return null;
+    }
+
+    public Image getImageForTrip(int tripId){
+        Image image = null;
+
+        ArrayList<Destination> destinations = this.getAllPlacesForTrip(tripId);
+        if(destinations.size() != 0) {
+            image = this.getImage(destinations.get(0).getPlaceId());
+        }
+        return image;
     }
 
     public Trip getTrip(int id){
