@@ -1,8 +1,10 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
 
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -79,10 +82,32 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                                 transaction.commit();
                                 break;
                             case R.id.action_delete:
-                                //handle menu2 click
+                                new AlertDialog.Builder(context)
+                                        .setTitle("Delete Location")
+                                        .setMessage("Are you sure you want to delete this location?")
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setPositiveButton("No", null)
+                                        .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                //Grab the location in the list
+                                                int theTrip = holder.getAdapterPosition();
+                                                //Grab the database
+                                                DatabaseHandler db = new DatabaseHandler(context);
+                                                //Delete the location from the database
+                                                //Grab the location from the locations array list
+                                                //Grab that locations ID and delete it from the database
+                                                db.deleteTrip(tripList.get(theTrip).getTripID());
+                                                //Also delete the object from the ArrayList
+                                                tripList.remove(theTrip);
+                                                //Refresh the RecyclerView to the items that are in the ArrayList
+                                                notifyItemRemoved(theTrip);
+                                            }
+                                        })
+                                        .show();
                                 break;
                             case R.id.action_completed:
-                                //handle menu3 click
+                                Toast.makeText(context, "Trip Marked as Complete", Toast.LENGTH_SHORT).show();
                                 break;
                         }
                         return false;
