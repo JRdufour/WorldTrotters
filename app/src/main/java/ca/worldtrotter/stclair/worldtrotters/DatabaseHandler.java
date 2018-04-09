@@ -180,6 +180,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //READ operations
 
+    public Image getImage(String placeID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Image img = null;
+        Cursor c = db.query(TABLE_IMAGES,
+                new String[]{COLUMN_PLACE_ID, COLUMN_IMAGE_PATH, COLUMN_ATTRIBUTION},
+                COLUMN_PLACE_ID + " =? ", new String[]{placeID},
+                null, null, null, null);
+        if(c != null){
+            img = new Image(c.getString(0), c.getString(1), c.getString(2));
+        }
+
+        return img;
+    }
 
     public Trip getTrip(int id){
         SQLiteDatabase db = this.getReadableDatabase();
