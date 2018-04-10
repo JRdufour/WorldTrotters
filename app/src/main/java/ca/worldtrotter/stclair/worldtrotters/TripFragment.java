@@ -148,7 +148,7 @@ public class TripFragment extends Fragment {
                 //startDate.setText(currentTrip.getStartDate());
                 //TODO format the dates
                 datesLayout.setVisibility(View.VISIBLE);
-                startDate.setText(Helper.formatDate(currentTrip.getStartDate(), "MMMM d") + " - ");
+                startDate.setText(Helper.formatDate(currentTrip.getStartDate(), "MMMM d") + "  -  ");
             }else{
                 datesLayout.setVisibility(View.GONE);
             }
@@ -262,7 +262,9 @@ public class TripFragment extends Fragment {
                 db.close();
                 dest = db.getDestination(id);
                 destinationArrayList.add(dest);
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemInserted(destinationArrayList.size() -1);
+                Log.d("ARRAY SIZE", destinationArrayList.size() + " ");
+
             }
         }
     }

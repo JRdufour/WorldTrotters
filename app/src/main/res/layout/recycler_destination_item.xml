@@ -76,7 +76,7 @@
                 android:textColor="@android:color/white" />
 
             <ImageView
-                android:id="@+id/destination_show_more_button"
+                android:id="@+id/destination_menu_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
@@ -135,6 +135,10 @@
                         android:hint="Start Date"
 
                         android:inputType="text"
+                        android:textColor="@android:color/white"
+                        android:textColorHighlight="@android:color/white"
+                        android:textColorHint="@android:color/white"
+                        android:textColorLink="@android:color/white"
                         android:theme="@style/AppTheme.EditText" />
                 </android.support.design.widget.TextInputLayout>
 
