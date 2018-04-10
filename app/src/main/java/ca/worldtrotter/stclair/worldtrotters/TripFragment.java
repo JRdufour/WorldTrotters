@@ -3,6 +3,7 @@ package ca.worldtrotter.stclair.worldtrotters;
 import android.app.Activity;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.support.design.internal.NavigationMenu;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,6 +40,8 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
@@ -224,49 +228,12 @@ public class TripFragment extends Fragment {
                     }
 
                 } else if (id == R.id.action_edit_name){
-                    //handle letting the user edit the trip's name
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    //builder.setMessage("Name your trip");
-                    builder.setTitle("Edit Trip Name");
-                    final EditText inputName = new EditText(getContext());
-                    inputName.setHint("Trip Name");
-                    inputName.setText(currentTrip.getName());
-                    builder.setView(inputName);
-                    builder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            String name = inputName.getText().toString();
-                            if(name != null){
-                                currentTrip.setName(name);
-                            }
-                            DatabaseHandler db = new DatabaseHandler(getContext());
-                            db.updateTrip(currentTrip);
-                            db.close();
-                            tripNameTextView.setText(name);
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", null);
-                    builder.show();
-
+                    editTripName();
                 } else if (id == R.id.action_edit_times){
                     //handle letting the user edit the trip's start and end dates
+                    editTripTimes();
                 } else if (id == R.id.action_delete){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Delete Trip");
-                    builder.setMessage("Are you sure you want to delete " + currentTrip.getName() + "?");
-                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            //handle deleting the current trip
-                            DatabaseHandler db = new DatabaseHandler(getContext());
-                            db.deleteTrip(currentTrip.getTripID());
-                            db.close();
-                            fm.popBackStack();
-                        }
-                    });
-                    builder.setNegativeButton("No", null);
-                    builder.show();
-
+                    deleteTrip();
                 }
                 return false;
             }
@@ -301,10 +268,88 @@ public class TripFragment extends Fragment {
     }
 
     public void refreshRecycler(){
+        adapter.notifyDataSetChanged();
+    }
+
+    private void editTripName(){
+        //handle letting the user edit the trip's name
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        //builder.setMessage("Name your trip");
+        builder.setTitle("Edit Trip Name");
+        final EditText inputName = new EditText(getContext());
+        inputName.setHint("Trip Name");
+        inputName.setText(currentTrip.getName());
+        builder.setView(inputName);
+        builder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String name = inputName.getText().toString();
+                if(name != null){
+                    currentTrip.setName(name);
+                }
+                DatabaseHandler db = new DatabaseHandler(getContext());
+                db.updateTrip(currentTrip);
+                db.close();
+                tripNameTextView.setText(name);
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
 
     }
 
+    private void deleteTrip(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Delete Trip");
+        builder.setMessage("Are you sure you want to delete " + currentTrip.getName() + "?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //handle deleting the current trip
+                DatabaseHandler db = new DatabaseHandler(getContext());
+                db.deleteTrip(currentTrip.getTripID());
+                db.close();
+                fm.popBackStack();
+            }
+        });
+        builder.setNegativeButton("No", null);
+        builder.show();
 
+    }
+
+    private void editTripTimes(){
+        final Calendar now = Calendar.getInstance();
+
+        DatePickerDialog picker = new DatePickerDialog(getContext(), null,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH));
+                picker.setMessage("Select Start Date");
+        picker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                Date date = new Date(Helper.formatDate(year, month, day));
+                currentTrip.setStartDate(date.getTime());
+                final DatePickerDialog picker2 = new DatePickerDialog(getContext(), null,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH));
+                picker2.setMessage("Select End Date");
+                picker2.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        Date date = new Date(Helper.formatDate(i, i1, i2));
+                        currentTrip.setEndDate(date.getTime());
+                        DatabaseHandler db = new DatabaseHandler(getContext());
+                        db.updateTrip(currentTrip);
+                        db.close();
+                    }
+                });
+                picker2.show();
+            }
+        });
+        picker.show();
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

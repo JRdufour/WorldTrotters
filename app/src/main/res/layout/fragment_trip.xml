@@ -132,9 +132,9 @@
             app:fabMenu="@menu/menu_fab"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:miniFabBackgroundTint="@color/colorAccent"
+            app:miniFabBackgroundTint="@color/colorPrimaryDark"
             app:miniFabDrawableTint="@android:color/white"
-            app:miniFabTitleBackgroundTint="@color/colorAccent"
+            app:miniFabTitleBackgroundTint="@color/colorPrimaryDark"
             app:miniFabTitleTextColor="@android:color/white" />
 
     </android.support.constraint.ConstraintLayout>

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -93,7 +92,7 @@ public class CreateTripFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_name_trip, container, false);
+        View view = inflater.inflate(R.layout.fragment_create_trip, container, false);
         MainActivity.fab.hide();
         getActivity().setTitle("Create A Trip");
         //grab the edit text
