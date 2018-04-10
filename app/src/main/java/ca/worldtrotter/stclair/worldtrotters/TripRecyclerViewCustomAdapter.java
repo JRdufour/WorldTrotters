@@ -7,10 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -63,6 +65,10 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
 //            }
 //        });
 
+        final EditText input = new EditText(context);
+        input.setHint("Enter new trip name");
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+
         ((CustomViewHolder) holder).menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,10 +82,19 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_edit:
-                                android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
-                                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID()));
-                                transaction.addToBackStack(null);
-                                transaction.commit();
+                                new AlertDialog.Builder(context)
+                                .setView(input)
+                                .setTitle("Update Trip Name")
+                                .setMessage("Are you sure you want to update the trip's name?")
+                                        .setIcon(R.drawable.ic_error_black_24dp)
+                                .setPositiveButton("Cancel",null)
+                                .setNegativeButton("Update", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        ((CustomViewHolder) holder).tripName.setText(input.getText().toString());
+                                    }
+                                })
+                                .show();
                                 break;
                             case R.id.action_delete:
                                 new AlertDialog.Builder(context)
@@ -90,17 +105,17 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                                         .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                //Grab the location in the list
+                                                //Grab the trip in the array list
                                                 int theTrip = holder.getAdapterPosition();
                                                 //Grab the database
                                                 DatabaseHandler db = new DatabaseHandler(context);
-                                                //Delete the location from the database
-                                                //Grab the location from the locations array list
-                                                //Grab that locations ID and delete it from the database
+                                                //Delete the trip from the database
+                                                //Grab the trip from the locations array list
+                                                //Grab that trip ID and delete it from the database
                                                 db.deleteTrip(tripList.get(theTrip).getTripID());
                                                 //Also delete the object from the ArrayList
                                                 tripList.remove(theTrip);
-                                                //Refresh the RecyclerView to the items that are in the ArrayList
+                                                //Refresh the RecyclerView
                                                 notifyItemRemoved(theTrip);
                                             }
                                         })
