@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="2dp"
-    android:layout_marginTop="8dp"
-    android:background="@color/cardview_light_background"
-    app:cardElevation="5dp"
-    app:contentPadding="0dp">
+    android:layout_marginTop="10dp"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:alpha=".85"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="@+id/view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:alpha=".4"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="@+id/view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,6 +84,7 @@
             android:id="@+id/add_trip_grid_layout1"
             android:layout_width="347dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:layout_row="4"
             android:alignmentMode="alignMargins"
             android:padding="10dp"
@@ -192,7 +190,7 @@
             android:layout_height="wrap_content"
             android:paddingEnd="10dp"
             android:paddingStart="10dp"
-            android:paddingTop="10dp"
+            android:paddingTop="7dp"
             app:layout_constraintBottom_toTopOf="@+id/to_do_item_list_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -227,10 +225,8 @@
             android:layout_height="wrap_content"
             android:layout_column="0"
             android:layout_columnSpan="2"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="8dp"
             android:layout_row="1"
-            android:padding="5dp"
+            android:padding="2dp"
             android:scrollbars="none"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -239,6 +235,5 @@
             app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
 
     </android.support.constraint.ConstraintLayout>
-
-
 </android.support.v7.widget.CardView>
+

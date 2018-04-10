@@ -58,17 +58,17 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
         CustomViewHolder holder1 = ((CustomViewHolder) holder);
         ((CustomViewHolder) holder).tripName.setText(currentTrip.getName());
 
-    //    ((CustomViewHolder) holder).image.setOnClickListener(new View.OnClickListener() {
 
-//        ((CustomViewHolder)holder).image.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
-//                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID()));
-//                transaction.addToBackStack(null);
-//                transaction.commit();
-//            }
-//        });
+
+        ((CustomViewHolder)holder).image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
+                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID()));
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
 
         ((CustomViewHolder) holder).menu.setOnClickListener(new View.OnClickListener() {
 
@@ -94,7 +94,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                                         .setTitle("Delete Location")
                                         .setMessage("Are you sure you want to delete this location?")
                                         .setIcon(android.R.drawable.ic_dialog_alert)
-                                        .setPositiveButton("No", null)
+                                        .setPositiveButton("Cancel", null)
                                         .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {

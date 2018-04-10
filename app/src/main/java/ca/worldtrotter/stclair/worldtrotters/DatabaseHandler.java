@@ -65,6 +65,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     //fields for toDoitem table
+    public static final String COLUMN_DESTINATION_ID = "destination_id";
     public static final String COLUMN_DESCRIPTION = "description";
 
     //fields for images table
@@ -95,7 +96,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //create statement for toDoItem table
 
     public static final String CREATE_TABLE_TO_DO_ITEMS = "CREATE TABLE " + TABLE_TO_TO_ITEMS + " ( " +
-            COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_PLACE_ID + " INTEGER REFERENCES " + TABLE_DESTINATIONS +
+            COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_DESTINATION_ID + " INTEGER REFERENCES " + TABLE_DESTINATIONS +
             "( " + COLUMN_ID + "), " + COLUMN_NAME + " TEXT, " + COLUMN_DESCRIPTION + " TEXT)";
 
     public static final String CREATE_TABLE_IMAGES = "CREATE TABLE " + TABLE_IMAGES + " ( " +
@@ -161,7 +162,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(COLUMN_PLACE_ID, item.getPlaceId());
+        values.put(COLUMN_DESTINATION_ID, item.getDestinationId());
         values.put(COLUMN_NAME, item.getName());
         values.put(COLUMN_DESCRIPTION, item.getDescription());
 
@@ -305,7 +306,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ToDoItem item = null;
 
         Cursor c = db.query(TABLE_TO_TO_ITEMS,
-                new String[]{COLUMN_ID, COLUMN_PLACE_ID, COLUMN_NAME, COLUMN_DESCRIPTION},
+                new String[]{COLUMN_ID, COLUMN_DESTINATION_ID, COLUMN_NAME, COLUMN_DESCRIPTION},
                 COLUMN_ID + "=?", new String[]{String.valueOf(id)},
                 null, null, null, null);
 
@@ -326,7 +327,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ArrayList<ToDoItem> itemsList = new ArrayList<>();
 
         Cursor c = db.query(TABLE_TO_TO_ITEMS,
-                new String[]{COLUMN_ID, COLUMN_PLACE_ID, COLUMN_NAME, COLUMN_DESCRIPTION},
+                new String[]{COLUMN_ID, COLUMN_DESTINATION_ID, COLUMN_NAME, COLUMN_DESCRIPTION},
                 COLUMN_PLACE_ID + "=?", new String[]{String.valueOf(placeId)},
                 null, null, null, null);
 

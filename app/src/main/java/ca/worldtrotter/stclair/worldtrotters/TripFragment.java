@@ -68,6 +68,8 @@ public class TripFragment extends Fragment {
     int INTENT_REQUEST_CODE = 1000;
     private static Activity activity;
     private DestinationRecyclerViewAdapter adapter;
+    private TextView startDate;
+    private TextView endDate;
 
     // TODO: Rename and change types of parameters
     private Integer mParam1;
@@ -135,8 +137,8 @@ public class TripFragment extends Fragment {
         MainActivity.fab.hide();
         //Edit text for trip name
         tripNameTextView = view.findViewById(R.id.trip_name_text_view);
-        TextView startDate = view.findViewById(R.id.trip_start_date_text_view);
-        TextView endDate = view.findViewById(R.id.trip_end_date_text_view);
+        startDate = view.findViewById(R.id.trip_start_date_text_view);
+        endDate = view.findViewById(R.id.trip_end_date_text_view);
         LinearLayout datesLayout = view.findViewById(R.id.dates_layout);
 
         destinationArrayList = new ArrayList<>();
@@ -262,7 +264,8 @@ public class TripFragment extends Fragment {
                 db.close();
                 dest = db.getDestination(id);
                 destinationArrayList.add(dest);
-                adapter.notifyItemInserted(destinationArrayList.size() -1);
+                adapter.notifyItemInserted(destinationArrayList.indexOf(dest));
+
                 Log.d("ARRAY SIZE", destinationArrayList.size() + " ");
 
             }
@@ -273,7 +276,7 @@ public class TripFragment extends Fragment {
         DatabaseHandler db = new DatabaseHandler(getContext());
         destinationArrayList = db.getAllPlacesForTrip(currentTrip.getTripID());
         destinationRecylcer.setAdapter(new DestinationRecyclerViewAdapter(destinationArrayList));
-        
+
     }
 
     private void editTripName(){
@@ -347,6 +350,10 @@ public class TripFragment extends Fragment {
                         currentTrip.setEndDate(date.getTime());
                         DatabaseHandler db = new DatabaseHandler(getContext());
                         db.updateTrip(currentTrip);
+                        if(currentTrip.getStartDate() != 0 && currentTrip.getEndDate() != 0){
+                            startDate.setText(Helper.formatDate(currentTrip.getStartDate(), "MMMM dd") + "  -  ");
+                            endDate.setText(Helper.formatDate(currentTrip.getEndDate()));
+                        }
                         db.close();
                     }
                 });

@@ -36,6 +36,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
     ArrayList<Destination> destinationArrayList;
     Context context;
+    private boolean agendaShown = false;
 
     public ArrayList<Destination> getDestinationArrayList() {
         return destinationArrayList;
@@ -87,14 +88,10 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
             localHolder.endDateTime.setText(Helper.formatDate(current.getEndDateTime(), "MMMM dd"));
         }
         //set up the list view that is going to hold the toDoItems
-        final ArrayList<String> toDoItemValues = new ArrayList<>();
-        toDoItemValues.add("Eat Burger");
-        toDoItemValues.add("See Sights");
-        toDoItemValues.add("Get a tattoo");
-
+        final ArrayList<ToDoItem> toDoItemValues = new ArrayList<>();
 
         //create a new array adapter for the list items
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
+        final ArrayAdapter<ToDoItem> adapter = new ArrayAdapter<ToDoItem>(context,
                 android.R.layout.simple_list_item_1, android.R.id.text1, toDoItemValues);
 
         //set the adapter to the listview
@@ -104,7 +101,27 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View view) {
                 //handel the action for the add agenda item button
-                toDoItemValues.add("Test");
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Add Agenda Item");
+                final EditText inputName = new EditText(context);
+                builder.setView(inputName);
+                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String agendaItem = inputName.getText().toString();
+                        if(agendaItem != null){
+                            DatabaseHandler db = new DatabaseHandler(context);
+                            ToDoItem item = new ToDoItem(current.getId(), agendaItem, null);
+                            db.addToDoItem(item);
+                            db.close();
+                            toDoItemValues.add(item);
+                            adapter.notifyDataSetChanged();
+                        }
+
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+                builder.show();
                 adapter.notifyDataSetChanged();
             }
         });
@@ -156,7 +173,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
 
                                 break;
-                                /** EDIT DATES**/
+                            /** EDIT DATES**/
                             case R.id.destination_menu_edit_dates:
                                 //handle editing dates
                                 editDates(current);
@@ -167,20 +184,17 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
                                 //TODO change menu item text to the remove agneda item text
                                 Log.d("TEST", "AGENDA PRESSED");
 
-                                localHolder.line.setVisibility(View.VISIBLE);
-                                localHolder.gridLayout.setVisibility(View.VISIBLE);
-                                localHolder.toDoItemListView.setVisibility(View.VISIBLE);
-
-//                                if (localHolder.line.getVisibility() == View.INVISIBLE || localHolder.line.getVisibility() == View.GONE) {
-//                                    localHolder.line.setVisibility(View.GONE);
-//                                    localHolder.gridLayout.setVisibility(View.GONE);
-//                                    localHolder.toDoItemListView.setVisibility(View.GONE);
-//                                } else {
-//                                    localHolder.line.setVisibility(View.VISIBLE);
-//                                    localHolder.gridLayout.setVisibility(View.VISIBLE);
-//                                    localHolder.toDoItemListView.setVisibility(View.VISIBLE);
-//                                }
-
+                                if (!agendaShown){
+                                    localHolder.line.setVisibility(View.VISIBLE);
+                                    localHolder.gridLayout.setVisibility(View.VISIBLE);
+                                    localHolder.toDoItemListView.setVisibility(View.VISIBLE);
+                                    agendaShown = true;
+                                 } else {
+                                       localHolder.line.setVisibility(View.GONE);
+                                       localHolder.gridLayout.setVisibility(View.GONE);
+                                       localHolder.toDoItemListView.setVisibility(View.GONE);
+                                        agendaShown = false;
+                                }
 
                             case R.id.destination_menu_explore:
                                 //handle exploring
