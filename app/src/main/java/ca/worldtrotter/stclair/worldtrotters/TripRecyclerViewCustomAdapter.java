@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -52,7 +55,11 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         //Set all the items in the customviewHolder
         final Trip currentTrip = tripList.get(position);
+        CustomViewHolder holder1 = ((CustomViewHolder) holder);
         ((CustomViewHolder) holder).tripName.setText(currentTrip.getName());
+
+    //    ((CustomViewHolder) holder).image.setOnClickListener(new View.OnClickListener() {
+
 //        ((CustomViewHolder)holder).image.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -64,6 +71,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
 //        });
 
         ((CustomViewHolder) holder).menu.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 //creating a popup menu
@@ -118,6 +126,18 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                 popup.show();
             }
         });
+
+
+        //grab the image location from the database and add the image to the imagaview
+        DatabaseHandler db = new DatabaseHandler(context);
+        Image image =  db.getImageForTrip(currentTrip.getTripID());
+        String imagePath = "";
+        if(image != null){
+            imagePath = image.getImagePath();
+        }
+        //Log.d("IMAGE_PATH_FROM_DB", imagePath + " ");
+        Picasso.get().load("file://" + imagePath).into(holder1.image);
+
     }
 
     @Override

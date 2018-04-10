@@ -1,20 +1,30 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Dufour on 2018-04-03.
@@ -23,7 +33,6 @@ import java.util.ArrayList;
 public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
     ArrayList<Destination> destinationArrayList;
-
     Context context;
 
     public ArrayList<Destination> getDestinationArrayList() {
@@ -42,7 +51,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.add_destination_item, parent, false);
+                .inflate(R.layout.recycler_destination_item, parent, false);
         final CustomViewHolder viewHolder = new CustomViewHolder(view);
 
         context = parent.getContext();
@@ -55,66 +64,26 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
         ((CustomViewHolder) holder).destinationName.setText(current.getName());
 
-        //add the functionality to remove a destination from the trip
-        ((CustomViewHolder) holder).cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int pos = holder.getAdapterPosition();
-                destinationArrayList.remove(pos);
-                notifyItemRemoved(pos);
+        ((CustomViewHolder) holder).startDateTime.setKeyListener(null);
+        ((CustomViewHolder) holder).endDateTime.setKeyListener(null);
+        ((CustomViewHolder) holder).startDateTime.setFocusable(false);
+        ((CustomViewHolder) holder).endDateTime.setFocusable(false);
 
-            }
-        });
-
-        //add the intent to onClick for destinationName
-        //makes sure the user cant edit the text of the name themselves
-        ((CustomViewHolder)holder).destinationName.setInputType(InputType.TYPE_NULL);
-        ((CustomViewHolder)holder).destinationName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //this is where we edit the destination text field when the user click it - don't know how to do atm
-            }
-        });
-
-        //give the start date focus
-        ((CustomViewHolder) holder).startDateTime.requestFocus();
-
-        //handel the user adding start times and end times for their trip
-        ((CustomViewHolder) holder).startDateTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if(!hasFocus){
-                    //the user has left focus of this text field
-                    String startDate = ((CustomViewHolder)holder).startDateTime.getText().toString().trim();
-                    if( startDate != null){
-                        //there is an input
-                        current.setStartDateTime(startDate);
-                    }
-                }
-            }
-        });
-
-
-        ((CustomViewHolder) holder).endDateTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if(!hasFocus){
-                    //the user has left focus of this text field
-                    String startDate = ((CustomViewHolder)holder).endDateTime.getText().toString().trim();
-                    if( startDate != null){
-                        //there is an input
-                        current.setEndDateTime(startDate);
-                    }
-                }
-            }
-        });
-
+        if(current.getStartDateTime() != 0) {
+            ((CustomViewHolder) holder).startDateTime.setText(Helper.formatDate(current.getStartDateTime(), "MMMM dd"));
+        }
+        if(current.getEndDateTime() != 0) {
+            ((CustomViewHolder) holder).endDateTime.setText(Helper.formatDate(current.getEndDateTime(), "MMMM dd"));
+        }
         //set up the list view that is going to hold the toDoItems
         final ArrayList<String> toDoItemValues = new ArrayList<>();
-        toDoItemValues.add("Eat Burger");
-        toDoItemValues.add("See Sights");
-        toDoItemValues.add("Get a tattoo");
+//        toDoItemValues.add("Eat Burger");
+//        toDoItemValues.add("See Sights");
+//        toDoItemValues.add("Get a tattoo");
 
+        if(toDoItemValues.size() == 0){
+            ((CustomViewHolder) holder).list.setVisibility(View.GONE);
+        }
         //create a new array adapter for the list items
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_list_item_1, android.R.id.text1, toDoItemValues);
@@ -131,6 +100,68 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
                 adapter.notifyDataSetChanged();
             }
         });
+
+        DatabaseHandler db = new DatabaseHandler(context);
+        Image image = db.getImage(current.getPlaceId());
+
+        if(image != null) {
+            String path = image.getImagePath();
+            Picasso.get().load("file://" + path).into(((CustomViewHolder) holder).backgroundImage);
+        }
+
+
+        ((CustomViewHolder) holder).menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu menu = new PopupMenu(context, view);
+                MenuInflater inflater = menu.getMenuInflater();
+                inflater.inflate(R.menu.destination_popup, menu.getMenu());
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.destination_menu_delete:
+                                //handel deleting the item
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                builder.setTitle("Delete Destination");
+                                builder.setMessage("Are you sure you want to delete " + current.getName() + "?");
+                                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        if(destinationArrayList.size() != 1) {
+                                            //handle deleting the current trip
+                                            DatabaseHandler db = new DatabaseHandler(context);
+                                            db.deleteDestination(current.getId());
+                                            int pos = destinationArrayList.indexOf(current);
+                                            destinationArrayList.remove(current);
+                                            notifyItemRemoved(pos);
+                                            db.close();
+                                        } else {
+                                            Toast.makeText(context, "You must have at least one destination", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                                builder.setNegativeButton("No", null);
+                                builder.show();
+
+
+                                break;
+                            case R.id.destination_menu_edit_dates:
+                                //handle editing dates
+                                editDates(current);
+                                break;
+                            case R.id.destination_menu_explore:
+                                //handle exploring
+                                break;
+                            default:
+
+                        }
+                        return false;
+                    }
+                });
+                menu.show();
+            }
+        });
     }
 
 
@@ -140,23 +171,62 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
-        protected EditText destinationName;
+        protected TextView destinationName;
         protected TextView startDateTime;
         protected TextView endDateTime;
-        protected TextView cancelButton;
+        protected ImageView menuButton;
         protected ImageView addAgendaItemButton;
         protected MyListView toDoItemListView;
+        protected ImageView backgroundImage;
+        protected MyListView list;
 
         public CustomViewHolder(View view) {
             super(view);
 
-            destinationName = (EditText) view.findViewById(R.id.add_trip_destination_edit_text);
-            cancelButton = (TextView) view.findViewById(R.id.destination_cancel_button);
+            destinationName = view.findViewById(R.id.destination_name_text);
+            menuButton = view.findViewById(R.id.destination_menu_button);
             startDateTime = (EditText) view.findViewById(R.id.add_trip_start_date);
             endDateTime = (EditText) view.findViewById(R.id.add_trip_end_date);
-            addAgendaItemButton = (ImageView) view.findViewById(R.id.add_agenda_item_button);
+            addAgendaItemButton = view.findViewById(R.id.add_agenda_item_button);
             toDoItemListView = view.findViewById(R.id.to_do_item_list_view);
+            backgroundImage = view.findViewById(R.id.destination_background_image);
+            list = view.findViewById(R.id.to_do_item_list_view);
         }
+    }
+
+    private void editDates(final Destination dest){
+        final Calendar now = Calendar.getInstance();
+
+        DatePickerDialog picker = new DatePickerDialog(context, null,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH));
+        picker.setMessage("Select Start Date");
+        picker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                Date date = new Date(Helper.formatDate(year, month, day));
+                dest.setStartDateTime(date.getTime());
+                final DatePickerDialog picker2 = new DatePickerDialog(context, null,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH));
+                picker2.setMessage("Select End Date");
+                picker2.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        Date date = new Date(Helper.formatDate(i, i1, i2));
+                        dest.setEndDateTime(date.getTime());
+                        DatabaseHandler db = new DatabaseHandler(context);
+                        db.upDateDestination(dest);
+                        db.close();
+                        notifyDataSetChanged();
+                    }
+                });
+                picker2.show();
+            }
+        });
+        picker.show();
     }
 
 }
