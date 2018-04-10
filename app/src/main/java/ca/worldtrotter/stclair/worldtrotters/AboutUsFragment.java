@@ -105,7 +105,7 @@ public class AboutUsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentTransaction t = fm.beginTransaction();
-                t.replace(R.id.main_content, new NameTripFragment());
+                t.replace(R.id.main_content, new CreateTripFragment());
                 t.addToBackStack(null);
                 t.commit();
 

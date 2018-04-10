@@ -84,12 +84,13 @@ public class TripListFragment extends Fragment {
             public void onClick(View view) {
                 //fragment transaction new TripFragment
                 FragmentTransaction transaction = fm.beginTransaction();
-                transaction.replace(R.id.main_content, new NameTripFragment());
-                transaction.addToBackStack(null);
+                transaction.replace(R.id.main_content, new CreateTripFragment(), "recycler");
+                transaction.addToBackStack("recycler");
                 transaction.commit();
             }
         });
 
+        getActivity().setTitle("Your Trips");
         //make some sample data to use
         ArrayList<Trip> tripList = new ArrayList<>();
         DatabaseHandler db = new DatabaseHandler(getActivity().getBaseContext());

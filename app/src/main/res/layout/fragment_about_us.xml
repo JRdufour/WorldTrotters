@@ -56,6 +56,7 @@
 
     <Button
         android:id="@+id/getStartedButton"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="0dp"
         android:layout_height="62dp"
         android:layout_gravity="bottom|center_vertical"
