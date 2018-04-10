@@ -74,6 +74,8 @@ public class AboutUsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        MainActivity.fab.hide();
+
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_about_us, container, false);
 
@@ -103,7 +105,7 @@ public class AboutUsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentTransaction t = fm.beginTransaction();
-                t.replace(R.id.main_content, new TripListFragment());
+                t.replace(R.id.main_content, new NameTripFragment());
                 t.addToBackStack(null);
                 t.commit();
 

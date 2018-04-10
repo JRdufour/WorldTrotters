@@ -83,9 +83,9 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                                 break;
                             case R.id.action_delete:
                                 new AlertDialog.Builder(context)
-                                        .setTitle("Delete Location")
-                                        .setMessage("Are you sure you want to delete this location?")
-                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setTitle("Delete Trip")
+                                        .setMessage("Are you sure you want to delete this trip?")
+                                        .setIcon(R.drawable.ic_error_black_24dp)
                                         .setPositiveButton("No", null)
                                         .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
                                             @Override
@@ -107,7 +107,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                                         .show();
                                 break;
                             case R.id.action_completed:
-                                Toast.makeText(context, "Trip Marked as Complete", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Trip Marked as Completed", Toast.LENGTH_SHORT).show();
                                 break;
                         }
                         return false;
