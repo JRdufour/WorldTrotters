@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Animatable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -89,16 +90,32 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                             case R.id.action_edit:
                                 new AlertDialog.Builder(context)
                                 .setView(input)
-                                .setTitle("Update Trip Name")
+                                .setTitle("Update Trip's Name")
                                 .setMessage("Are you sure you want to update the trip's name?")
                                         .setIcon(R.drawable.ic_error_black_24dp)
-                                .setPositiveButton("Cancel",null)
-                                .setNegativeButton("Update", new DialogInterface.OnClickListener() {
+                                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        ((CustomViewHolder) holder).tripName.setText(input.getText().toString());
+                                        //grab the input and store it inside the variable tripName
+                                        String tripName = input.getText().toString();
+                                        //Grab the trip in the array list
+                                        int theTrip = holder.getAdapterPosition();
+                                        //Grab the database
+                                        DatabaseHandler db = new DatabaseHandler(context);
+                                        //check if the string is not a number or empty
+                                        if(tripName == null || tripName == " " || tripName.isEmpty()){
+                                            Toast.makeText(context, "Please enter a valid name", Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            //update the trips name
+                                            //Grab the trip from the tripList array list
+                                            //Grab that trip ID and input text and update the trip name from the database
+                                            db.updateTripName(tripList.get(theTrip).getTripID(), tripName);
+                                            //update the tripname on the cardview
+                                            ((CustomViewHolder) holder).tripName.setText(tripName);
+                                        }
                                     }
                                 })
+                                        .setNegativeButton("Cancel",null)
                                 .show();
                                 break;
                             case R.id.action_delete:
@@ -106,8 +123,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                                         .setTitle("Delete Trip")
                                         .setMessage("Are you sure you want to delete this trip?")
                                         .setIcon(R.drawable.ic_error_black_24dp)
-                                        .setPositiveButton("No", null)
-                                        .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 //Grab the trip in the array list
@@ -115,7 +131,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                                                 //Grab the database
                                                 DatabaseHandler db = new DatabaseHandler(context);
                                                 //Delete the trip from the database
-                                                //Grab the trip from the locations array list
+                                                //Grab the trip from the tripList array list
                                                 //Grab that trip ID and delete it from the database
                                                 db.deleteTrip(tripList.get(theTrip).getTripID());
                                                 //Also delete the object from the ArrayList
@@ -124,6 +140,8 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                                                 notifyItemRemoved(theTrip);
                                             }
                                         })
+
+                                        .setNegativeButton("No", null)
                                         .show();
                                 break;
                             case R.id.action_completed:
