@@ -105,15 +105,15 @@ public class Helper {
                                     e.printStackTrace();
                                 }
 
+                                //get the resulting image path
+                                String imagePath = photoFile.getAbsolutePath();
+                                Image img = new Image(placeId, imagePath, attribution);
                                 if (db.getImage(placeId) == null) {
-                                    //get the resulting image path
-                                    String imagePath = photoFile.getAbsolutePath();
-                                    Image img = new Image(placeId, imagePath, attribution);
                                     //add the image path to the database
-
                                     db.addImage(img);
                                 } else {
                                     //TODO update the image
+                                    db.updateImage(img);
                                 }
                                 db.close();
                             }

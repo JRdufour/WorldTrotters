@@ -369,6 +369,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.update(TABLE_DESTINATIONS, vals, COLUMN_ID + "= ?", new String[]{String.valueOf(destination.getId())});
     }
 
+    public void updateImage(Image image){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_PLACE_ID, image.getPlaceID());
+        values.put(COLUMN_IMAGE_PATH, image.getImagePath());
+        values.put(COLUMN_ATTRIBUTION, image.getAttribution());
+
+        db.update(TABLE_IMAGES, values, COLUMN_PLACE_ID + " = ? ", new String[]{image.getPlaceID()});
+    }
     //TODO Delete operations
     public void deleteTrip(int id){
         SQLiteDatabase db = this.getWritableDatabase();
