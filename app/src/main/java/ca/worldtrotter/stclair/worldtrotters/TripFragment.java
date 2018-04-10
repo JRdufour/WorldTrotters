@@ -12,10 +12,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -180,7 +180,7 @@ public class TripFragment extends Fragment {
         };
         destinationRecylcer.setLayoutManager(manager);
         //set the item animator
-        destinationRecylcer.setItemAnimator(new SlideInLeftAnimator());
+        destinationRecylcer.setItemAnimator(new DefaultItemAnimator());
         destinationRecylcer.getItemAnimator().setAddDuration(1000);
 
         refresher = view.findViewById(R.id.destination_recycler_swipe_layout);
@@ -270,7 +270,10 @@ public class TripFragment extends Fragment {
     }
 
     public void refreshRecycler(){
-        adapter.notifyDataSetChanged();
+        DatabaseHandler db = new DatabaseHandler(getContext());
+        destinationArrayList = db.getAllPlacesForTrip(currentTrip.getTripID());
+        destinationRecylcer.setAdapter(new DestinationRecyclerViewAdapter(destinationArrayList));
+        
     }
 
     private void editTripName(){
