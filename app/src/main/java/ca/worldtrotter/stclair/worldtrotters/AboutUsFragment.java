@@ -72,6 +72,8 @@ public class AboutUsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //Hide the main FAB
+        MainActivity.fab.hide();
 
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_about_us, container, false);

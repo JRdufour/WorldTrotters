@@ -44,7 +44,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
         //when we create a viewholder we want to associate it to the xml element
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycler_trip_item, parent, false);
-
+        context = parent.getContext();
 
         final CustomViewHolder viewHolder = new CustomViewHolder(view);
         //We can add any onClickListners we want to trigger on the view here
@@ -134,7 +134,6 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                 popup.show();
             }
         });
-
 
         //grab the image location from the database and add the image to the imagaview
         DatabaseHandler db = new DatabaseHandler(context);

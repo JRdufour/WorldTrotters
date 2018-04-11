@@ -208,9 +208,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public Image getImageForTrip(int tripId){
         Image image = null;
-
         ArrayList<Destination> destinations = this.getAllPlacesForTrip(tripId);
-        if(destinations.size() != 0) {
+        if(destinations.size() != 0 && destinations != null) {
             image = this.getImage(destinations.get(0).getPlaceId());
         }
         return image;
@@ -283,10 +282,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public ArrayList<Destination> getAllPlacesForTrip(int tripId){
         ArrayList<Destination> placeList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-
         String query = "SELECT * FROM " + TABLE_DESTINATIONS + " WHERE " + COLUMN_TRIP_ID + " = " + tripId;
         Cursor c = db.rawQuery(query, null);
-
         if(c.moveToFirst()){
             do{
                 placeList.add(new Destination(Integer.parseInt(c.getString(0)),
