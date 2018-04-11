@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,12 +66,10 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
         ((CustomViewHolder)holder).image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment f = TripFragment.newInstance(currentTrip.getTripID());
-                
-
+                Fragment f = TripFragment.newInstance(currentTrip.getTripID(), false);
                 android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
-                transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation);
-                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID()));
+                transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation, R.anim.slide_in_right, R.anim.slide_out_left);
+                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID(), false));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -93,7 +92,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                             case R.id.action_edit:
                                 FragmentTransaction transaction = fm.beginTransaction();
                                 transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation);
-                                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID()));
+                                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID(), false));
                                 transaction.addToBackStack(null);
                                 transaction.commit();
                                 break;
@@ -114,6 +113,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                                                 //Grab the location from the locations array list
                                                 //Grab that locations ID and delete it from the database
                                                 db.deleteTrip(tripList.get(theTrip).getTripID());
+                                                int position = tripList.indexOf(theTrip);
                                                 //Also delete the object from the ArrayList
                                                 tripList.remove(theTrip);
                                                 //Refresh the RecyclerView to the items that are in the ArrayList
@@ -141,9 +141,12 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
         String imagePath = "";
         if(image != null){
             imagePath = image.getImagePath();
+
+            //Log.d("IMAGE_PATH_FROM_DB", imagePath + " ");
+            Picasso.get().load("file://" + imagePath).into(holder1.image);
+            holder1.photoAttribution.setText("Photo: " + Html.fromHtml(image.getAttribution(), 0));
         }
-        //Log.d("IMAGE_PATH_FROM_DB", imagePath + " ");
-        Picasso.get().load("file://" + imagePath).into(holder1.image);
+
 
     }
 

@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 
 import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -66,6 +67,7 @@ public class TripFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
     int INTENT_REQUEST_CODE = 1000;
     private static Activity activity;
@@ -75,6 +77,7 @@ public class TripFragment extends Fragment {
 
     // TODO: Rename and change types of parameters
     private Integer mParam1;
+    private boolean mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -100,10 +103,11 @@ public class TripFragment extends Fragment {
      * @return A new instance of fragment TripFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TripFragment newInstance(int param1) {
+    public static TripFragment newInstance(int param1, boolean param2) {
         TripFragment fragment = new TripFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, param1);
+        args.putBoolean(ARG_PARAM2, param2);
 
         fragment.setArguments(args);
         return fragment;
@@ -114,6 +118,7 @@ public class TripFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getInt(ARG_PARAM1);
+            mParam2 = getArguments().getBoolean(ARG_PARAM2);
         }
     }
     //Using this method to hide the edit texts I am using for destination inputs. When the user fills out a destination, the next one in the array will appear
@@ -242,9 +247,44 @@ public class TripFragment extends Fragment {
                 return false;
             }
         });
-
-
         db.close();
+
+        //If mParam 2 = true then show the user the overview for a trip
+        if(mParam2 == true){
+            new TapTargetSequence(getActivity()).
+                    targets(TapTarget.forView(view.findViewById(R.id.trip_fragment_logo), "This is an overview of your trip")
+                            .cancelable(false)
+                            .drawShadow(true)
+                            .transparentTarget(true)
+                            .targetCircleColor(R.color.colorPrimary)
+                            .outerCircleColor(R.color.secondaryDarkColor),
+                            TapTarget.forView(view.findViewById(R.id.trip_fragment_fab),
+                                    "The Edit button", "Use this button to edit your trip, add destinations, change the dates, etc.")
+                            .targetCircleColor(R.color.secondaryDarkColor)
+                            .transparentTarget(true)
+                            .cancelable(false)
+                            .drawShadow(true),
+                            TapTarget.forView(view.findViewById(R.id.tap_target), "You can edit the details of your destination here, add an agenda, edit the dates, etc.")
+                            .transparentTarget(true)
+                            .drawShadow(true)
+                            .outerCircleColor(R.color.colorPrimaryDark))
+                    .listener(new TapTargetSequence.Listener() {
+                        @Override
+                        public void onSequenceFinish() {
+
+                        }
+
+                        @Override
+                        public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+
+                        }
+
+                        @Override
+                        public void onSequenceCanceled(TapTarget lastTarget) {
+
+                        }
+                    }).start();
+        }
 
         return view;
     }

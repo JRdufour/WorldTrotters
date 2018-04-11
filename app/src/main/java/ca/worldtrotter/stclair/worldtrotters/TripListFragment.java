@@ -19,6 +19,8 @@ import com.getkeepsafe.taptargetview.TapTargetView;
 
 import java.util.ArrayList;
 
+import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -87,6 +89,7 @@ public class TripListFragment extends Fragment {
             public void onClick(View view) {
                 //fragment transaction new TripFragment
                 FragmentTransaction transaction = fm.beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation, R.anim.slide_out_left, R.anim.slide_in_right);
                 transaction.replace(R.id.main_content, new CreateTripFragment(), "recycler");
                 transaction.addToBackStack("recycler");
                 transaction.commit();
@@ -115,7 +118,7 @@ public class TripListFragment extends Fragment {
         //set the new layout manager
         recycler.setLayoutManager(manager);
         //set a new item animator
-        recycler.setItemAnimator(new DefaultItemAnimator());
+        recycler.setItemAnimator(new SlideInDownAnimator());
 
         if(tripList.size() == 0){
             TapTargetView.showFor(getActivity(),
