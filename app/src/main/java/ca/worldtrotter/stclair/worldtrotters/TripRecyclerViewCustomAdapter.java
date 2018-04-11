@@ -4,9 +4,11 @@ package ca.worldtrotter.stclair.worldtrotters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -47,7 +49,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
         final CustomViewHolder viewHolder = new CustomViewHolder(view);
         //We can add any onClickListners we want to trigger on the view here
 
-        context = parent.getContext();
+
         return viewHolder;
     }
 
@@ -63,6 +65,9 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
         ((CustomViewHolder)holder).image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Fragment f = TripFragment.newInstance(currentTrip.getTripID());
+                
+
                 android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
                 transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation);
                 transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID()));
@@ -80,6 +85,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                 //inflating menu from xml resource
                 popup.inflate(R.menu.mymenu);
                 //adding click listener
+
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
