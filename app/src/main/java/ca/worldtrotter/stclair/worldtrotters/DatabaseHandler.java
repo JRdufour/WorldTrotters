@@ -322,13 +322,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     //TODO get allToDoItems
 
-    public ArrayList<ToDoItem> getAllToDoItems(int placeId){
+    public ArrayList<ToDoItem> getAllToDoItems(int destId){
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<ToDoItem> itemsList = new ArrayList<>();
 
         Cursor c = db.query(TABLE_TO_TO_ITEMS,
                 new String[]{COLUMN_ID, COLUMN_DESTINATION_ID, COLUMN_NAME, COLUMN_DESCRIPTION},
-                COLUMN_PLACE_ID + "=?", new String[]{String.valueOf(placeId)},
+                COLUMN_DESTINATION_ID + "=?", new String[]{String.valueOf(destId)},
                 null, null, null, null);
 
         if(c .moveToFirst()){

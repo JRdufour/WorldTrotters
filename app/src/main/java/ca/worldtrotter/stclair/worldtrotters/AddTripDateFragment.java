@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
@@ -26,11 +28,20 @@ public class AddTripDateFragment extends Fragment {
 
     // TODO: Rename and change types of parameters
     private int mParam1 = -1;
+    private Button nextButton;
+    private EditText startDate;
+    private EditText endDate;
+    Trip current;
 
     private OnFragmentInteractionListener mListener;
 
     public AddTripDateFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        return super.onCreateAnimation(transit, enter, nextAnim);
     }
 
     /**
@@ -68,53 +79,60 @@ public class AddTripDateFragment extends Fragment {
         }
 
         DatabaseHandler db = new DatabaseHandler(getContext());
-        final Trip current = db.getTrip(mParam1);
+        current = db.getTrip(mParam1);
 
 
-        final EditText startDate = view.findViewById(R.id.start_date);
-        final EditText endDate = view.findViewById(R.id.end_date);
+        startDate = view.findViewById(R.id.start_date);
+        endDate = view.findViewById(R.id.end_date);
         final Calendar now = Calendar.getInstance();
+        nextButton = view.findViewById(R.id.trip_dates_next_button);
 
         //make sure the user cant directly interact with edittexts
         startDate.setKeyListener(null);
         endDate.setKeyListener(null);
 
-        startDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        startDate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View view, boolean hasFocus) {
+            public void onClick(View view) {
+                DatePickerDialog picker = new DatePickerDialog(getContext(), null,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH));
+                picker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                        Date date = new Date(Helper.formatDate(year, month, day));
+                        current.setStartDate(date.getTime());
+                        DatabaseHandler db = new DatabaseHandler(getContext());
+                        db.updateTrip(current);
+                        db.close();
+                        startDate.setText(Helper.formatDate(date.getTime()));
+                        toggleNextButton();
+                    }
+                });
 
-                if(hasFocus) {
-                    DatePickerDialog picker = new DatePickerDialog(getContext(), null,
-                            now.get(Calendar.YEAR),
-                            now.get(Calendar.MONTH),
-                            now.get(Calendar.DAY_OF_MONTH));
-                    picker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                            Date date = new Date(Helper.formatDate(year, month, day));
-                            current.setStartDate(date.getTime());
-                            DatabaseHandler db = new DatabaseHandler(getContext());
-                            db.updateTrip(current);
-                            db.close();
-                            startDate.setText(Helper.formatDate(date.getTime()));
-
-                        }
-                    });
-
-                    picker.show();
-                }
+                picker.show();
             }
         });
 
-        endDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        endDate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-
-                if(hasFocus) {
-                    DatePickerDialog picker = new DatePickerDialog(getContext(), null,
-                            now.get(Calendar.YEAR),
-                            now.get(Calendar.MONTH),
-                            now.get(Calendar.DAY_OF_MONTH));
+            public void onClick(View view) {
+                DatePickerDialog picker;
+                    if(current.getStartDate() == 0) {
+                         picker = new DatePickerDialog(getContext(), null,
+                                now.get(Calendar.YEAR),
+                                now.get(Calendar.MONTH),
+                                now.get(Calendar.DAY_OF_MONTH));
+                    } else {
+                        Date date = new Date(current.getStartDate());
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(date);
+                        picker = new DatePickerDialog(getContext(), null,
+                                cal.get(Calendar.YEAR),
+                                cal.get(Calendar.MONTH),
+                                cal.get(Calendar.DAY_OF_MONTH));
+                    }
                     picker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -124,20 +142,21 @@ public class AddTripDateFragment extends Fragment {
                             db.updateTrip(current);
                             db.close();
                             endDate.setText(Helper.formatDate(date.getTime()));
+                            toggleNextButton();
                         }
                     });
 
                     picker.show();
                 }
-            }
         });
 
-
-
-
-
-
         return view;
+    }
+
+    private void toggleNextButton(){
+        if (current.getStartDate() != 0 && current.getEndDate() != 0){
+            nextButton.setText("Next");
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

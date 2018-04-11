@@ -2,10 +2,10 @@ package ca.worldtrotter.stclair.worldtrotters;
 
 
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -64,6 +64,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View view) {
                 android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation);
                 transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID()));
                 transaction.addToBackStack(null);
                 transaction.commit();
@@ -84,7 +85,8 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_edit:
-                                android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
+                                FragmentTransaction transaction = fm.beginTransaction();
+                                transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation);
                                 transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID()));
                                 transaction.addToBackStack(null);
                                 transaction.commit();

@@ -10,5 +10,5 @@
         android:id="@+id/trips_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layoutAnimation="@anim/enter_stage_left_layout_animation"/>
+        android:layoutAnimation="@anim/enter_stage_right_layout_animation"/>
 </FrameLayout>

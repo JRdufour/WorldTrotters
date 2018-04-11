@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -88,7 +89,9 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
             localHolder.endDateTime.setText(Helper.formatDate(current.getEndDateTime(), "MMMM dd"));
         }
         //set up the list view that is going to hold the toDoItems
-        final ArrayList<ToDoItem> toDoItemValues = new ArrayList<>();
+        final ArrayList<ToDoItem> toDoItemValues;
+        DatabaseHandler db = new DatabaseHandler(context);
+        toDoItemValues = db.getAllToDoItems(current.getId());
 
         //create a new array adapter for the list items
         final ArrayAdapter<ToDoItem> adapter = new ArrayAdapter<ToDoItem>(context,
@@ -96,6 +99,18 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
         //set the adapter to the listview
         localHolder.toDoItemListView.setAdapter(adapter);
+        localHolder.toDoItemListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                DatabaseHandler db = new DatabaseHandler(context);
+                ToDoItem current = toDoItemValues.get(position);
+                toDoItemValues.remove(current);
+                db.deleteToDoItem(current.getId());
+                adapter.notifyDataSetChanged();
+                db.close();
+                return false;
+            }
+        });
 
         localHolder.addAgendaItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +124,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String agendaItem = inputName.getText().toString();
-                        if(agendaItem != null){
+                        if(!agendaItem.matches("")){
                             DatabaseHandler db = new DatabaseHandler(context);
                             ToDoItem item = new ToDoItem(current.getId(), agendaItem, null);
                             db.addToDoItem(item);
@@ -117,7 +132,6 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
                             toDoItemValues.add(item);
                             adapter.notifyDataSetChanged();
                         }
-
                     }
                 });
                 builder.setNegativeButton("Cancel", null);
@@ -126,7 +140,6 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
             }
         });
 
-        DatabaseHandler db = new DatabaseHandler(context);
         Image image = db.getImage(current.getPlaceId());
 
         if(image != null) {
@@ -134,6 +147,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
             Picasso.get().load("file://" + path).into(((CustomViewHolder) holder).backgroundImage);
         }
 
+        /** This is the menu for each Destination item **/
 
         localHolder.menuButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -43,10 +43,7 @@ public class MainActivity extends AppCompatActivity
 
         fm = getSupportFragmentManager();
 
-        FragmentTransaction t = fm.beginTransaction();
-        t.replace(R.id.main_content, new AboutUsFragment());
-        t.addToBackStack(null);
-        t.commit();
+
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.hide();
@@ -73,6 +70,10 @@ public class MainActivity extends AppCompatActivity
                 })
                 .build();
 
+        FragmentTransaction t = fm.beginTransaction();
+        t.replace(R.id.main_content, new AboutUsFragment());
+        t.addToBackStack(null);
+        t.commit();
     }
 
     @Override
