@@ -30,6 +30,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
@@ -243,6 +245,7 @@ public class TripFragment extends Fragment {
 
 
         db.close();
+
         return view;
     }
 

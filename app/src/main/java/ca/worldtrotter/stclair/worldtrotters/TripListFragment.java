@@ -14,6 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
+
 import java.util.ArrayList;
 
 
@@ -114,6 +117,15 @@ public class TripListFragment extends Fragment {
         //set a new item animator
         recycler.setItemAnimator(new DefaultItemAnimator());
 
+        if(tripList.size() == 0){
+            TapTargetView.showFor(getActivity(),
+                    TapTarget.forView(MainActivity.fab ,
+                            "You dont have any trips!",
+                            "Tap here to create your first trip!")
+                            .outerCircleColor(R.color.secondaryDarkColor)
+                            .targetCircleColor(R.color.secondaryColor)
+                            .icon(getResources().getDrawable(R.drawable.ic_add_black_24dp)));
+        }
 
         return view;
     }
