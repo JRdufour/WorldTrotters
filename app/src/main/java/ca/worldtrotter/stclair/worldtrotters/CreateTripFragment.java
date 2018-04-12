@@ -133,6 +133,7 @@ public class CreateTripFragment extends Fragment {
                     }
 
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation, R.anim.slide_out_left, R.anim.slide_in_right);
                     transaction.replace(R.id.main_content, AddTripDateFragment.newInstance(currentTrip.getTripID()));
                     transaction.addToBackStack(null);
                     transaction.commit();

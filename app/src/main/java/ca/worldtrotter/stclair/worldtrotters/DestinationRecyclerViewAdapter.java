@@ -6,14 +6,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -34,6 +37,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
     ArrayList<Destination> destinationArrayList;
     Context context;
+    private boolean agendaShown = false;
 
     public ArrayList<Destination> getDestinationArrayList() {
         return destinationArrayList;
@@ -60,48 +64,82 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        //grab a local copy og the current destination
         final Destination current = destinationArrayList.get(position);
+        //grab a local copy of the viewholder we're on
+        final CustomViewHolder localHolder = (CustomViewHolder) holder;
 
-        ((CustomViewHolder) holder).destinationName.setText(current.getName());
 
-        ((CustomViewHolder) holder).startDateTime.setKeyListener(null);
-        ((CustomViewHolder) holder).endDateTime.setKeyListener(null);
-        ((CustomViewHolder) holder).startDateTime.setFocusable(false);
-        ((CustomViewHolder) holder).endDateTime.setFocusable(false);
+        //set the name of the destination
+        localHolder.destinationName.setText(current.getName());
+        //turn off the edit texts for start and end dates
+        localHolder.startDateTime.setKeyListener(null);
+        localHolder.endDateTime.setKeyListener(null);
+        localHolder.startDateTime.setFocusable(false);
+        localHolder.endDateTime.setFocusable(false);
+        //hide the agenda components
+        localHolder.line.setVisibility(View.GONE);
+        localHolder.gridLayout.setVisibility(View.GONE);
+        localHolder.toDoItemListView.setVisibility(View.GONE);
 
         if(current.getStartDateTime() != 0) {
-            ((CustomViewHolder) holder).startDateTime.setText(Helper.formatDate(current.getStartDateTime(), "MMMM dd"));
+            localHolder.startDateTime.setText(Helper.formatDate(current.getStartDateTime(), "MMMM dd"));
         }
         if(current.getEndDateTime() != 0) {
-            ((CustomViewHolder) holder).endDateTime.setText(Helper.formatDate(current.getEndDateTime(), "MMMM dd"));
+            localHolder.endDateTime.setText(Helper.formatDate(current.getEndDateTime(), "MMMM dd"));
         }
         //set up the list view that is going to hold the toDoItems
-        final ArrayList<String> toDoItemValues = new ArrayList<>();
-//        toDoItemValues.add("Eat Burger");
-//        toDoItemValues.add("See Sights");
-//        toDoItemValues.add("Get a tattoo");
+        final ArrayList<ToDoItem> toDoItemValues;
+        DatabaseHandler db = new DatabaseHandler(context);
+        toDoItemValues = db.getAllToDoItems(current.getId());
 
-        if(toDoItemValues.size() == 0){
-            ((CustomViewHolder) holder).list.setVisibility(View.GONE);
-        }
         //create a new array adapter for the list items
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
+        final ArrayAdapter<ToDoItem> adapter = new ArrayAdapter<ToDoItem>(context,
                 android.R.layout.simple_list_item_1, android.R.id.text1, toDoItemValues);
 
         //set the adapter to the listview
-        ((CustomViewHolder)holder).toDoItemListView.setAdapter(adapter);
+        localHolder.toDoItemListView.setAdapter(adapter);
+        localHolder.toDoItemListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                DatabaseHandler db = new DatabaseHandler(context);
+                ToDoItem current = toDoItemValues.get(position);
+                toDoItemValues.remove(current);
+                db.deleteToDoItem(current.getId());
+                adapter.notifyDataSetChanged();
+                db.close();
+                return false;
+            }
+        });
 
-
-        ((CustomViewHolder)holder).addAgendaItemButton.setOnClickListener(new View.OnClickListener() {
+        localHolder.addAgendaItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //handel the action for the add agenda item button
-                toDoItemValues.add("Test");
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Add Agenda Item");
+                final EditText inputName = new EditText(context);
+                builder.setView(inputName);
+                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String agendaItem = inputName.getText().toString();
+                        if(!agendaItem.matches("")){
+                            DatabaseHandler db = new DatabaseHandler(context);
+                            ToDoItem item = new ToDoItem(current.getId(), agendaItem, null);
+                            db.addToDoItem(item);
+                            db.close();
+                            toDoItemValues.add(item);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+                builder.show();
                 adapter.notifyDataSetChanged();
             }
         });
 
-        DatabaseHandler db = new DatabaseHandler(context);
         Image image = db.getImage(current.getPlaceId());
 
         if(image != null) {
@@ -109,17 +147,20 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
             Picasso.get().load("file://" + path).into(((CustomViewHolder) holder).backgroundImage);
         }
 
+        /** This is the menu for each Destination item **/
 
-        ((CustomViewHolder) holder).menuButton.setOnClickListener(new View.OnClickListener() {
+        localHolder.menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 PopupMenu menu = new PopupMenu(context, view);
                 MenuInflater inflater = menu.getMenuInflater();
+
                 inflater.inflate(R.menu.destination_popup, menu.getMenu());
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()){
+                        switch (item.getItemId()) {
+                            /** DELETE **/
                             case R.id.destination_menu_delete:
                                 //handel deleting the item
                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -128,7 +169,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
                                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        if(destinationArrayList.size() != 1) {
+                                        if (destinationArrayList.size() != 1) {
                                             //handle deleting the current trip
                                             DatabaseHandler db = new DatabaseHandler(context);
                                             db.deleteDestination(current.getId());
@@ -146,16 +187,36 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
 
                                 break;
+                            /** EDIT DATES**/
                             case R.id.destination_menu_edit_dates:
                                 //handle editing dates
                                 editDates(current);
                                 break;
+                            /** TOGGLE AGENDA**/
+                            case R.id.destination_menu_agenda:
+                                //agenda was set to add
+                                //TODO change menu item text to the remove agneda item text
+                                Log.d("TEST", "AGENDA PRESSED");
+
+                                if (!agendaShown){
+                                    localHolder.line.setVisibility(View.VISIBLE);
+                                    localHolder.gridLayout.setVisibility(View.VISIBLE);
+                                    localHolder.toDoItemListView.setVisibility(View.VISIBLE);
+                                    agendaShown = true;
+                                 } else {
+                                       localHolder.line.setVisibility(View.GONE);
+                                       localHolder.gridLayout.setVisibility(View.GONE);
+                                       localHolder.toDoItemListView.setVisibility(View.GONE);
+                                        agendaShown = false;
+                                }
+
                             case R.id.destination_menu_explore:
                                 //handle exploring
                                 break;
-                            default:
 
+                            default:
                         }
+
                         return false;
                     }
                 });
@@ -178,7 +239,9 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
         protected ImageView addAgendaItemButton;
         protected MyListView toDoItemListView;
         protected ImageView backgroundImage;
-        protected MyListView list;
+        protected GridLayout gridLayout;
+        protected View line;
+
 
         public CustomViewHolder(View view) {
             super(view);
@@ -190,7 +253,9 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
             addAgendaItemButton = view.findViewById(R.id.add_agenda_item_button);
             toDoItemListView = view.findViewById(R.id.to_do_item_list_view);
             backgroundImage = view.findViewById(R.id.destination_background_image);
-            list = view.findViewById(R.id.to_do_item_list_view);
+            gridLayout = view.findViewById(R.id.gridLayout);
+            line = view.findViewById(R.id.view);
+
         }
     }
 
@@ -228,5 +293,6 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
         });
         picker.show();
     }
+
 
 }

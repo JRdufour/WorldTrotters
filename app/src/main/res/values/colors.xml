@@ -11,6 +11,6 @@
         <color name="secondaryLightColor">#cfff95</color>
         <color name="secondaryDarkColor">#6b9b37</color>
 
-
+<color name="lightGray">#dddddd</color>
 
 </resources>

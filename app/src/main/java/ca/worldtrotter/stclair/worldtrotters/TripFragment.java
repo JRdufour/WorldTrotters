@@ -12,10 +12,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -30,6 +30,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
@@ -64,13 +67,17 @@ public class TripFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
     int INTENT_REQUEST_CODE = 1000;
     private static Activity activity;
     private DestinationRecyclerViewAdapter adapter;
+    private TextView startDate;
+    private TextView endDate;
 
     // TODO: Rename and change types of parameters
     private Integer mParam1;
+    private boolean mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -96,10 +103,11 @@ public class TripFragment extends Fragment {
      * @return A new instance of fragment TripFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TripFragment newInstance(int param1) {
+    public static TripFragment newInstance(int param1, boolean param2) {
         TripFragment fragment = new TripFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, param1);
+        args.putBoolean(ARG_PARAM2, param2);
 
         fragment.setArguments(args);
         return fragment;
@@ -110,6 +118,7 @@ public class TripFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getInt(ARG_PARAM1);
+            mParam2 = getArguments().getBoolean(ARG_PARAM2);
         }
     }
     //Using this method to hide the edit texts I am using for destination inputs. When the user fills out a destination, the next one in the array will appear
@@ -135,8 +144,8 @@ public class TripFragment extends Fragment {
         MainActivity.fab.hide();
         //Edit text for trip name
         tripNameTextView = view.findViewById(R.id.trip_name_text_view);
-        TextView startDate = view.findViewById(R.id.trip_start_date_text_view);
-        TextView endDate = view.findViewById(R.id.trip_end_date_text_view);
+        startDate = view.findViewById(R.id.trip_start_date_text_view);
+        endDate = view.findViewById(R.id.trip_end_date_text_view);
         LinearLayout datesLayout = view.findViewById(R.id.dates_layout);
 
         destinationArrayList = new ArrayList<>();
@@ -180,7 +189,7 @@ public class TripFragment extends Fragment {
         };
         destinationRecylcer.setLayoutManager(manager);
         //set the item animator
-        destinationRecylcer.setItemAnimator(new SlideInLeftAnimator());
+        destinationRecylcer.setItemAnimator(new DefaultItemAnimator());
         destinationRecylcer.getItemAnimator().setAddDuration(1000);
 
         refresher = view.findViewById(R.id.destination_recycler_swipe_layout);
@@ -238,9 +247,45 @@ public class TripFragment extends Fragment {
                 return false;
             }
         });
-
-
         db.close();
+
+        //If mParam 2 = true then show the user the overview for a trip
+        if(mParam2 == true){
+            new TapTargetSequence(getActivity()).
+                    targets(TapTarget.forView(view.findViewById(R.id.trip_fragment_logo), "This is an overview of your trip")
+                            .cancelable(false)
+                            .drawShadow(true)
+                            .transparentTarget(true)
+                            .targetCircleColor(R.color.colorPrimary)
+                            .outerCircleColor(R.color.secondaryDarkColor),
+                            TapTarget.forView(view.findViewById(R.id.trip_fragment_fab),
+                                    "The Edit button", "Use this button to edit your trip, add destinations, change the dates, etc.")
+                            .targetCircleColor(R.color.secondaryDarkColor)
+                            .transparentTarget(true)
+                            .cancelable(false)
+                            .drawShadow(true),
+                            TapTarget.forView(view.findViewById(R.id.tap_target), "You can edit the details of your destination here, add an agenda, edit the dates, etc.")
+                            .transparentTarget(true)
+                            .drawShadow(true)
+                            .outerCircleColor(R.color.colorPrimaryDark))
+                    .listener(new TapTargetSequence.Listener() {
+                        @Override
+                        public void onSequenceFinish() {
+
+                        }
+
+                        @Override
+                        public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+
+                        }
+
+                        @Override
+                        public void onSequenceCanceled(TapTarget lastTarget) {
+
+                        }
+                    }).start();
+        }
+
         return view;
     }
 
@@ -262,7 +307,8 @@ public class TripFragment extends Fragment {
                 db.close();
                 dest = db.getDestination(id);
                 destinationArrayList.add(dest);
-                adapter.notifyItemInserted(destinationArrayList.size() -1);
+                adapter.notifyItemInserted(destinationArrayList.indexOf(dest));
+
                 Log.d("ARRAY SIZE", destinationArrayList.size() + " ");
 
             }
@@ -270,7 +316,10 @@ public class TripFragment extends Fragment {
     }
 
     public void refreshRecycler(){
-        adapter.notifyDataSetChanged();
+        DatabaseHandler db = new DatabaseHandler(getContext());
+        destinationArrayList = db.getAllPlacesForTrip(currentTrip.getTripID());
+        destinationRecylcer.setAdapter(new DestinationRecyclerViewAdapter(destinationArrayList));
+
     }
 
     private void editTripName(){
@@ -344,6 +393,10 @@ public class TripFragment extends Fragment {
                         currentTrip.setEndDate(date.getTime());
                         DatabaseHandler db = new DatabaseHandler(getContext());
                         db.updateTrip(currentTrip);
+                        if(currentTrip.getStartDate() != 0 && currentTrip.getEndDate() != 0){
+                            startDate.setText(Helper.formatDate(currentTrip.getStartDate(), "MMMM dd") + "  -  ");
+                            endDate.setText(Helper.formatDate(currentTrip.getEndDate()));
+                        }
                         db.close();
                     }
                 });

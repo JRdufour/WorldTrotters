@@ -10,6 +10,9 @@
         android:id="@+id/destination_menu_edit_dates"
         android:title="Edit Dates" />
     <item
+        android:id="@+id/destination_menu_agenda"
+        android:title="View Agenda" />
+    <item
         android:id="@+id/destination_menu_explore"
         android:title="Explore" />
 </menu>
