@@ -1,12 +1,17 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
+import android.app.DatePickerDialog;
+
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.Calendar;
 
 
 /**
@@ -64,7 +69,20 @@ public class AddDestination extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_destination, container, false);
+        View view =  inflater.inflate(R.layout.fragment_add_destination, container, false);
+
+        FragmentManager fm = getChildFragmentManager();
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog picker = new DatePickerDialog(getContext(),
+                null,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH));
+        picker.show();
+
+
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

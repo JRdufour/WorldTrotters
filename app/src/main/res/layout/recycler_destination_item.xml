@@ -1,20 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:background="@color/cardview_light_background"
-    app:cardCornerRadius="5dp"
-    app:contentPadding="0dp">
+    android:layout_marginTop="18dp"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="6dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/cardview_light_background"
         android:clipToPadding="false"
-        android:isScrollContainer="false"
-        android:minHeight="400dp">
+        android:isScrollContainer="false">
+
+        <ImageView
+            android:id="@+id/destination_background_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha=".85"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout"
+            app:srcCompat="@color/cardview_light_background" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha=".4"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout"
+            app:srcCompat="@color/cardview_dark_background" />
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -22,92 +43,73 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="10dp"
+            android:paddingTop="10dp"
             app:layout_constraintBottom_toTopOf="@+id/add_trip_grid_layout1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Destination"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                android:textColor="@color/textMain" />
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="left"
+                android:layout_row="1"
+                android:layout_weight="0"
+                android:adjustViewBounds="false"
+                android:autofillHints="false"
+                android:padding="4dp"
+                android:scaleType="fitStart"
+                android:src="@drawable/ic_pin_drop_black_24dp" />
 
             <TextView
-                android:id="@+id/destination_cancel_button"
+                android:id="@+id/destination_name_text"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:text="X"
-                android:textAlignment="textEnd"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="wrap_content"
+                android:layout_weight="6"
+                android:paddingStart="12dp"
+                android:text="Destination"
+                android:textAlignment="viewStart"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="@android:color/white" />
+
+            <ImageView
+                android:id="@+id/destination_menu_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                app:srcCompat="@drawable/ic_more_vert_black_24dp" />
         </LinearLayout>
 
         <GridLayout
             android:id="@+id/add_trip_grid_layout1"
             android:layout_width="347dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="8dp"
             android:layout_row="4"
             android:alignmentMode="alignMargins"
             android:padding="10dp"
             android:paddingRight="40dp"
-            android:paddingTop="10dp"
             app:layout_constraintBottom_toTopOf="@+id/view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_gravity="center"
-                android:layout_marginBottom="5dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_row="1"
-                android:autofillHints="false"
-                android:padding="4dp"
-                android:src="@drawable/ic_pin_drop_black_24dp" />
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="285dp"
-                android:layout_height="wrap_content"
-                android:layout_columnSpan="1"
-                android:layout_gravity="left|center"
-                android:layout_row="1"
-                android:paddingRight="10dp">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/add_trip_destination_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:gravity="center_vertical"
-                    android:hint="Destination"
-                    android:padding="5dp" />
-            </android.support.design.widget.TextInputLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
                 android:layout_columnSpan="3"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="30dp"
                 android:layout_row="2"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="20dp">
 
                 <ImageView
                     android:id="@+id/to_do_list_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginTop="10dp"
                     android:padding="5dp"
@@ -119,14 +121,23 @@
                     android:layout_gravity="left"
                     android:layout_weight="1"
                     android:minWidth="100dp"
-                    android:paddingRight="10dp">
+                    android:paddingRight="10dp"
+                    android:textColorHint="@color/cardview_light_background"
+                    android:theme="@style/AppTheme.EditText">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/add_trip_start_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
-                        android:hint="Start Date" />
+                        android:hint="Start Date"
+
+                        android:inputType="text"
+                        android:textColor="@android:color/white"
+                        android:textColorHighlight="@android:color/white"
+                        android:textColorHint="@android:color/white"
+                        android:textColorLink="@android:color/white"
+                        android:theme="@style/AppTheme.EditText" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -135,7 +146,9 @@
                     android:layout_gravity="left|center_horizontal"
                     android:layout_weight="1"
                     android:minWidth="200dp"
-                    android:paddingRight="10dp">
+                    android:paddingRight="10dp"
+                    android:textColorHint="@color/cardview_light_background"
+                    android:theme="@style/AppTheme.EditText">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/add_trip_end_date"
@@ -143,7 +156,14 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
                         android:layout_margin="0dp"
-                        android:hint="End Date" />
+                        android:backgroundTint="@android:color/white"
+                        android:hint="End Date"
+                        android:inputType="text"
+                        android:textColor="@android:color/white"
+                        android:textColorHighlight="@android:color/white"
+                        android:textColorHint="@android:color/white"
+                        android:textColorLink="@android:color/darker_gray"
+                        android:theme="@style/AppTheme.EditText" />
 
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
@@ -156,8 +176,6 @@
             android:layout_height="1dp"
             android:layout_column="0"
             android:layout_columnSpan="3"
-            android:layout_marginBottom="7dp"
-            android:layout_marginTop="31dp"
             android:layout_row="0"
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toTopOf="@+id/gridLayout"
@@ -170,7 +188,13 @@
             android:id="@+id/gridLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:animateLayoutChanges="true"
+            android:background="@color/lightGray"
+            android:paddingBottom="7dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:paddingTop="7dp"
+            app:layout_constraintBottom_toTopOf="@+id/to_do_item_list_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view">
@@ -190,9 +214,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
-                android:layout_gravity="end"
+                android:layout_gravity="center_vertical|center_horizontal|end"
                 android:layout_row="0"
-                android:layout_weight="1"
                 android:contentDescription="addAgendaItem"
                 app:srcCompat="@drawable/ic_add_circle_black_24dp" />
 
@@ -202,19 +225,20 @@
             android:id="@+id/to_do_item_list_view"
             style="@style/Widget.AppCompat.ListView"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_column="0"
             android:layout_columnSpan="2"
-            android:layout_marginTop="8dp"
             android:layout_row="1"
-            android:padding="5dp"
+            android:animateLayoutChanges="true"
+            android:background="@color/lightGray"
+            android:padding="2dp"
             android:scrollbars="none"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
 
     </android.support.constraint.ConstraintLayout>
-
-
 </android.support.v7.widget.CardView>
+

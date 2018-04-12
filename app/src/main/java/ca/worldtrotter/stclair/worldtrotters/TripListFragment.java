@@ -14,7 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
+
 import java.util.ArrayList;
+
+import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
 
 
 /**
@@ -84,12 +89,14 @@ public class TripListFragment extends Fragment {
             public void onClick(View view) {
                 //fragment transaction new TripFragment
                 FragmentTransaction transaction = fm.beginTransaction();
-                transaction.replace(R.id.main_content, new NameTripFragment());
-                transaction.addToBackStack(null);
+                transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation, R.anim.slide_out_left, R.anim.slide_in_right);
+                transaction.replace(R.id.main_content, new CreateTripFragment(), "recycler");
+                transaction.addToBackStack("recycler");
                 transaction.commit();
             }
         });
 
+        getActivity().setTitle("Your Trips");
         //make some sample data to use
         ArrayList<Trip> tripList = new ArrayList<>();
         DatabaseHandler db = new DatabaseHandler(getActivity().getBaseContext());
@@ -111,8 +118,17 @@ public class TripListFragment extends Fragment {
         //set the new layout manager
         recycler.setLayoutManager(manager);
         //set a new item animator
-        recycler.setItemAnimator(new DefaultItemAnimator());
+        recycler.setItemAnimator(new SlideInDownAnimator());
 
+        if(tripList.size() == 0){
+            TapTargetView.showFor(getActivity(),
+                    TapTarget.forView(MainActivity.fab ,
+                            "You dont have any trips!",
+                            "Tap here to create your first trip!")
+                            .outerCircleColor(R.color.secondaryDarkColor)
+                            .targetCircleColor(R.color.secondaryColor)
+                            .icon(getResources().getDrawable(R.drawable.ic_add_black_24dp)));
+        }
 
         return view;
     }

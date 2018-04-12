@@ -1,49 +1,141 @@
-<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
-    <ScrollView
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <LinearLayout
+            android:id="@+id/tap_target"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="88dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:context="ca.worldtrotter.stclair.worldtrotters.TripFragment">
 
-            <android.support.design.widget.TextInputLayout
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp">
+                android:background="@color/colorAccent"
+                app:cardCornerRadius="0dp">
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/trip_name_edit_text"
+                <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Trip Name" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_height="match_parent"
+                    android:background="@color/colorPrimaryDark"
+                    android:gravity="left"
+                    android:orientation="vertical">
 
-            <LinearLayout
+
+                    <ImageView
+                        android:id="@+id/trip_fragment_logo"
+                        android:layout_width="72dp"
+                        android:layout_height="66dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0"
+                        android:adjustViewBounds="false"
+                        android:cropToPadding="false"
+                        android:visibility="visible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_worldtrotterslogo" />
+
+                    <TextView
+                        android:id="@+id/trip_name_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="TripName"
+                        android:textAlignment="viewStart"
+                        android:textColor="@android:color/white"
+                        android:textSize="30sp"
+                        app:layout_constraintStart_toEndOf="@+id/trip_fragment_logo"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:id="@+id/dates_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="88dp"
+                        android:layout_weight="0"
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/trip_name_text_view">
+
+                        <TextView
+                            android:id="@+id/trip_start_date_text_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="18sp"
+                            android:paddingStart="6dp"
+                            android:text="TextView"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/white" />
+
+                        <TextView
+                            android:id="@+id/trip_end_date_text_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:lineSpacingExtra="18sp"
+                            android:paddingEnd="6dp"
+                            android:paddingLeft="0dp"
+                            android:text="TextView"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/white" />
+
+                    </LinearLayout>
+                </android.support.constraint.ConstraintLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/destination_recycler_swipe_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
+                android:layout_height="wrap_content">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/destination_recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-
-            </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:layoutAnimation="@anim/enter_stage_right_layout_animation" />
+            </android.support.v4.widget.SwipeRefreshLayout>
 
         </LinearLayout>
-    </ScrollView>
+
+        <io.github.yavski.fabspeeddial.FabSpeedDial
+            android:id="@+id/trip_fragment_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:fabDrawableTint="@color/cardview_light_background"
+            app:fabGravity="bottom_end"
+
+            app:fabMenu="@menu/menu_fab"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:miniFabBackgroundTint="@color/colorPrimaryDark"
+            app:miniFabDrawableTint="@android:color/white"
+            app:miniFabTitleBackgroundTint="@color/colorPrimaryDark"
+            app:miniFabTitleTextColor="@android:color/white" />
+
+    </android.support.constraint.ConstraintLayout>
+
 </LinearLayout>

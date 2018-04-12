@@ -14,8 +14,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -23,7 +24,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -36,18 +36,19 @@ import static android.content.ContentValues.TAG;
 This is the first fragment the user will see when they want to set up a new trip
 The fragment will ask the user where they would like to go, with a PlaceAutoComplete widget
  */
-public class NameTripFragment extends Fragment {
+public class CreateTripFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     private Trip currentTrip;
-    private EditText destinationEditText;
-    ArrayAdapter<Destination> adapter;
+    private ArrayAdapter<Destination> adapter;
     //this will hold an array of places the user wants to go to on their trip
     private ArrayList<Destination> destinations;
 
+    private Button destinationButton;
+    private TextView headerTextView;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -56,7 +57,7 @@ public class NameTripFragment extends Fragment {
     private final int INTENT_REQUEST_CODE = 1000;
     private OnFragmentInteractionListener mListener;
 
-    public NameTripFragment() {
+    public CreateTripFragment() {
         // Required empty public constructor
     }
 
@@ -66,11 +67,11 @@ public class NameTripFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment NameTripFragment.
+     * @return A new instance of fragment CreateTripFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NameTripFragment newInstance(String param1, String param2) {
-        NameTripFragment fragment = new NameTripFragment();
+    public static CreateTripFragment newInstance(String param1, String param2) {
+        CreateTripFragment fragment = new CreateTripFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -91,15 +92,17 @@ public class NameTripFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_name_trip, container, false);
+        View view = inflater.inflate(R.layout.fragment_create_trip, container, false);
         MainActivity.fab.hide();
+        getActivity().setTitle("Create A Trip");
         //grab the edit text
         currentTrip = new Trip();
+        currentTrip.setTripID(-1);
         destinations = new ArrayList<>();
-        destinationEditText = view.findViewById(R.id.name_trip_edit_text);
+        destinationButton = view.findViewById(R.id.destination_button);
+        headerTextView = view.findViewById(R.id.name_trip_header);
 
-        destinationEditText.setKeyListener(null);
-        destinationEditText.setOnClickListener(new View.OnClickListener() {
+        destinationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
@@ -120,23 +123,18 @@ public class NameTripFragment extends Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (destinations.size() == 0) {
 
-                DatabaseHandler db = new DatabaseHandler(getContext());
+                    Toast.makeText(getContext(), "Please add at least one destination", Toast.LENGTH_LONG);
+                } else {
+                    DatabaseHandler db = new DatabaseHandler(getContext());
+                    for (Destination dest: destinations) {
+                        db.addDestination(dest);
+                    }
 
-
-                    //this adds all the destinations the user wants to go to on their trip to the database
-                for (Destination dest : destinations) {
-                    dest.setTripId(currentTrip.getTripID());
-                    db.addDestination(dest);
-
-                }
-                db.close();
-
-
-
-                if(destinationEditText.getText().toString() != null){
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.main_content, new AddTripDateFragment());
+                    transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation, R.anim.slide_out_left, R.anim.slide_in_right);
+                    transaction.replace(R.id.main_content, AddTripDateFragment.newInstance(currentTrip.getTripID()));
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
@@ -173,15 +171,20 @@ public class NameTripFragment extends Fragment {
                 Place place = PlaceAutocomplete.getPlace(getActivity(), data);
                 Log.i(TAG, "Place: " + place.getName());
 
-                currentTrip.setName(place.getName().toString() + " Trip");
+                String tripName = place.getName().toString() + " Trip";
+                currentTrip.setName(tripName);
+                headerTextView.setText(tripName);
                 //see if the trip has already been added to the database
-                if(currentTrip.getTripID() == 0) {
+                if(currentTrip.getTripID() == -1) {
                     DatabaseHandler db = new DatabaseHandler(getContext());
                     int id = db.addTrip(currentTrip);
                     currentTrip = db.getTrip(id);
                 }
-                //destinationEditText.setText(place.getName().toString());
-                destinations.add(new Destination(place.getId(), null, null, currentTrip.getTripID(), place.getName().toString()));
+                Destination newDest = new Destination(place.getId(), 0, 0, currentTrip.getTripID(), place.getName().toString());
+                newDest.setTripId(currentTrip.getTripID());
+                destinations.add(newDest);
+                Helper.addPlacePhoto(getContext(), place.getId());
+
                 adapter.notifyDataSetChanged();
 
                 if(requestCode == INTENT_REQUEST_CODE){
@@ -203,13 +206,18 @@ public class NameTripFragment extends Fragment {
                 // The user canceled the operation.
             }
         }
+        if(destinations.size() != 0){
+            destinationButton.setText("Add Another Destination");
+        }
     }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -226,6 +234,11 @@ public class NameTripFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        if(destinations.size() == 0){
+            DatabaseHandler db = new DatabaseHandler(getContext());
+            db.deleteTrip(currentTrip.getTripID());
+            db.close();
+        }
     }
 
     /**

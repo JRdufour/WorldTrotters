@@ -9,19 +9,19 @@ package ca.worldtrotter.stclair.worldtrotters;
 
 public class ToDoItem {
     private int id;
-    private int placeId;
+    private int destinationId;
     private String name;
     private String description;
 
-    public ToDoItem(int id, int placeId, String name, String description) {
+    public ToDoItem(int id, int destinationId, String name, String description) {
         this.id = id;
-        this.placeId = placeId;
+        this.destinationId = destinationId;
         this.name = name;
         this.description = description;
     }
 
-    public ToDoItem(int placeId, String name, String description) {
-        this.placeId = placeId;
+    public ToDoItem(int destinationId, String name, String description) {
+        this.destinationId = destinationId;
         this.name = name;
         this.description = description;
     }
@@ -38,12 +38,12 @@ public class ToDoItem {
         this.id = id;
     }
 
-    public int getPlaceId() {
-        return placeId;
+    public int getDestinationId() {
+        return destinationId;
     }
 
-    public void setPlaceId(int placeId) {
-        this.placeId = placeId;
+    public void setDestinationId(int placeId) {
+        this.destinationId = destinationId;
     }
 
     public String getName() {
@@ -60,5 +60,9 @@ public class ToDoItem {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String toString(){
+        return this.getName();
     }
 }
