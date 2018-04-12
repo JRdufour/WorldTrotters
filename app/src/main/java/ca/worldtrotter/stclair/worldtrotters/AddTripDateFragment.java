@@ -155,8 +155,9 @@ public class AddTripDateFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentTransaction t = getFragmentManager().beginTransaction();
-                t.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation, R.anim.slide_out_left, R.anim.slide_in_right);
+                t.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation, R.anim.slide_in_right, R.anim.slide_out_left);
                 t.replace(R.id.main_content, TripFragment.newInstance(current.getTripID(), true));
+                t.addToBackStack(null);
                 t.commit();
             }
         });

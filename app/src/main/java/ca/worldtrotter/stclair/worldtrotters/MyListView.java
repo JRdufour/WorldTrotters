@@ -3,6 +3,7 @@ package ca.worldtrotter.stclair.worldtrotters;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ListView;
 
 /**
@@ -26,9 +27,11 @@ public class MyListView extends ListView {
     @Override
     protected void onDraw(Canvas canvas)
     {
-        if (getCount() != oldCount)
-        {
-            int height = getChildAt(0).getHeight() + 1 ;
+        Log.d("NUM OBJECTS", getCount() + "");
+        if (getCount() != oldCount) {
+
+            int height = getCount() == 0 ? 0 : getChildAt(0).getHeight() + 1 ;
+
             oldCount = getCount();
             params = getLayoutParams();
             params.height = getCount() * height;
