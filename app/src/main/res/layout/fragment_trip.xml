@@ -9,6 +9,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <LinearLayout
+            android:id="@+id/tap_target"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="88dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -24,88 +34,73 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
                 app:cardCornerRadius="0dp">
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@color/colorPrimaryDark"
                     android:gravity="left"
                     android:orientation="vertical">
 
 
-                    <LinearLayout
-
-                        android:id="@+id/linearLayout4"
-                        android:layout_width="wrap_content"
-
-
-                        android:layout_height="62dp"
-                        android:layout_margin="0dp"
-                        android:gravity="start"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
+                    <ImageView
+                        android:id="@+id/trip_fragment_logo"
+                        android:layout_width="72dp"
+                        android:layout_height="66dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0"
+                        android:adjustViewBounds="false"
+                        android:cropToPadding="false"
+                        android:visibility="visible"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_worldtrotterslogo" />
 
-                        <ImageView
-                            android:id="@+id/imageView2"
-                            android:layout_width="55dp"
-                            android:layout_height="55dp"
-                            android:layout_marginBottom="13dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_weight="0"
-                            android:adjustViewBounds="false"
-                            android:cropToPadding="false"
-                            android:visibility="visible"
-                            app:srcCompat="@drawable/ic_worldtrotterslogo" />
-
-                        <TextView
-                            android:id="@+id/trip_name_text_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="TripName"
-                            android:textAlignment="viewStart"
-                            android:textSize="30sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/imageView2"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.0" />
-
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/trip_name_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="TripName"
+                        android:textAlignment="viewStart"
+                        android:textColor="@android:color/white"
+                        android:textSize="30sp"
+                        app:layout_constraintStart_toEndOf="@+id/trip_fragment_logo"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <LinearLayout
                         android:id="@+id/dates_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="76dp"
+                        android:layout_marginStart="88dp"
                         android:layout_weight="0"
                         android:orientation="horizontal"
-                        android:paddingBottom="10dp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+                        app:layout_constraintTop_toBottomOf="@+id/trip_name_text_view">
 
                         <TextView
                             android:id="@+id/trip_start_date_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:lineSpacingExtra="18sp"
-                            android:paddingBottom="6dp"
                             android:paddingStart="6dp"
                             android:text="TextView"
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:textColor="@android:color/white" />
 
                         <TextView
                             android:id="@+id/trip_end_date_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
                             android:lineSpacingExtra="18sp"
-                            android:paddingBottom="6dp"
                             android:paddingEnd="6dp"
                             android:paddingLeft="0dp"
                             android:text="TextView"
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:textColor="@android:color/white" />
 
                     </LinearLayout>
                 </android.support.constraint.ConstraintLayout>
@@ -113,13 +108,14 @@
 
             <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/destination_recycler_swipe_layout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/destination_recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layoutAnimation="@anim/enter_stage_right_layout_animation" />
             </android.support.v4.widget.SwipeRefreshLayout>
 
         </LinearLayout>

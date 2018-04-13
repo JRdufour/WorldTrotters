@@ -2,13 +2,16 @@ package ca.worldtrotter.stclair.worldtrotters;
 
 
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Animatable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.text.Html;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -45,12 +48,12 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
         //when we create a viewholder we want to associate it to the xml element
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycler_trip_item, parent, false);
-
+        context = parent.getContext();
 
         final CustomViewHolder viewHolder = new CustomViewHolder(view);
         //We can add any onClickListners we want to trigger on the view here
 
-        context = parent.getContext();
+
         return viewHolder;
     }
 
@@ -63,19 +66,20 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
         ((CustomViewHolder)holder).image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Fragment f = TripFragment.newInstance(currentTrip.getTripID(), false);
                 android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
-                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID()));
+                transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation, R.anim.slide_in_right, R.anim.slide_out_left);
+                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID(), false));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
 
+
         final EditText input = new EditText(context);
         input.setHint("Enter new trip name");
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
 
         ((CustomViewHolder) holder).menu.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 //creating a popup menu
@@ -83,6 +87,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                 //inflating menu from xml resource
                 popup.inflate(R.menu.mymenu);
                 //adding click listener
+
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -126,6 +131,14 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
+
+                                                //Slide out
+                                                FragmentTransaction transaction = fm.beginTransaction();
+                                                transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation);
+                                                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID(), false));
+                                                transaction.addToBackStack(null);
+                                                transaction.commit();
+
                                                 //Grab the trip in the array list
                                                 int theTrip = holder.getAdapterPosition();
                                                 //Grab the database
@@ -134,6 +147,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                                                 //Grab the trip from the tripList array list
                                                 //Grab that trip ID and delete it from the database
                                                 db.deleteTrip(tripList.get(theTrip).getTripID());
+                                                int position = tripList.indexOf(theTrip);
                                                 //Also delete the object from the ArrayList
                                                 tripList.remove(theTrip);
                                                 //Refresh the RecyclerView
@@ -157,16 +171,18 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
             }
         });
 
-
         //grab the image location from the database and add the image to the imagaview
         DatabaseHandler db = new DatabaseHandler(context);
         Image image =  db.getImageForTrip(currentTrip.getTripID());
         String imagePath = "";
         if(image != null){
             imagePath = image.getImagePath();
+
+            //Log.d("IMAGE_PATH_FROM_DB", imagePath + " ");
+            Picasso.get().load("file://" + imagePath).into(holder1.image);
+            holder1.photoAttribution.setText("Photo: " + Html.fromHtml(image.getAttribution(), 0));
         }
-        //Log.d("IMAGE_PATH_FROM_DB", imagePath + " ");
-        Picasso.get().load("file://" + imagePath).into(holder1.image);
+
 
     }
 

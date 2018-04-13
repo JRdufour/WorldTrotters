@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import com.rd.PageIndicatorView;
 
@@ -73,6 +72,8 @@ public class AboutUsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //Hide the main FAB
+        MainActivity.fab.hide();
 
         MainActivity.fab.hide();
 
@@ -105,7 +106,9 @@ public class AboutUsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentTransaction t = fm.beginTransaction();
-                t.replace(R.id.main_content, new CreateTripFragment());
+                t.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation,
+                        R.anim.slide_in_right, R.anim.slide_out_left);
+                t.replace(R.id.main_content, new TripListFragment());
                 t.addToBackStack(null);
                 t.commit();
 
