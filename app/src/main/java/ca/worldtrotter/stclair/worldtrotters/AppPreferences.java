@@ -1,5 +1,7 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +15,14 @@ public class AppPreferences extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.simplelayout);
+
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+
+        SettingsFragment settingsFragment = new SettingsFragment();
+        transaction.add(android.R.id.content, settingsFragment, "SETTINGS_FRAGMENT");
+        transaction.commit();
+
     }
 
     //Creating an inner fragment that will launch settings of the app
