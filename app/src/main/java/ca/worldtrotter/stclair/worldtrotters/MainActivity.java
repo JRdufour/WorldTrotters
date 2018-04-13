@@ -1,8 +1,10 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
@@ -33,17 +35,31 @@ public class MainActivity extends AppCompatActivity
     private static FragmentManager fm;
     public static FloatingActionButton fab;
     public static GoogleApiClient googleClient = null;
+    //Variable used for splash screen
+    private static int SPLASH_TIME_OUT = 4000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*
+        * @author Said
+        * Handler created to launch the splash screen
+        */
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent homeIntent = new Intent(MainActivity.this, SplashActivity.class);
+                startActivity(homeIntent);
+                finish();
+            }
+        }.SPLASH_TIME_OUT);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         fm = getSupportFragmentManager();
-
-
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.hide();
