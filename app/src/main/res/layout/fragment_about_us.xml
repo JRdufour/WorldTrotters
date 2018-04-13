@@ -39,7 +39,7 @@
         app:piv_animationType="thinWorm"
         app:piv_dynamicCount="true"
         app:piv_interactiveAnimation="true"
-        app:piv_selectedColor="@color/colorPrimary"
+        app:piv_selectedColor="@color/colorAccent"
         app:piv_unselectedColor="@color/textMain" />
 
     <TextView
@@ -63,6 +63,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginEnd="2dp"
         android:layout_marginStart="2dp"
+        android:background="@color/colorAccent"
         android:fontFamily="monospace"
         android:text="Get Started"
         app:layout_constraintBottom_toBottomOf="parent"
