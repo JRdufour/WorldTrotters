@@ -31,7 +31,8 @@ public class MainActivity extends AppCompatActivity
         AboutUsFragment.OnFragmentInteractionListener,
         NewInstanceFragment.OnFragmentInteractionListener,
         CreateTripFragment.OnFragmentInteractionListener,
-        AddTripDateFragment.OnFragmentInteractionListener{
+        AddTripDateFragment.OnFragmentInteractionListener,
+        SplashFragment.OnFragmentInteractionListener{
 
     private static FragmentManager fm;
     public static FloatingActionButton fab;
@@ -75,7 +76,10 @@ public class MainActivity extends AppCompatActivity
                 })
                 .build();
 
-        
+        FragmentTransaction t = fm.beginTransaction();
+        t.replace(R.id.main_content, new SplashFragment());
+        t.addToBackStack(null);
+        t.commit();
 
         /*
         * @author Said
@@ -85,6 +89,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run() {
                 FragmentTransaction t = fm.beginTransaction();
+                t.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation,
+                        R.anim.slide_in_right, R.anim.slide_out_left);
                 t.replace(R.id.main_content, new AboutUsFragment());
                 t.addToBackStack(null);
                 t.commit();
