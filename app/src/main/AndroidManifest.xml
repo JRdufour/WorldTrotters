@@ -36,7 +36,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAabPCibMXy4ZMPKW3oRcO0JveK3sazuAg" />
 
-        <activity android:name=".SplashActivity"></activity>
     </application>
 
 </manifest>
