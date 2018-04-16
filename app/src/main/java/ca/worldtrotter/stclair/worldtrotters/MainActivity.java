@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
+import com.twitter.sdk.android.core.Twitter;
 
 
 public class MainActivity extends AppCompatActivity
@@ -43,12 +44,18 @@ public class MainActivity extends AppCompatActivity
 
 
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //initialize twitter
+        Twitter.initialize(this);
 
         fm = getSupportFragmentManager();
 
