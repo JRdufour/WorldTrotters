@@ -181,6 +181,17 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_email) {
 
+            String[] emailAddress = {"worldtrotters@support.com"};
+
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, emailAddress);
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Question About The App");
+            intent.putExtra(Intent.EXTRA_TEXT, "I had a question about ");
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivity(intent);
+            }
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
