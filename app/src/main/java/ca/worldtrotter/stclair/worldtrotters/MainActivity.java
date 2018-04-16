@@ -164,22 +164,22 @@ public class MainActivity extends AppCompatActivity
 
         FragmentTransaction t = fm.beginTransaction();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_about) {
             t.replace(R.id.main_content, new AboutUsFragment());
             t.addToBackStack(null);
             t.commit();
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_trips) {
             t.replace(R.id.main_content, new TripListFragment());
             t.addToBackStack(null);
             t.commit();
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_twitter) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_credits) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_settings) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_email) {
 
         }
 
