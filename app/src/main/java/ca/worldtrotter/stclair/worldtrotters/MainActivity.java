@@ -193,6 +193,11 @@ public class MainActivity extends AppCompatActivity
             }
 
         } else if (id == R.id.nav_web) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("https://www.lonelyplanet.com"));
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivity(intent);
+            }
 
         }
 
