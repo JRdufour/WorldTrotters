@@ -174,10 +174,15 @@ public class MainActivity extends AppCompatActivity
             t.commit();
 
         } else if (id == R.id.nav_twitter) {
+//            t.replace(R.id.main_content, new TwitterFragment());
+//            t.addToBackStack(null);
+//            t.commit();
 
         } else if (id == R.id.nav_credits) {
 
         } else if (id == R.id.nav_settings) {
+            Intent intent = new Intent(MainActivity.this, AppPreferences.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_email) {
 
