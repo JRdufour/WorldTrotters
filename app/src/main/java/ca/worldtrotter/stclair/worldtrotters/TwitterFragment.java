@@ -3,10 +3,15 @@ package ca.worldtrotter.stclair.worldtrotters;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.twitter.sdk.android.tweetui.TweetTimelineRecyclerViewAdapter;
+import com.twitter.sdk.android.tweetui.UserTimeline;
 
 
 /**
@@ -64,7 +69,25 @@ public class TwitterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_twitter, container, false);
+        View view =  inflater.inflate(R.layout.fragment_twitter, container, false);
+
+        MainActivity.fab.hide();
+        RecyclerView recyclerView = view.findViewById(R.id.twitterRecycle);
+        //Grab the user timeline
+        UserTimeline userTimeline =
+                new UserTimeline.Builder().screenName("lonelyplanet").build();
+
+        //Build a twitter custom adapter
+        TweetTimelineRecyclerViewAdapter adapter =
+                new TweetTimelineRecyclerViewAdapter(getContext(), userTimeline);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layoutManager);
+
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

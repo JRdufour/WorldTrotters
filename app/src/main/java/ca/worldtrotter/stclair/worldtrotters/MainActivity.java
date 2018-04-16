@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity
         NewInstanceFragment.OnFragmentInteractionListener,
         CreateTripFragment.OnFragmentInteractionListener,
         AddTripDateFragment.OnFragmentInteractionListener,
-        SplashFragment.OnFragmentInteractionListener{
+        SplashFragment.OnFragmentInteractionListener,
+        TwitterFragment.OnFragmentInteractionListener{
 
     private static FragmentManager fm;
     public static FloatingActionButton fab;
@@ -174,6 +175,10 @@ public class MainActivity extends AppCompatActivity
             t.commit();
 
         } else if (id == R.id.nav_slideshow) {
+            t.replace(R.id.main_content, new TwitterFragment());
+            t.addToBackStack(null);
+            t.commit();
+
 
         } else if (id == R.id.nav_manage) {
 
