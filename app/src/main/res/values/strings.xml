@@ -12,6 +12,10 @@
     <string name="aboutDescription">Our company World Trotters aims to give travelers a single place to manage and organize their trips.
     Our app will help its users create the best trips, that will forever be remembered.</string>
 
+    <!--Twitter Strings-->
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">82luqcPB2TP5ScMBz9UQ7Zjqh</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">oaZ9f7QMRJlDiHaCZhytV8t1EKFKFqjQCtwBfHYbslAyqzrY6F</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_agenda_menu_item">Add Agenda</string>
