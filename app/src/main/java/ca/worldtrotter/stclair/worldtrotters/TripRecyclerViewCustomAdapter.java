@@ -4,10 +4,12 @@ package ca.worldtrotter.stclair.worldtrotters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Animatable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.text.Html;
 import android.transition.TransitionInflater;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -60,9 +63,6 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
         final Trip currentTrip = tripList.get(position);
         CustomViewHolder holder1 = ((CustomViewHolder) holder);
         ((CustomViewHolder) holder).tripName.setText(currentTrip.getName());
-
-
-
         ((CustomViewHolder)holder).image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,8 +75,11 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
             }
         });
 
-        ((CustomViewHolder) holder).menu.setOnClickListener(new View.OnClickListener() {
 
+        final EditText input = new EditText(context);
+        input.setHint("Enter new trip name");
+
+        ((CustomViewHolder) holder).menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //creating a popup menu
@@ -90,40 +93,73 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_edit:
-                                FragmentTransaction transaction = fm.beginTransaction();
-                                transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation);
-                                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID(), false));
-                                transaction.addToBackStack(null);
-                                transaction.commit();
+                                new AlertDialog.Builder(context)
+                                .setView(input)
+                                .setTitle("Update Trip's Name")
+                                .setMessage("Are you sure you want to update the trip's name?")
+                                        .setIcon(R.drawable.ic_error_black_24dp)
+                                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //grab the input and store it inside the variable tripName
+                                        String tripName = input.getText().toString();
+                                        //Grab the trip in the array list
+                                        int theTrip = holder.getAdapterPosition();
+                                        //Grab the database
+                                        DatabaseHandler db = new DatabaseHandler(context);
+                                        //check if the string is not a number or empty
+                                        if(tripName == null || tripName == " " || tripName.isEmpty()){
+                                            Toast.makeText(context, "Please enter a valid name", Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            //update the trips name
+                                            //Grab the trip from the tripList array list
+                                            //Grab that trip ID and input text and update the trip name from the database
+                                            db.updateTripName(tripList.get(theTrip).getTripID(), tripName);
+                                            //update the tripname on the cardview
+                                            ((CustomViewHolder) holder).tripName.setText(tripName);
+                                        }
+                                    }
+                                })
+                                        .setNegativeButton("Cancel",null)
+                                .show();
                                 break;
                             case R.id.action_delete:
                                 new AlertDialog.Builder(context)
-                                        .setTitle("Delete Location")
-                                        .setMessage("Are you sure you want to delete this location?")
-                                        .setIcon(android.R.drawable.ic_dialog_alert)
-                                        .setPositiveButton("Cancel", null)
-                                        .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                                        .setTitle("Delete Trip")
+                                        .setMessage("Are you sure you want to delete this trip?")
+                                        .setIcon(R.drawable.ic_error_black_24dp)
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                //Grab the location in the list
+
+                                                //Slide out
+                                                FragmentTransaction transaction = fm.beginTransaction();
+                                                transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation);
+                                                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID(), false));
+                                                transaction.addToBackStack(null);
+                                                transaction.commit();
+
+                                                //Grab the trip in the array list
                                                 int theTrip = holder.getAdapterPosition();
                                                 //Grab the database
                                                 DatabaseHandler db = new DatabaseHandler(context);
-                                                //Delete the location from the database
-                                                //Grab the location from the locations array list
-                                                //Grab that locations ID and delete it from the database
+                                                //Delete the trip from the database
+                                                //Grab the trip from the tripList array list
+                                                //Grab that trip ID and delete it from the database
                                                 db.deleteTrip(tripList.get(theTrip).getTripID());
                                                 int position = tripList.indexOf(theTrip);
                                                 //Also delete the object from the ArrayList
                                                 tripList.remove(theTrip);
-                                                //Refresh the RecyclerView to the items that are in the ArrayList
+                                                //Refresh the RecyclerView
                                                 notifyItemRemoved(theTrip);
                                             }
                                         })
+
+                                        .setNegativeButton("No", null)
                                         .show();
                                 break;
                             case R.id.action_completed:
-                                Toast.makeText(context, "Trip Marked as Complete", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Trip Marked as Completed", Toast.LENGTH_SHORT).show();
                                 break;
                         }
                         return false;
@@ -143,7 +179,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
             imagePath = image.getImagePath();
 
             //Log.d("IMAGE_PATH_FROM_DB", imagePath + " ");
-            Picasso.get().load("file://" + imagePath).into(holder1.image);
+            Picasso.with(context).load("file://" + imagePath).into(holder1.image);
             holder1.photoAttribution.setText("Photo: " + Html.fromHtml(image.getAttribution(), 0));
         }
 

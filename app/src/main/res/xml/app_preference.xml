@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="General">
+
+        <EditTextPreference
+            android:title="Location"
+            android:summary="The location to search for nearby restaurants etc."
+            android:key="title"
+            android:defaultValue="Windsor"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Color">
+
+        <CheckBoxPreference
+            android:title="Dark Background"
+            android:summary="Is the main background color dark?"
+            android:key="backgroundColor"
+            android:defaultValue="false"/>
+        
+    </PreferenceCategory>
+</PreferenceScreen>

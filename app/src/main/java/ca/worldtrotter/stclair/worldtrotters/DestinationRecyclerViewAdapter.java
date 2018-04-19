@@ -144,7 +144,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
         if(image != null) {
             String path = image.getImagePath();
-            Picasso.get().load("file://" + path).into(((CustomViewHolder) holder).backgroundImage);
+            Picasso.with(context).load("file://" + path).into(((CustomViewHolder) holder).backgroundImage);
         }
 
         /** This is the menu for each Destination item **/
