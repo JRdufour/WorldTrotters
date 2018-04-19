@@ -1,11 +1,11 @@
-App Title:
+**App Title:**
 	World Trotters
 	
-Short App Description:
+**Short App Description:**
 	This app aims to help world travellers organize and plan their trips that they want to take. 
   You can add trips with multiple destinations and check out points of interest in the places you are going all in one location.
 
-Detailed Description:
+**Detailed Description:**
   The World Trotters app allows you to organize and plan all of your trips. 
   You can create trips that you plan on taking in the future, add all of the places you wish to go in the trip, 
   and add an agenda for each place you plan on visiting. You can easily explore the locations you want to visit,
