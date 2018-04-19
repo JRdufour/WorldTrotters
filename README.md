@@ -13,12 +13,7 @@
   stress out of planning a trip.
   
   
-  
-  
   <img src="https://user-images.githubusercontent.com/28626866/39006331-b957479a-43d0-11e8-8d34-29717d2a96c8.png" height = "500px"/>
-  
- 
-  
   
   
   
