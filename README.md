@@ -17,13 +17,15 @@ Detailed Description:
   
   <img src="https://user-images.githubusercontent.com/28626866/39006331-b957479a-43d0-11e8-8d34-29717d2a96c8.png" height = "500px"/>
   
+ 
   
   
   
-Solarized dark             |  Solarized Ocean
+  
+Homepage            |  Trips Page
 :-------------------------:|:-------------------------: 
-![](https://bit.ly/2HCnN6W)  |  ![](https://bit.ly/2Hc3Twk)
+![]( https://bit.ly/2Hc3Twk)  |  ![](https://bit.ly/2J7Aofw)
 
-Solarized dark             |  Solarized Ocean
+Trip Details Page          |  Navigation Drawer
 :-------------------------:|:-------------------------:
-![](https://bit.ly/2J7Aofw)  |  ![](https://bit.ly/2F1076X)
+![](https://bit.ly/2HCnN6W)  |  ![](https://bit.ly/2F1076X)
