@@ -18,8 +18,7 @@
         android:id="@+id/recycler_background_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/zion" />
+        android:scaleType="centerCrop" />
 
     <ImageView
         android:layout_width="match_parent"
