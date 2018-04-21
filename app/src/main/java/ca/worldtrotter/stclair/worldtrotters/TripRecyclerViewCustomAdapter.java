@@ -171,7 +171,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
             imagePath = image.getImagePath();
 
             //Log.d("IMAGE_PATH_FROM_DB", imagePath + " ");
-            Picasso.get().load("file://" + imagePath).into(holder1.image);
+            Picasso.with(context).load("file://" + imagePath).into(holder1.image);
             holder1.photoAttribution.setText("Photo: " + Html.fromHtml(image.getAttribution(), 0));
         }
 

@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
+import com.twitter.sdk.android.core.Twitter;
 
 
 public class MainActivity extends AppCompatActivity
@@ -32,7 +33,8 @@ public class MainActivity extends AppCompatActivity
         NewInstanceFragment.OnFragmentInteractionListener,
         CreateTripFragment.OnFragmentInteractionListener,
         AddTripDateFragment.OnFragmentInteractionListener,
-        SplashFragment.OnFragmentInteractionListener{
+        SplashFragment.OnFragmentInteractionListener,
+        TwitterFragment.OnFragmentInteractionListener{
 
     private static FragmentManager fm;
     public static FloatingActionButton fab;
@@ -42,12 +44,18 @@ public class MainActivity extends AppCompatActivity
 
 
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //initialize twitter
+        Twitter.initialize(this);
 
         fm = getSupportFragmentManager();
 
@@ -172,12 +180,10 @@ public class MainActivity extends AppCompatActivity
             t.replace(R.id.main_content, new TripListFragment());
             t.addToBackStack(null);
             t.commit();
-
         } else if (id == R.id.nav_twitter) {
-//            t.replace(R.id.main_content, new TwitterFragment());
-//            t.addToBackStack(null);
-//            t.commit();
-
+            t.replace(R.id.main_content, new TwitterFragment());
+            t.addToBackStack(null);
+            t.commit();
         } else if (id == R.id.nav_credits) {
 
         } else if (id == R.id.nav_settings) {
