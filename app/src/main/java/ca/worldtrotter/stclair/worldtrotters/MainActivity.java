@@ -34,8 +34,7 @@ public class MainActivity extends AppCompatActivity
         CreateTripFragment.OnFragmentInteractionListener,
         AddTripDateFragment.OnFragmentInteractionListener,
         SplashFragment.OnFragmentInteractionListener,
-        TwitterFragment.OnFragmentInteractionListener,
-        CreditsFragment.OnFragmentInteractionListener{
+        TwitterFragment.OnFragmentInteractionListener{
 
     private static FragmentManager fm;
     public static FloatingActionButton fab;
@@ -184,9 +183,8 @@ public class MainActivity extends AppCompatActivity
 
 
         } else if (id == R.id.nav_manage) {
-            t.replace(R.id.main_content, new CreditsFragment());
-            t.addToBackStack(null);
-            t.commit();
+            Intent intent = new Intent(MainActivity.this, CreditsActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_share) {
 
