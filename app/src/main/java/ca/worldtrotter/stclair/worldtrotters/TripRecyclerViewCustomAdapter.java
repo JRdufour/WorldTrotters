@@ -76,8 +76,7 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
         });
 
 
-        final EditText input = new EditText(context);
-        input.setHint("Enter new trip name");
+
 
         ((CustomViewHolder) holder).menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,18 +92,19 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_edit:
-                                new AlertDialog.Builder(context)
-                                .setView(input)
-                                .setTitle("Update Trip's Name")
-                                .setMessage("Are you sure you want to update the trip's name?")
-                                        .setIcon(R.drawable.ic_error_black_24dp)
-                                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                                //handle letting the user edit the trip's name
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                final EditText input = new EditText(context);
+                                input.setText(currentTrip.getName());
+                                builder.setView(input);
+                                builder.setTitle("Update Trip's Name");
+                                builder.setMessage("Are you sure you want to update the trip's name?")
+                                        .setIcon(R.drawable.ic_error_black_24dp);
+                                builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         //grab the input and store it inside the variable tripName
                                         String tripName = input.getText().toString();
-                                        //Grab the trip in the array list
-                                        int theTrip = holder.getAdapterPosition();
                                         //Grab the database
                                         DatabaseHandler db = new DatabaseHandler(context);
                                         //check if the string is not a number or empty
@@ -112,16 +112,16 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                                             Toast.makeText(context, "Please enter a valid name", Toast.LENGTH_SHORT).show();
                                         }else{
                                             //update the trips name
-                                            //Grab the trip from the tripList array list
-                                            //Grab that trip ID and input text and update the trip name from the database
-                                            db.updateTripName(tripList.get(theTrip).getTripID(), tripName);
+                                            currentTrip.setName(tripName);
+                                            //update the trip in the db
+                                            db.updateTrip(currentTrip);
                                             //update the tripname on the cardview
-                                            ((CustomViewHolder) holder).tripName.setText(tripName);
+                                            notifyDataSetChanged();
                                         }
                                     }
-                                })
-                                        .setNegativeButton("Cancel",null)
-                                .show();
+                                });
+                                        builder.setNegativeButton("Cancel",null);
+                                builder.show();
                                 break;
                             case R.id.action_delete:
                                 new AlertDialog.Builder(context)
@@ -131,14 +131,6 @@ public class TripRecyclerViewCustomAdapter extends RecyclerView.Adapter {
                                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-
-                                                //Slide out
-                                                FragmentTransaction transaction = fm.beginTransaction();
-                                                transaction.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation);
-                                                transaction.replace(R.id.main_content, TripFragment.newInstance(currentTrip.getTripID(), false));
-                                                transaction.addToBackStack(null);
-                                                transaction.commit();
-
                                                 //Grab the trip in the array list
                                                 int theTrip = holder.getAdapterPosition();
                                                 //Grab the database
