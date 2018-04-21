@@ -167,28 +167,46 @@ public class MainActivity extends AppCompatActivity
 
         FragmentTransaction t = fm.beginTransaction();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_about) {
             t.replace(R.id.main_content, new AboutUsFragment());
             t.addToBackStack(null);
             t.commit();
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_trips) {
             t.replace(R.id.main_content, new TripListFragment());
             t.addToBackStack(null);
             t.commit();
-
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_twitter) {
             t.replace(R.id.main_content, new TwitterFragment());
             t.addToBackStack(null);
             t.commit();
-
-
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_credits) {
             Intent intent = new Intent(MainActivity.this, CreditsActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_settings) {
+            Intent intent = new Intent(MainActivity.this, AppPreferences.class);
+            startActivity(intent);
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_email) {
+
+            String[] emailAddress = {"worldtrotters@support.com"};
+
+
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, emailAddress);
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Question About The App");
+            intent.putExtra(Intent.EXTRA_TEXT, "I had a question about ");
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivity(intent);
+            }
+
+        } else if (id == R.id.nav_web) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("https://www.lonelyplanet.com"));
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivity(intent);
+            }
 
         }
 
