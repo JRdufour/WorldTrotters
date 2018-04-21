@@ -75,7 +75,8 @@ public class AboutUsFragment extends Fragment {
         //Hide the main FAB
         MainActivity.fab.hide();
 
-        MainActivity.fab.hide();
+        //change title
+        getActivity().setTitle("About Us");
 
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_about_us, container, false);
