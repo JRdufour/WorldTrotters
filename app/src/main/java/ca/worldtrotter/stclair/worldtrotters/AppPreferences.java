@@ -15,6 +15,9 @@ public class AppPreferences extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.simplelayout);
+        //hide fab and change the title
+        MainActivity.fab.hide();
+        setTitle("Settings");
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
