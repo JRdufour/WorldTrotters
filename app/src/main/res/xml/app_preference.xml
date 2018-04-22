@@ -3,11 +3,13 @@
     <PreferenceCategory
         android:title="General">
 
-        <EditTextPreference
-            android:title="Location"
-            android:summary="The location to search for nearby restaurants etc."
-            android:key="title"
-            android:defaultValue="Windsor"/>
+        <ListPreference
+            android:title="AutoComplete Location"
+            android:summary="Choose a location to autocomplete search for"
+            android:key="aclocation"
+            android:entries="@array/autocompleteLocations_name"
+            android:entryValues="@array/autocompleteLocations_value"
+            android:defaultValue="CAN"/>
 
     </PreferenceCategory>
 
