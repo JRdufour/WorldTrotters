@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity
     public static FloatingActionButton fab;
     public static GoogleApiClient googleClient = null;
     //Variable used for splash screen
-    private static int SPLASH_TIME_OUT = 2000;
+    private static int SPLASH_TIME_OUT = 3000;
 
 
     @Override
@@ -99,8 +99,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run() {
                 FragmentTransaction t = fm.beginTransaction();
-                t.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation,
-                        R.anim.slide_in_right, R.anim.slide_out_left);
+                t.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation);
                 t.replace(R.id.main_content, new AboutUsFragment());
                 t.addToBackStack(null);
                 t.commit();

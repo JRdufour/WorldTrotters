@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 
 /**
@@ -72,10 +75,22 @@ public class SplashFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_splash, container, false);
 
+        //Code to hide the action bar and color the status bar to white
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         Window window = getActivity().getWindow();
         // finally change the color
         window.setStatusBarColor(ContextCompat.getColor(getContext(),R.color.splashBackground));
+
+        //import images to add animations on
+        ImageView appLogo = view.findViewById(R.id.applogo);
+        ImageView companyname = view.findViewById(R.id.companyname);
+
+        //create the animation
+        Animation fadeAnim = AnimationUtils.loadAnimation(getContext(), R.anim.splashanimation);
+
+        //add animation to the images
+        appLogo.startAnimation(fadeAnim);
+        companyname.startAnimation(fadeAnim);
 
         getActivity().setTitle("Welcome");
 
