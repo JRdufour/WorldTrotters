@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="autocompleteLocations_name">
+
+        <item>United States</item>
+        <item>Canada</item>
+        <item>Brazil</item>
+        <item>Mexico</item>
+        <item>Italy</item>
+        <item>Spain</item>
+        <item>Thailand</item>
+        <item>Korea</item>
+        <item>Egypt</item>
+        <item>South Africa</item>
+
+
+
+    </string-array>
+
+
+    <string-array name="autocompleteLocations_value">
+
+        <item>USA</item>
+        <item>CAN</item>
+        <item>BRA</item>
+        <item>MEX</item>
+        <item>ITA</item>
+        <item>ESP</item>
+        <item>THA</item>
+        <item>KOR</item>
+        <item>EGY</item>
+        <item>ZA</item>
+
+    </string-array>
+</resources>

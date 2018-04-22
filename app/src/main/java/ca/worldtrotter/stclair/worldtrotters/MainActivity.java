@@ -40,11 +40,7 @@ public class MainActivity extends AppCompatActivity
     public static FloatingActionButton fab;
     public static GoogleApiClient googleClient = null;
     //Variable used for splash screen
-    private static int SPLASH_TIME_OUT = 4000;
-
-
-
-
+    private static int SPLASH_TIME_OUT = 2000;
 
 
     @Override
