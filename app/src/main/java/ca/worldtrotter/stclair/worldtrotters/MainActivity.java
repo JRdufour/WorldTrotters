@@ -23,7 +23,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 import com.twitter.sdk.android.core.Twitter;
+
+import com.twitter.sdk.android.tweetui.TweetUi;
+
 import com.twitter.sdk.android.tweetui.UserTimeline;
+
 
 
 public class MainActivity extends AppCompatActivity
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity
     public static FloatingActionButton fab;
     public static GoogleApiClient googleClient = null;
     //Variable used for splash screen
-    private static int SPLASH_TIME_OUT = 2000;
+    private static int SPLASH_TIME_OUT = 3000;
 
 
     @Override
@@ -54,10 +58,15 @@ public class MainActivity extends AppCompatActivity
         //initialize twitter
         Twitter.initialize(this);
 
+        Thread thread = new Thread(TweetUi::getInstance);
+        thread.start();
+
         fm = getSupportFragmentManager();
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.hide();
+
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -90,14 +99,13 @@ public class MainActivity extends AppCompatActivity
 
         /*
         * @author Said
-        * Handler created to launch the splash screen
+        * Handler created to launch the about us page after 2500 milliseconds
         */
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
                 FragmentTransaction t = fm.beginTransaction();
-                t.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation,
-                        R.anim.slide_in_right, R.anim.slide_out_left);
+                t.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation);
                 t.replace(R.id.main_content, new AboutUsFragment());
                 t.addToBackStack(null);
                 t.commit();
@@ -189,20 +197,35 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, AppPreferences.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_email) {
+        } else if (id == R.id.nav_help) {
 
             String[] emailAddress = {"worldtrotters@support.com"};
 
             Intent intent = new Intent(Intent.ACTION_SENDTO);
             intent.setData(Uri.parse("mailto:"));
             intent.putExtra(Intent.EXTRA_EMAIL, emailAddress);
-            intent.putExtra(Intent.EXTRA_SUBJECT, "Question About The App");
-            intent.putExtra(Intent.EXTRA_TEXT, "I had a question about ");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Need support in the app");
+            intent.putExtra(Intent.EXTRA_TEXT, "I need support with");
             if(intent.resolveActivity(getPackageManager()) != null){
                 startActivity(intent);
             }
 
-        } else if (id == R.id.nav_web) {
+        } else if (id == R.id.nav_feedback) {
+
+            String[] emailAddress = {"worldtrotters@feedback.com"};
+
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, emailAddress);
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for the app");
+            intent.putExtra(Intent.EXTRA_TEXT, "I have feedback for");
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivity(intent);
+            }
+
+        }
+
+        else if (id == R.id.nav_web) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse("https://www.lonelyplanet.com"));
             if(intent.resolveActivity(getPackageManager()) != null){

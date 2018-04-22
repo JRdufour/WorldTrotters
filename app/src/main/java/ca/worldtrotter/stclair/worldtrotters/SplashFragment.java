@@ -1,13 +1,23 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
+import android.app.ActionBar;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 
 /**
@@ -67,6 +77,26 @@ public class SplashFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_splash, container, false);
 
+        //Code to hide the action bar and color the status bar to white
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        Window window = getActivity().getWindow();
+        // finally change the color
+        window.setStatusBarColor(ContextCompat.getColor(getContext(),R.color.splashBackground));
+
+        //import images to add animations on
+        ImageView appLogo = view.findViewById(R.id.applogo);
+        ImageView companyname = view.findViewById(R.id.companyname);
+
+        //create the animation
+        Animation slideFromLeft = AnimationUtils.loadAnimation(getContext(), R.anim.splashanimation_slide_from_left);
+        Animation slideFromRight = AnimationUtils.loadAnimation(getContext(), R.anim.splashanimation_slide_from_right);
+
+        //add animation to the images
+        appLogo.startAnimation(slideFromLeft);
+        companyname.startAnimation(slideFromRight);
+
+
+        //change title
         getActivity().setTitle("Welcome");
 
         return view;
