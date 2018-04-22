@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity
     private static FragmentManager fm;
     public static FloatingActionButton fab;
     public static GoogleApiClient googleClient = null;
-    //Variable used for splash screen
-    private static int SPLASH_TIME_OUT = 4000;
+    //Variable used for splash screengit ad
+    private static int SPLASH_TIME_OUT = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

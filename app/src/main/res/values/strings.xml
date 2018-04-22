@@ -6,8 +6,6 @@
 
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-
     <!-- String Resources for the HomePage -->
     <string name="aboutDescription">Our company World Trotters aims to give travelers a single place to manage and organize their trips.
     Our app will help its users create the best trips, that will forever be remembered.</string>
