@@ -23,7 +23,7 @@
         android:layout_weight="1"
         android:layout_height="357dp"
         android:layout_margin="0dp"
-        android:padding="50dp"
+        android:padding="10dp"
         android:paddingBottom="0dp"
         app:srcCompat="@drawable/companyname" />
 
