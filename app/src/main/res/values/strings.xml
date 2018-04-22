@@ -22,6 +22,6 @@
         You can add any number of destinations to your trip.\n\nYou can go anywhere! </string>
     <string name="create_trip_destination_button">Where do you want to go?\nClick here to explore locations around the world.</string>
     <string name="create_trip_destination_button_after_click">You can add as many destinations as you want.</string>
-    <string name="trip_date_header">Select the start and end dates for your trip. \n\n\n Not sure when you're going? \nNo problem, you can do this step later.</string>
+    <string name="trip_date_header">Select the start and end dates for your trip. \n\n\nNot sure when you\'re going? \nNo problem, you can do this step later.</string>
 
 </resources>
