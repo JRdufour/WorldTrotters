@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="autocompleteLocations_name">
-
+        <item>No Restrictions</item>
         <item>United States</item>
         <item>Canada</item>
         <item>Brazil</item>
@@ -19,7 +19,7 @@
 
 
     <string-array name="autocompleteLocations_value">
-
+        <item>NO</item>
         <item>USA</item>
         <item>CAN</item>
         <item>BRA</item>
