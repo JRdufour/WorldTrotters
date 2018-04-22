@@ -4,23 +4,12 @@
         android:title="General">
 
         <ListPreference
-            android:title="AutoComplete Location"
+            android:title="Auto Complete Location"
             android:summary="Choose a location to autocomplete search for"
             android:key="aclocation"
             android:entries="@array/autocompleteLocations_name"
             android:entryValues="@array/autocompleteLocations_value"
             android:defaultValue="CAN"/>
 
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="Color">
-
-        <CheckBoxPreference
-            android:title="Dark Background"
-            android:summary="Is the main background color dark?"
-            android:key="backgroundColor"
-            android:defaultValue="false"/>
-        
     </PreferenceCategory>
 </PreferenceScreen>
