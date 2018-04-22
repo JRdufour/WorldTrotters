@@ -370,21 +370,30 @@ public class TripFragment extends Fragment {
 
     private void editTripTimes(){
         final Calendar now = Calendar.getInstance();
-
+        if(currentTrip.getStartDate() != 0){
+            now.setTime(new Date(currentTrip.getStartDate()));
+        }
         DatePickerDialog picker = new DatePickerDialog(getContext(), null,
                 now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH));
+
                 picker.setMessage("Select Start Date");
         picker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 Date date = new Date(Helper.formatDate(year, month, day));
                 currentTrip.setStartDate(date.getTime());
+                if(currentTrip.getEndDate() != 0){
+                    now.setTime(new Date(currentTrip.getEndDate()));
+                }else if(currentTrip.getStartDate() != 0){
+                    now.setTime(new Date(currentTrip.getStartDate()));
+                }
                 final DatePickerDialog picker2 = new DatePickerDialog(getContext(), null,
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH));
+
                 picker2.setMessage("Select End Date");
                 picker2.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
                     @Override

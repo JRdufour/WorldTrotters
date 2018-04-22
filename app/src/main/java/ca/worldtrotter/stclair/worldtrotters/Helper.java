@@ -40,10 +40,11 @@ public class Helper {
      * This method takes in a place id and returns a place object from Google
      * @param id
      * @return
-     */
+//     */
 //    public static Place findPlaceById(String id){
 //
-//        Place place;
+//        final Place place;
+//        GoogleApiClient client = MainActivity.googleClient;
 //
 //        if(TextUtils.isEmpty(id) || client == null || !client.isConnected()) {
 //            return null;
@@ -53,8 +54,7 @@ public class Helper {
 //            @Override
 //            public void onResult(@NonNull PlaceBuffer places) {
 //                if(places.getStatus().isSuccess()) {
-//                    Place place = places.get(0);
-//
+//                    place = places.get(0);
 //                }
 //                // release the PlaceBuffer to prevent a memory leak
 //                places.release();
