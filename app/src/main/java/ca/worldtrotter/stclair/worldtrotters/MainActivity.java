@@ -188,20 +188,35 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, AppPreferences.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_email) {
+        } else if (id == R.id.nav_help) {
 
             String[] emailAddress = {"worldtrotters@support.com"};
 
             Intent intent = new Intent(Intent.ACTION_SENDTO);
             intent.setData(Uri.parse("mailto:"));
             intent.putExtra(Intent.EXTRA_EMAIL, emailAddress);
-            intent.putExtra(Intent.EXTRA_SUBJECT, "Question About The App");
-            intent.putExtra(Intent.EXTRA_TEXT, "I had a question about ");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Need help in the app");
+            intent.putExtra(Intent.EXTRA_TEXT, "I need help with");
             if(intent.resolveActivity(getPackageManager()) != null){
                 startActivity(intent);
             }
 
-        } else if (id == R.id.nav_web) {
+        } else if (id == R.id.nav_feedback) {
+
+            String[] emailAddress = {"worldtrotters@feedback.com"};
+
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, emailAddress);
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for the app");
+            intent.putExtra(Intent.EXTRA_TEXT, "I have feedback for");
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivity(intent);
+            }
+
+        }
+
+        else if (id == R.id.nav_web) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse("https://www.lonelyplanet.com"));
             if(intent.resolveActivity(getPackageManager()) != null){

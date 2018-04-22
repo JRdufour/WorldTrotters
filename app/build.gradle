@@ -53,4 +53,5 @@ dependencies {
 
     compile 'com.romandanylyk:pageindicatorview:1.0.0'
 
+    implementation 'com.android.support:mediarouter-v7:27.0.2'
 }
