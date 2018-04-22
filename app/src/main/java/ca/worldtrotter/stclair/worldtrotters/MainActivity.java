@@ -23,6 +23,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 import com.twitter.sdk.android.core.Twitter;
+import com.twitter.sdk.android.tweetui.TweetUi;
 
 
 public class MainActivity extends AppCompatActivity
@@ -52,6 +53,9 @@ public class MainActivity extends AppCompatActivity
 
         //initialize twitter
         Twitter.initialize(this);
+
+        Thread thread = new Thread(TweetUi::getInstance);
+        thread.start();
 
         fm = getSupportFragmentManager();
 
