@@ -21,8 +21,11 @@ import android.widget.Toast;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
 
@@ -106,8 +109,14 @@ public class CreateTripFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 try {
+                    AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                            .setCountry("US")
+                            .build();
+
                     Intent i = new PlaceAutocomplete.
-                            IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
+                            IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).setFilter(typeFilter).build(getActivity());
+
+
                     startActivityForResult(i, INTENT_REQUEST_CODE);
 
                 } catch (GooglePlayServicesRepairableException e) {
