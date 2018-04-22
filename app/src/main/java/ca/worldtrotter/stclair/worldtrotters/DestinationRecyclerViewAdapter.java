@@ -224,7 +224,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
                                 }
                                 break;
 
-                            case R.id.destination_menu_clear_dates
+                            case R.id.destination_menu_clear_dates:
                                 clearDates(current);
 
                             case R.id.destination_menu_explore:
@@ -288,7 +288,18 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
         Calendar now = Calendar.getInstance();
         if(dest.getStartDateTime() != 0){
             now.setTime(new Date(dest.getStartDateTime()));
+        } else {
+            int position = destinationArrayList.indexOf(dest);
+            if(position != 0) {
+                Destination previous = destinationArrayList.get(position - 1);
+                long previousDestionationEndDate = previous.getEndDateTime();
+                if(previousDestionationEndDate != 0){
+                    now.setTime(new Date(previousDestionationEndDate));
+                }
+            }
+
         }
+
         final DatabaseHandler db = new DatabaseHandler(context);
         DatePickerDialog picker = new DatePickerDialog(context, null,
                 now.get(Calendar.YEAR),
@@ -342,6 +353,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
         dest.setEndDateTime(0);
         db.upDateDestination(dest);
         db.close();
+        notifyDataSetChanged();
     }
 
 }
