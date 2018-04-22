@@ -21,6 +21,14 @@
         android:scaleType="centerCrop" />
 
 
+    <ImageView
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha=".34"
+        android:background="@color/cardview_dark_background"
+        android:scaleType="centerCrop" />
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -63,7 +71,6 @@
             android:layout_marginStart="10dp"
             android:paddingEnd="20dp"
             android:paddingTop="20dp"
-            android:text="TextView"
             android:textColor="@android:color/white"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"

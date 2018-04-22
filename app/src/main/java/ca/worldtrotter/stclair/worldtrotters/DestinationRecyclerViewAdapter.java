@@ -74,7 +74,20 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
         localHolder.destinationName.setText(current.getName());
         //turn off the edit texts for start and end dates
         localHolder.startDateTime.setKeyListener(null);
+        localHolder.startDateTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editStartDate(current);
+                notifyDataSetChanged();
+            }
+        });
         localHolder.endDateTime.setKeyListener(null);
+        localHolder.endDateTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editEndDate(current);
+            }
+        });
         localHolder.startDateTime.setFocusable(false);
         localHolder.endDateTime.setFocusable(false);
         //hide the agenda components
@@ -209,6 +222,10 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
                                        localHolder.toDoItemListView.setVisibility(View.GONE);
                                         agendaShown = false;
                                 }
+                                break;
+
+                            case R.id.destination_menu_clear_dates
+                                clearDates(current);
 
                             case R.id.destination_menu_explore:
                                 //handle exploring
@@ -260,39 +277,71 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     private void editDates(final Destination dest){
-        final Calendar now = Calendar.getInstance();
+        editEndDate(dest);
+        editStartDate(dest);
 
+    }
+
+    private void editStartDate(final Destination dest){
+
+
+        Calendar now = Calendar.getInstance();
+        if(dest.getStartDateTime() != 0){
+            now.setTime(new Date(dest.getStartDateTime()));
+        }
+        final DatabaseHandler db = new DatabaseHandler(context);
         DatePickerDialog picker = new DatePickerDialog(context, null,
                 now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH));
         picker.setMessage("Select Start Date");
+
+
         picker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
-            @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 Date date = new Date(Helper.formatDate(year, month, day));
                 dest.setStartDateTime(date.getTime());
-                final DatePickerDialog picker2 = new DatePickerDialog(context, null,
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH));
-                picker2.setMessage("Select End Date");
-                picker2.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                        Date date = new Date(Helper.formatDate(i, i1, i2));
-                        dest.setEndDateTime(date.getTime());
-                        DatabaseHandler db = new DatabaseHandler(context);
-                        db.upDateDestination(dest);
-                        db.close();
-                        notifyDataSetChanged();
-                    }
-                });
-                picker2.show();
+                db.upDateDestination(dest);
+                db.close();
+                notifyDataSetChanged();
             }
         });
         picker.show();
     }
 
+    private void editEndDate(final Destination dest){
+        Calendar now = Calendar.getInstance();
+        if(dest.getEndDateTime() != 0){
+            now.setTime(new Date(dest.getEndDateTime()));
+        }else if (dest.getStartDateTime() != 0){
+            now.setTime(new Date(dest.getStartDateTime()));
+        }
+        final DatabaseHandler db = new DatabaseHandler(context);
+        DatePickerDialog picker = new DatePickerDialog(context, null,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH));
+        picker.setMessage("Select End Date");
+
+
+        picker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                Date date = new Date(Helper.formatDate(year, month, day));
+                dest.setEndDateTime(date.getTime());
+                db.upDateDestination(dest);
+                db.close();
+                notifyDataSetChanged();
+            }
+        });
+        picker.show();
+    }
+
+    private void clearDates(Destination dest){
+        DatabaseHandler db = new DatabaseHandler(context);
+        dest.setStartDateTime(0);
+        dest.setEndDateTime(0);
+        db.upDateDestination(dest);
+        db.close();
+    }
 
 }
