@@ -1,11 +1,13 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
 import android.app.ActionBar;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -86,12 +88,15 @@ public class SplashFragment extends Fragment {
         ImageView companyname = view.findViewById(R.id.companyname);
 
         //create the animation
-        Animation fadeAnim = AnimationUtils.loadAnimation(getContext(), R.anim.splashanimation);
+        Animation slideFromLeft = AnimationUtils.loadAnimation(getContext(), R.anim.splashanimation_slide_from_left);
+        Animation slideFromRight = AnimationUtils.loadAnimation(getContext(), R.anim.splashanimation_slide_from_right);
 
         //add animation to the images
-        appLogo.startAnimation(fadeAnim);
-        companyname.startAnimation(fadeAnim);
+        appLogo.startAnimation(slideFromLeft);
+        companyname.startAnimation(slideFromRight);
 
+
+        //change title
         getActivity().setTitle("Welcome");
 
         return view;

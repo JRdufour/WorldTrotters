@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity
 
         /*
         * @author Said
-        * Handler created to launch the splash screen
+        * Handler created to launch the about us page after 2500 milliseconds
         */
         new Handler().postDelayed(new Runnable(){
             @Override
