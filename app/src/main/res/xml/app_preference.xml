@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="General">
+
+        <ListPreference
+            android:title="Restrict Location Results"
+            android:summary="You can restrict the locations you would like to travel to here."
+            android:key="aclocation"
+            android:entries="@array/autocompleteLocations_name"
+            android:entryValues="@array/autocompleteLocations_value"
+            android:defaultValue="NO"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Color">
+
+        <CheckBoxPreference
+            android:title="Dark Background"
+            android:summary="Is the main background color dark?"
+            android:key="backgroundColor"
+            android:defaultValue="false"/>
+        
+    </PreferenceCategory>
+</PreferenceScreen>

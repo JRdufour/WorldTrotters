@@ -1,8 +1,10 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
@@ -20,6 +22,8 @@ import android.view.MenuItem;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
+import com.twitter.sdk.android.core.Twitter;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -28,11 +32,16 @@ public class MainActivity extends AppCompatActivity
         AboutUsFragment.OnFragmentInteractionListener,
         NewInstanceFragment.OnFragmentInteractionListener,
         CreateTripFragment.OnFragmentInteractionListener,
-        AddTripDateFragment.OnFragmentInteractionListener{
+        AddTripDateFragment.OnFragmentInteractionListener,
+        SplashFragment.OnFragmentInteractionListener,
+        TwitterFragment.OnFragmentInteractionListener{
 
     private static FragmentManager fm;
     public static FloatingActionButton fab;
     public static GoogleApiClient googleClient = null;
+    //Variable used for splash screen
+    private static int SPLASH_TIME_OUT = 2000;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +50,10 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //initialize twitter
+        Twitter.initialize(this);
+
         fm = getSupportFragmentManager();
-
-
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.hide();
@@ -71,9 +81,25 @@ public class MainActivity extends AppCompatActivity
                 .build();
 
         FragmentTransaction t = fm.beginTransaction();
-        t.replace(R.id.main_content, new AboutUsFragment());
-        t.addToBackStack(null);
+        t.replace(R.id.main_content, new SplashFragment());
+        //t.addToBackStack(null);
         t.commit();
+
+        /*
+        * @author Said
+        * Handler created to launch the splash screen
+        */
+        new Handler().postDelayed(new Runnable(){
+            @Override
+            public void run() {
+                FragmentTransaction t = fm.beginTransaction();
+                t.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation,
+                        R.anim.slide_in_right, R.anim.slide_out_left);
+                t.replace(R.id.main_content, new AboutUsFragment());
+                t.addToBackStack(null);
+                t.commit();
+            }
+        },SPLASH_TIME_OUT);
     }
 
     @Override
@@ -127,7 +153,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(MainActivity.this, AppPreferences.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -141,22 +168,43 @@ public class MainActivity extends AppCompatActivity
 
         FragmentTransaction t = fm.beginTransaction();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_about) {
             t.replace(R.id.main_content, new AboutUsFragment());
             t.addToBackStack(null);
             t.commit();
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_trips) {
             t.replace(R.id.main_content, new TripListFragment());
             t.addToBackStack(null);
             t.commit();
+        } else if (id == R.id.nav_twitter) {
+            t.replace(R.id.main_content, new TwitterFragment());
+            t.addToBackStack(null);
+            t.commit();
+        } else if (id == R.id.nav_credits) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_settings) {
+            Intent intent = new Intent(MainActivity.this, AppPreferences.class);
+            startActivity(intent);
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_email) {
 
-        } else if (id == R.id.nav_share) {
+            String[] emailAddress = {"worldtrotters@support.com"};
 
-        } else if (id == R.id.nav_send) {
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, emailAddress);
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Question About The App");
+            intent.putExtra(Intent.EXTRA_TEXT, "I had a question about ");
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivity(intent);
+            }
+
+        } else if (id == R.id.nav_web) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("https://www.lonelyplanet.com"));
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivity(intent);
+            }
 
         }
 

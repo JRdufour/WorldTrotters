@@ -223,8 +223,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_END_DATE, COLUMN_START_DATE},
                 COLUMN_ID + "=?", new String[]{String.valueOf(id)},
                 null, null, null, null);
-        if(c != null){
-            c.moveToFirst();
+        if(c.moveToFirst()){
             trip = new Trip(Integer.parseInt(c.getString(0)),
                     c.getString(1),
                     Long.parseLong(c.getString(2)),
@@ -342,6 +341,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     //TODO Update operations
+
+    public void updateTripName(int id, String name){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues vals = new ContentValues();
+        vals.put(COLUMN_NAME, name);
+        db.update(TABLE_TRIPS, vals, COLUMN_ID + "= ?",
+                new String[]{String.valueOf(id)});
+
+    }
 
     public void updateTrip(Trip trip){
         SQLiteDatabase db = getWritableDatabase();

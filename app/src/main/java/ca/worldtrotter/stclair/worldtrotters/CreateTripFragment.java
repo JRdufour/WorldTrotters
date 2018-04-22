@@ -3,11 +3,18 @@ package ca.worldtrotter.stclair.worldtrotters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+
+
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
@@ -27,8 +34,11 @@ import android.widget.Toast;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
 
@@ -108,12 +118,29 @@ public class CreateTripFragment extends Fragment {
         destinationButton = view.findViewById(R.id.destination_button);
         headerTextView = view.findViewById(R.id.name_trip_header);
 
+
+
         destinationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    Intent i = new PlaceAutocomplete.
-                            IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
+                    
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    String autocompleteLocation = sharedPreferences.getString("aclocation","NO");
+
+                    Intent i;
+                    if(autocompleteLocation != "NO") {
+                        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                                .setCountry(autocompleteLocation)
+                                .build();
+
+                        i = new PlaceAutocomplete.
+                                IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).setFilter(typeFilter).build(getActivity());
+                    }else {
+
+                        i = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
+                    }
+
                     startActivityForResult(i, INTENT_REQUEST_CODE);
 
                 } catch (GooglePlayServicesRepairableException e) {

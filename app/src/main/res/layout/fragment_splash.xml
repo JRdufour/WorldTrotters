@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/splashBackground"
+    tools:context="ca.worldtrotter.stclair.worldtrotters.SplashFragment">
+
+    <ImageView
+        android:id="@+id/applogo"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="357dp"
+        android:layout_marginRight="35dp"
+        android:padding="20dp"
+        android:paddingBottom="0dp"
+        app:srcCompat="@drawable/applogo" />
+
+    <ImageView
+        android:id="@+id/companyname"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="357dp"
+        android:layout_margin="0dp"
+        android:padding="50dp"
+        android:paddingBottom="0dp"
+        app:srcCompat="@drawable/companyname" />
+
+</LinearLayout>
