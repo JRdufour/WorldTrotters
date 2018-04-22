@@ -4,8 +4,12 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -23,6 +27,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -229,6 +238,7 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
                             case R.id.destination_menu_explore:
                                 //handle exploring
+                                exploreDestination(current);
                                 break;
 
                             default:
@@ -355,5 +365,39 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
         db.close();
         notifyDataSetChanged();
     }
+
+    private void exploreDestination(Destination dest){
+        String id = dest.getPlaceId();
+        GoogleApiClient client = MainActivity.googleClient;
+
+        if(TextUtils.isEmpty(id) || client == null || !client.isConnected()) {
+
+        }else {
+
+            Places.GeoDataApi.getPlaceById(client, id).setResultCallback(new ResultCallback<PlaceBuffer>() {
+                @Override
+                public void onResult(@NonNull PlaceBuffer places) {
+                    if (places.getStatus().isSuccess()) {
+                        Place place = places.get(0);
+                        double lat = place.getLatLng().latitude;
+                        double lon = place.getLatLng().longitude;
+
+                        String intentString = "geo:" + lat + "," + lon;
+                        Uri intentUri = Uri.parse(intentString);
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);
+                        //mapIntent.setPackage("com.google.android.apps.maps");
+                        if(mapIntent.resolveActivity(context.getPackageManager()) != null) {
+                            context.startActivity(mapIntent);
+                        }
+
+
+                    }
+                    // release the PlaceBuffer to prevent a memory leak
+                    places.release();
+                }
+            });
+        }
+    }
+
 
 }
