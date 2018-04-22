@@ -63,7 +63,7 @@ public class CreateTripFragment extends Fragment {
     //this will hold an array of places the user wants to go to on their trip
     private ArrayList<Destination> destinations;
 
-    private SearchView destinationButton;
+    private CardView destinationButton;
     private TextView headerTextView;
 
     // TODO: Rename and change types of parameters
