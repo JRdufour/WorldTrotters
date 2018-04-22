@@ -4,12 +4,14 @@
         android:title="General">
 
         <ListPreference
-            android:title="Auto Complete Location"
-            android:summary="Choose a location to autocomplete search for"
+
+            android:title="Restrict Location Results"
+            android:summary="You can restrict the locations you would like to travel to here."
+
             android:key="aclocation"
             android:entries="@array/autocompleteLocations_name"
             android:entryValues="@array/autocompleteLocations_value"
-            android:defaultValue="CAN"/>
+            android:defaultValue="NO"/>
 
     </PreferenceCategory>
 </PreferenceScreen>

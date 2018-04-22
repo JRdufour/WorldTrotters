@@ -23,7 +23,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 import com.twitter.sdk.android.core.Twitter;
+
 import com.twitter.sdk.android.tweetui.TweetUi;
+
+import com.twitter.sdk.android.tweetui.UserTimeline;
+
 
 
 public class MainActivity extends AppCompatActivity
@@ -74,6 +78,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        UserTimeline userTimeline =
+                new UserTimeline.Builder().screenName("lonelyplanet").build();
         googleClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -88,7 +94,7 @@ public class MainActivity extends AppCompatActivity
 
         FragmentTransaction t = fm.beginTransaction();
         t.replace(R.id.main_content, new SplashFragment());
-        t.addToBackStack(null);
+        //t.addToBackStack(null);
         t.commit();
 
         /*
