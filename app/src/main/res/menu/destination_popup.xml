@@ -10,9 +10,6 @@
         android:id="@+id/destination_menu_clear_dates"
         android:title="Clear Dates" />
     <item
-        android:id="@+id/destination_menu_edit_dates"
-        android:title="Edit Dates" />
-    <item
         android:id="@+id/destination_menu_agenda"
         android:title="View Agenda" />
     <item

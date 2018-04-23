@@ -126,19 +126,22 @@ public class CreateTripFragment extends Fragment {
                 try {
                     
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-                    String autocompleteLocation = sharedPreferences.getString("aclocation","NO");
+                    String autocompleteLocation = sharedPreferences.getString("aclocation", null);
 
                     Intent i;
-                    if(autocompleteLocation != "NO") {
+
+                    if(autocompleteLocation == null || autocompleteLocation == "") {
+                        Log.d("TEST", "true");
+                        i = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
+
+                    }else{
+                        Log.d("TEST", "fa;se");
                         AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
                                 .setCountry(autocompleteLocation)
                                 .build();
 
                         i = new PlaceAutocomplete.
                                 IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).setFilter(typeFilter).build(getActivity());
-                    }else {
-
-                        i = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
                     }
 
                     startActivityForResult(i, INTENT_REQUEST_CODE);
