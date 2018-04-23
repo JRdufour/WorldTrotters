@@ -19,7 +19,7 @@
 
 
     <string-array name="autocompleteLocations_value">
-        <item>NO</item>
+        <item></item>
         <item>USA</item>
         <item>CAN</item>
         <item>BRA</item>
