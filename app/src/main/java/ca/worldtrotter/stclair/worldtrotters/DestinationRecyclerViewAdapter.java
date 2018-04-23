@@ -209,11 +209,6 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
 
 
                                 break;
-                            /** EDIT DATES**/
-                            case R.id.destination_menu_edit_dates:
-                                //handle editing dates
-                                editDates(current);
-                                break;
                             /** TOGGLE AGENDA**/
                             case R.id.destination_menu_agenda:
                                 //agenda was set to add
