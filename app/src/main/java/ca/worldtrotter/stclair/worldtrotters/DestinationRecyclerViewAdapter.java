@@ -4,8 +4,12 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -23,6 +27,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -74,7 +83,20 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
         localHolder.destinationName.setText(current.getName());
         //turn off the edit texts for start and end dates
         localHolder.startDateTime.setKeyListener(null);
+        localHolder.startDateTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editStartDate(current);
+                notifyDataSetChanged();
+            }
+        });
         localHolder.endDateTime.setKeyListener(null);
+        localHolder.endDateTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editEndDate(current);
+            }
+        });
         localHolder.startDateTime.setFocusable(false);
         localHolder.endDateTime.setFocusable(false);
         //hide the agenda components
@@ -209,9 +231,14 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
                                        localHolder.toDoItemListView.setVisibility(View.GONE);
                                         agendaShown = false;
                                 }
+                                break;
+
+                            case R.id.destination_menu_clear_dates:
+                                clearDates(current);
 
                             case R.id.destination_menu_explore:
                                 //handle exploring
+                                exploreDestination(current);
                                 break;
 
                             default:
@@ -260,38 +287,116 @@ public class DestinationRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     private void editDates(final Destination dest){
-        final Calendar now = Calendar.getInstance();
+        editEndDate(dest);
+        editStartDate(dest);
 
+    }
+
+    private void editStartDate(final Destination dest){
+
+
+        Calendar now = Calendar.getInstance();
+        if(dest.getStartDateTime() != 0){
+            now.setTime(new Date(dest.getStartDateTime()));
+        } else {
+            int position = destinationArrayList.indexOf(dest);
+            if(position != 0) {
+                Destination previous = destinationArrayList.get(position - 1);
+                long previousDestionationEndDate = previous.getEndDateTime();
+                if(previousDestionationEndDate != 0){
+                    now.setTime(new Date(previousDestionationEndDate));
+                }
+            }
+
+        }
+
+        final DatabaseHandler db = new DatabaseHandler(context);
         DatePickerDialog picker = new DatePickerDialog(context, null,
                 now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH));
         picker.setMessage("Select Start Date");
+
+
         picker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
-            @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 Date date = new Date(Helper.formatDate(year, month, day));
                 dest.setStartDateTime(date.getTime());
-                final DatePickerDialog picker2 = new DatePickerDialog(context, null,
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH));
-                picker2.setMessage("Select End Date");
-                picker2.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                        Date date = new Date(Helper.formatDate(i, i1, i2));
-                        dest.setEndDateTime(date.getTime());
-                        DatabaseHandler db = new DatabaseHandler(context);
-                        db.upDateDestination(dest);
-                        db.close();
-                        notifyDataSetChanged();
-                    }
-                });
-                picker2.show();
+                db.upDateDestination(dest);
+                db.close();
+                notifyDataSetChanged();
             }
         });
         picker.show();
+    }
+
+    private void editEndDate(final Destination dest){
+        Calendar now = Calendar.getInstance();
+        if(dest.getEndDateTime() != 0){
+            now.setTime(new Date(dest.getEndDateTime()));
+        }else if (dest.getStartDateTime() != 0){
+            now.setTime(new Date(dest.getStartDateTime()));
+        }
+        final DatabaseHandler db = new DatabaseHandler(context);
+        DatePickerDialog picker = new DatePickerDialog(context, null,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH));
+        picker.setMessage("Select End Date");
+
+
+        picker.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                Date date = new Date(Helper.formatDate(year, month, day));
+                dest.setEndDateTime(date.getTime());
+                db.upDateDestination(dest);
+                db.close();
+                notifyDataSetChanged();
+            }
+        });
+        picker.show();
+    }
+
+    private void clearDates(Destination dest){
+        DatabaseHandler db = new DatabaseHandler(context);
+        dest.setStartDateTime(0);
+        dest.setEndDateTime(0);
+        db.upDateDestination(dest);
+        db.close();
+        notifyDataSetChanged();
+    }
+
+    private void exploreDestination(Destination dest){
+        String id = dest.getPlaceId();
+        GoogleApiClient client = MainActivity.googleClient;
+
+        if(TextUtils.isEmpty(id) || client == null || !client.isConnected()) {
+
+        }else {
+
+            Places.GeoDataApi.getPlaceById(client, id).setResultCallback(new ResultCallback<PlaceBuffer>() {
+                @Override
+                public void onResult(@NonNull PlaceBuffer places) {
+                    if (places.getStatus().isSuccess()) {
+                        Place place = places.get(0);
+                        double lat = place.getLatLng().latitude;
+                        double lon = place.getLatLng().longitude;
+
+                        String intentString = "geo:" + lat + "," + lon;
+                        Uri intentUri = Uri.parse(intentString);
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);
+                        //mapIntent.setPackage("com.google.android.apps.maps");
+                        if(mapIntent.resolveActivity(context.getPackageManager()) != null) {
+                            context.startActivity(mapIntent);
+                        }
+
+
+                    }
+                    // release the PlaceBuffer to prevent a memory leak
+                    places.release();
+                }
+            });
+        }
     }
 
 

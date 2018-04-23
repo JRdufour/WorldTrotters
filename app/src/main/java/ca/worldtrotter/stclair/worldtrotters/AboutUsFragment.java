@@ -1,16 +1,22 @@
 package ca.worldtrotter.stclair.worldtrotters;
 
 import android.content.Context;
+import android.graphics.Camera;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 
 import com.rd.PageIndicatorView;
@@ -72,10 +78,17 @@ public class AboutUsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        Window window = getActivity().getWindow();
+        // finally change the color
+        window.setStatusBarColor(ContextCompat.getColor(getContext(),R.color.colorPrimaryDark));
+
         //Hide the main FAB
         MainActivity.fab.hide();
 
-        MainActivity.fab.hide();
+        //change title
+        getActivity().setTitle("About Us");
 
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_about_us, container, false);
@@ -87,7 +100,7 @@ public class AboutUsFragment extends Fragment {
         CustomPagerAdapter customPagerAdapter = new CustomPagerAdapter(getChildFragmentManager());
 
         //add a pageTransformer
-        viewPager.setPageTransformer(true, new DepthPageTransformer());
+        viewPager.setPageTransformer(true, new DrawFromBackTransformer());
 
         //Set the adapter to the viewpager
         viewPager.setAdapter(customPagerAdapter);
@@ -168,28 +181,25 @@ public class AboutUsFragment extends Fragment {
         }
     }
 
-    //Create the DepthPageTransformer
-    public class DepthPageTransformer implements ViewPager.PageTransformer {
+    //Create the viewPager Transition
+    public class DrawFromBackTransformer implements ViewPager.PageTransformer {
+
         private static final float MIN_SCALE = 0.75f;
 
+        @Override
         public void transformPage(View view, float position) {
             int pageWidth = view.getWidth();
 
-            if (position < -1) { // [-Infinity,-1)
+            if (position < -1 || position > 1) { // [-Infinity,-1)
                 // This page is way off-screen to the left.
                 view.setAlpha(0);
+                return;
+            }
 
-            } else if (position <= 0) { // [-1,0]
+            if (position <= 0) { // [-1,0]
                 // Use the default slide transition when moving to the left page
-                view.setAlpha(1);
-                view.setTranslationX(0);
-                view.setScaleX(1);
-                view.setScaleY(1);
-
-            } else if (position <= 1) { // (0,1]
                 // Fade the page out.
-                view.setAlpha(1 - position);
-
+                view.setAlpha(1 + position);
                 // Counteract the default slide transition
                 view.setTranslationX(pageWidth * -position);
 
@@ -198,10 +208,42 @@ public class AboutUsFragment extends Fragment {
                         + (1 - MIN_SCALE) * (1 - Math.abs(position));
                 view.setScaleX(scaleFactor);
                 view.setScaleY(scaleFactor);
+                return;
 
-            } else { // (1,+Infinity]
-                // This page is way off-screen to the right.
+            }
+
+            if (position > 0.5 && position <= 1) { // (0,1]
+                // Fade the page out.
                 view.setAlpha(0);
+
+                // Counteract the default slide transition
+                view.setTranslationX(pageWidth * -position);
+                return;
+            }
+            if (position > 0.3 && position <= 0.5) { // (0,1]
+                // Fade the page out.
+                view.setAlpha(1);
+
+                // Counteract the default slide transition
+                view.setTranslationX(pageWidth * position);
+
+                float scaleFactor = MIN_SCALE;
+                view.setScaleX(scaleFactor);
+                view.setScaleY(scaleFactor);
+                return;
+            }
+            if (position <= 0.3) { // (0,1]
+                // Fade the page out.
+                view.setAlpha(1);
+                // Counteract the default slide transition
+                view.setTranslationX(pageWidth * position);
+
+                // Scale the page down (between MIN_SCALE and 1)
+                float v = (float) (0.3 - position);
+                v = v >= 0.25f ? 0.25f : v;
+                float scaleFactor = MIN_SCALE + v;
+                view.setScaleX(scaleFactor);
+                view.setScaleY(scaleFactor);
             }
         }
     }

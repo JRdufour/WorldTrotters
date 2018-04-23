@@ -3,10 +3,21 @@ package ca.worldtrotter.stclair.worldtrotters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+
+
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,15 +25,20 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
 
@@ -47,7 +63,7 @@ public class CreateTripFragment extends Fragment {
     //this will hold an array of places the user wants to go to on their trip
     private ArrayList<Destination> destinations;
 
-    private Button destinationButton;
+    private CardView destinationButton;
     private TextView headerTextView;
 
     // TODO: Rename and change types of parameters
@@ -102,12 +118,29 @@ public class CreateTripFragment extends Fragment {
         destinationButton = view.findViewById(R.id.destination_button);
         headerTextView = view.findViewById(R.id.name_trip_header);
 
+
+
         destinationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    Intent i = new PlaceAutocomplete.
-                            IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
+                    
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    String autocompleteLocation = sharedPreferences.getString("aclocation","NO");
+
+                    Intent i;
+                    if(autocompleteLocation != "NO") {
+                        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                                .setCountry(autocompleteLocation)
+                                .build();
+
+                        i = new PlaceAutocomplete.
+                                IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).setFilter(typeFilter).build(getActivity());
+                    }else {
+
+                        i = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
+                    }
+
                     startActivityForResult(i, INTENT_REQUEST_CODE);
 
                 } catch (GooglePlayServicesRepairableException e) {
@@ -143,7 +176,7 @@ public class CreateTripFragment extends Fragment {
 
 
         ListView destinationListView = view.findViewById(R.id.name_trip_destination_list_view);
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, android.R.id.text1, destinations);
+        adapter = new DestinationListAdapter(getContext());
 
         destinationListView.setAdapter(adapter);
         destinationListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -171,12 +204,13 @@ public class CreateTripFragment extends Fragment {
                 Place place = PlaceAutocomplete.getPlace(getActivity(), data);
                 Log.i(TAG, "Place: " + place.getName());
 
-                String tripName = place.getName().toString() + " Trip";
-                currentTrip.setName(tripName);
-                headerTextView.setText(tripName);
+
                 //see if the trip has already been added to the database
                 if(currentTrip.getTripID() == -1) {
                     DatabaseHandler db = new DatabaseHandler(getContext());
+                    String tripName = place.getName().toString() + " Trip";
+                    currentTrip.setName(tripName);
+                    headerTextView.setText(tripName);
                     int id = db.addTrip(currentTrip);
                     currentTrip = db.getTrip(id);
                 }
@@ -207,7 +241,7 @@ public class CreateTripFragment extends Fragment {
             }
         }
         if(destinations.size() != 0){
-            destinationButton.setText("Add Another Destination");
+            //destinationButton.setText("Add Another Destination");
         }
     }
 
@@ -255,4 +289,35 @@ public class CreateTripFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
+    public class DestinationListAdapter extends ArrayAdapter<Destination> {
+        public DestinationListAdapter(@NonNull Context context) {
+            super(context,0, destinations);
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
+            final Destination current = destinations.get(position);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.listview_pindrop_item_layout, null);
+
+            TextView name = convertView.findViewById(R.id.destination_list_name);
+            ImageView trash = convertView.findViewById(R.id.destination_list_trash);
+            name.setText(current.getName());
+            trash.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    destinations.remove(current);
+                    adapter.notifyDataSetChanged();
+
+                }
+            });
+
+            return convertView;
+        }
+
+    }
 }
+

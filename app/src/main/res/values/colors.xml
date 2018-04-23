@@ -6,6 +6,7 @@
     <color name="colorAccent">#6b9b37</color>
 
     <color name="textMain">#696969</color>
+    <color name="splashBackground">#FFF</color>
 
         <color name="secondaryColor">#9ccc65</color>
         <color name="secondaryLightColor">#cfff95</color>

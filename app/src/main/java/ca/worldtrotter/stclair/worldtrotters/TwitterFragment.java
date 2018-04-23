@@ -71,7 +71,11 @@ public class TwitterFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_twitter, container, false);
 
+        //hide fab
         MainActivity.fab.hide();
+        //change title
+        getActivity().setTitle("Twitter");
+        //link xml recyclerView
         RecyclerView recyclerView = view.findViewById(R.id.twitterRecycle);
         //Grab the user timeline
         UserTimeline userTimeline =
@@ -81,8 +85,10 @@ public class TwitterFragment extends Fragment {
         TweetTimelineRecyclerViewAdapter adapter =
                 new TweetTimelineRecyclerViewAdapter(getContext(), userTimeline);
 
+        //create new layoutManager
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
+        //set the adapter and the layout manager
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
 

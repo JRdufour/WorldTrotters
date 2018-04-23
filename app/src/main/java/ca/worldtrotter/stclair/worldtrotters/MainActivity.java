@@ -18,11 +18,24 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
+import com.mikepenz.aboutlibraries.LibTaskCallback;
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
+import com.mikepenz.aboutlibraries.LibsConfiguration;
+import com.mikepenz.aboutlibraries.entity.Library;
+import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.twitter.sdk.android.core.Twitter;
+
+import com.twitter.sdk.android.tweetui.TweetUi;
+
+import com.twitter.sdk.android.tweetui.UserTimeline;
+
 
 
 public class MainActivity extends AppCompatActivity
@@ -39,11 +52,9 @@ public class MainActivity extends AppCompatActivity
     private static FragmentManager fm;
     public static FloatingActionButton fab;
     public static GoogleApiClient googleClient = null;
-    //Variable used for splash screen
-    private static int SPLASH_TIME_OUT = 4000;
 
-
-
+    //Variable used for splash screengit ad
+    private static int SPLASH_TIME_OUT = 2000;
 
 
 
@@ -57,10 +68,15 @@ public class MainActivity extends AppCompatActivity
         //initialize twitter
         Twitter.initialize(this);
 
+        Thread thread = new Thread(TweetUi::getInstance);
+        thread.start();
+
         fm = getSupportFragmentManager();
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.hide();
+
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -72,6 +88,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        UserTimeline userTimeline =
+                new UserTimeline.Builder().screenName("lonelyplanet").build();
         googleClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -86,19 +104,18 @@ public class MainActivity extends AppCompatActivity
 
         FragmentTransaction t = fm.beginTransaction();
         t.replace(R.id.main_content, new SplashFragment());
-        t.addToBackStack(null);
+        //t.addToBackStack(null);
         t.commit();
 
         /*
         * @author Said
-        * Handler created to launch the splash screen
+        * Handler created to launch the about us page after 2500 milliseconds
         */
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
                 FragmentTransaction t = fm.beginTransaction();
-                t.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation,
-                        R.anim.slide_in_right, R.anim.slide_out_left);
+                t.setCustomAnimations(R.anim.slide_in_left_fragment_animation, R.anim.slide_out_right_fragment_animation);
                 t.replace(R.id.main_content, new AboutUsFragment());
                 t.addToBackStack(null);
                 t.commit();
@@ -172,26 +189,72 @@ public class MainActivity extends AppCompatActivity
 
         FragmentTransaction t = fm.beginTransaction();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_about) {
             t.replace(R.id.main_content, new AboutUsFragment());
             t.addToBackStack(null);
             t.commit();
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_trips) {
             t.replace(R.id.main_content, new TripListFragment());
             t.addToBackStack(null);
             t.commit();
-
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_twitter) {
             t.replace(R.id.main_content, new TwitterFragment());
             t.addToBackStack(null);
             t.commit();
+        } else if (id == R.id.nav_credits) {
+
+            //AboutLibraries Code
+            new LibsBuilder()
+                    .withFields(R.string.class.getFields())
+                    .withAutoDetect(true)
+                    .withLicenseShown(true)
+                    .withVersionShown(true)
+                    .withActivityTitle("Credits")
+                    .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                    .withListener(libsListener)
+                    .withLibTaskCallback(libTaskCallback)
+                    .withUiListener(libsUIListener)
+                    .start(this);
+
+        } else if (id == R.id.nav_settings) {
+            Intent intent = new Intent(MainActivity.this, AppPreferences.class);
+            startActivity(intent);
+
+        } else if (id == R.id.nav_help) {
+
+            String[] emailAddress = {"worldtrotters@support.com"};
 
 
-        } else if (id == R.id.nav_manage) {
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, emailAddress);
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Need support in the app");
+            intent.putExtra(Intent.EXTRA_TEXT, "I need support with");
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivity(intent);
+            }
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_feedback) {
 
-        } else if (id == R.id.nav_send) {
+            String[] emailAddress = {"worldtrotters@feedback.com"};
+
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, emailAddress);
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for the app");
+            intent.putExtra(Intent.EXTRA_TEXT, "I have feedback for");
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivity(intent);
+            }
+
+        }
+
+        else if (id == R.id.nav_web) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("https://www.lonelyplanet.com"));
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivity(intent);
+            }
 
         }
 
@@ -199,6 +262,79 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    //Methods needed for the AboutLibraries
+
+    LibTaskCallback libTaskCallback = new LibTaskCallback() {
+        @Override
+        public void onLibTaskStarted() {
+            Log.e("AboutLibraries", "started");
+        }
+
+        @Override
+        public void onLibTaskFinished(ItemAdapter fastItemAdapter) {
+            Log.e("AboutLibraries", "finished");
+        }
+    };
+
+    LibsConfiguration.LibsUIListener libsUIListener = new LibsConfiguration.LibsUIListener() {
+        @Override
+        public View preOnCreateView(View view) {
+            return view;
+        }
+
+        @Override
+        public View postOnCreateView(View view) {
+            return view;
+        }
+    };
+
+    LibsConfiguration.LibsListener libsListener = new LibsConfiguration.LibsListener() {
+        @Override
+        public void onIconClicked(View v) {
+            Toast.makeText(v.getContext(), "We are able to track this now ;)", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public boolean onLibraryAuthorClicked(View v, Library library) {
+            return false;
+        }
+
+        @Override
+        public boolean onLibraryContentClicked(View v, Library library) {
+            return false;
+        }
+
+        @Override
+        public boolean onLibraryBottomClicked(View v, Library library) {
+            return false;
+        }
+
+        @Override
+        public boolean onExtraClicked(View v, Libs.SpecialButton specialButton) {
+            return false;
+        }
+
+        @Override
+        public boolean onIconLongClicked(View v) {
+            return false;
+        }
+
+        @Override
+        public boolean onLibraryAuthorLongClicked(View v, Library library) {
+            return false;
+        }
+
+        @Override
+        public boolean onLibraryContentLongClicked(View v, Library library) {
+            return false;
+        }
+
+        @Override
+        public boolean onLibraryBottomLongClicked(View v, Library library) {
+            return false;
+        }
+    };
 
     @Override
     public void onFragmentInteraction(Uri uri) {
